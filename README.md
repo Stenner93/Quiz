@@ -1,0 +1,43 @@
+# Stjernejagt
+
+Et quiz-brætspil på dansk til 2–6 spillere eller hold, lavet til Android-tablets (virker også på telefon og computer).
+Alle spiller på den samme tablet og sender den rundt.
+
+**Kategorierne og farverne er de seks klassiske**, så I kan bruge jeres egne fysiske spørgsmålskort:
+
+| Farve | Kategori |
+|---|---|
+| 🔵 Blå | Geografi |
+| 🩷 Pink | Underholdning |
+| 🟡 Gul | Historie |
+| 🟣 Lilla | Kunst & litteratur |
+| 🟢 Grøn | Naturvidenskab |
+| 🟠 Orange | Sport & fritid |
+
+## Sådan spiller man
+- Alle starter på kronefeltet ♛. Slå med terningen, og ryk med eller mod uret.
+- Svar rigtigt, og du slår igen. Svar forkert, og turen går videre.
+- Svar rigtigt på et **★ stjernefelt** for at få kategoriens stjerne.
+- **↻** betyder "slå igen". På **♛** vælger du selv kategori.
+- Har du alle seks stjerner, går du tilbage til ♛. Modspillerne vælger kategori til finalespørgsmålet, og et rigtigt svar giver sejren.
+
+## Spørgsmål
+- **Spørgsmål i appen:** Der følger ca. 200 danske spørgsmål med. Appen husker, hvilke der er brugt.
+- **Fysiske kort:** Appen viser kun farve og kategori, og I læser op fra kortet.
+- Du kan skifte mellem de to ved hvert eneste spørgsmål.
+- **Importér egne spørgsmål** fra en CSV-fil (fx fra Excel/Google Sheets) med kolonnerne `kategori;spørgsmål;svar`.
+  Kategori kan skrives som navn (`historie`), farve (`gul`) eller tal 1–6. Se `eksempel-spoergsmaal.csv`.
+
+## Andet
+- Spillet gemmes automatisk og kan fortsættes, hvis appen lukkes.
+- **↶ Fortryd** hvis nogen trykkede forkert.
+- Har du slået med en rigtig terning, så tryk på tallet i stedet for at slå i appen.
+
+## Installér på tablet
+1. Åbn spillets adresse i Chrome på tabletten (GitHub Pages: `https://<brugernavn>.github.io/<repo>/`).
+2. Chrome-menuen ⋮ → **Føj til startskærm** / **Installér app**.
+3. Spillet ligger nu som en app, kører i fuld skærm og virker uden internet.
+
+## Teknik
+Ren HTML/CSS/JavaScript uden byggetrin: `index.html`, `style.css`, `app.js`, `questions.js` (de indbyggede spørgsmål), `sw.js` (offline) og `manifest.webmanifest`.
+Når du ændrer filer, så hæv `CACHE`-versionen i `sw.js`.

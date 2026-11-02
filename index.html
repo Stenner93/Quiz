@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#14223f">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Stjernejagt</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ OPSÆTNING ============ -->
+<section id="setup" class="screen">
+  <div class="setup-inner">
+    <header class="brand">
+      <div class="brand-logo" aria-hidden="true">★</div>
+      <div>
+        <h1>Stjernejagt</h1>
+        <p class="sub">Quiz-brætspil for 2–6 spillere eller hold</p>
+      </div>
+    </header>
+
+    <div id="resumeBox" class="card hidden">
+      <p>Der er et gemt spil.</p>
+      <button id="resumeBtn" class="btn primary big">Fortsæt spil</button>
+    </div>
+
+    <div class="card">
+      <h2>Spillere / hold</h2>
+      <div id="plist"></div>
+      <div class="row">
+        <button id="addP" class="btn">+ Tilføj spiller</button>
+        <button id="shuffleP" class="btn">Bland rækkefølge</button>
+      </div>
+      <p class="hint">Den øverste spiller starter.</p>
+    </div>
+
+    <div class="card">
+      <h2>Spørgsmål</h2>
+      <div class="seg" id="srcSeg">
+        <button data-src="app">Spørgsmål i appen</button>
+        <button data-src="card">Fysiske kort</button>
+      </div>
+      <p class="hint" id="srcHint"></p>
+      <p class="hint" id="qinfo"></p>
+      <div class="row">
+        <button id="importBtn" class="btn">Importér spørgsmål (CSV/JSON)</button>
+        <input type="file" id="importFile" accept=".csv,.txt,.json,.tsv" hidden>
+        <button id="clearImp" class="btn">Slet importerede</button>
+        <button id="resetSeen" class="btn">Nulstil brugte spørgsmål</button>
+      </div>
+    </div>
+
+    <div class="row center">
+      <button id="startBtn" class="btn primary big">Start nyt spil</button>
+      <button id="rulesBtn" class="btn big">Regler</button>
+      <button id="fsBtn" class="btn big">Fuld skærm</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPIL ============ -->
+<section id="game" class="screen hidden">
+  <div id="boardWrap">
+    <svg id="board" viewBox="0 0 1000 1000" aria-label="Spillebræt"></svg>
+    <div id="center"></div>
+  </div>
+  <aside id="panel">
+    <div id="players"></div>
+    <div class="manual">
+      <span>Slog med rigtig terning:</span>
+      <div class="manual-btns" id="manualBtns"></div>
+    </div>
+    <div class="row">
+      <button id="undoBtn" class="btn">↶ Fortryd</button>
+      <button id="rules2Btn" class="btn">Regler</button>
+      <button id="menuBtn" class="btn">Menu</button>
+    </div>
+  </aside>
+</section>
+
+<div id="modal" class="hidden"><div id="mbox"></div></div>
+
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
