@@ -45,7 +45,8 @@ let busy = false;
 
 /* ---------- Spørgsmål ---------- */
 function allQuestions() {
-  const b = (window.BUILTIN_QUESTIONS || []).map((q, i) => ({ id: 'b' + i, c: q[0], q: q[1], a: q[2] }));
+  const b = (window.BUILTIN_QUESTIONS || []).map((q, i) => ({ id: 'b' + i, c: q[0], q: q[1], a: q[2] }))
+    .concat((window.OPENTDB_QUESTIONS || []).map((q, i) => ({ id: 'o' + q[3], c: q[0], q: q[1], a: q[2] })));
   const imp = store.get(K_IMP, []).map((q, i) => ({ id: 'i' + i + '_' + hash(q.q), c: q.c, q: q.q, a: q.a }));
   return b.concat(imp);
 }
@@ -510,6 +511,7 @@ function showRules() {
     <ul>
       <li>Vælg mellem spørgsmål i appen og jeres egne fysiske kort. Du kan skifte ved hvert spørgsmål.</li>
       <li>Trykkede du forkert? Brug <b>↶ Fortryd</b>.</li>
+      <li>Mange af app-spørgsmålene er oversat fra <a href="https://opentdb.com" target="_blank" rel="noopener">Open Trivia Database</a> (licens <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.da" target="_blank" rel="noopener">CC BY-SA 4.0</a>).</li>
     </ul>
     <div class="row center" style="margin-top:10px"><button class="btn primary big" id="rClose">Luk</button></div>
   </div>`);

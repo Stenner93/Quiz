@@ -24,7 +24,7 @@ Alle spiller på den samme tablet og sender den rundt.
 - Klarer du finalen, spilles runden færdig. Klarer en anden også finalen i samme runde, er der omspil mellem jer.
 
 ## Spørgsmål
-- **Spørgsmål i appen:** Der følger ca. 200 danske spørgsmål med. Appen husker, hvilke der er brugt.
+- **Spørgsmål i appen:** Der følger ca. 2.400 spørgsmål med: ca. 200 skrevet på dansk (`questions.js`) og ca. 2.200 oversat og tilpasset fra [Open Trivia Database](https://opentdb.com) (`questions_opentdb.js`, licens [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)). Appen husker, hvilke der er brugt.
 - **Fysiske kort:** Appen viser kun farve og kategori, og I læser op fra kortet.
 - Du kan skifte mellem de to ved hvert eneste spørgsmål.
 - **Importér egne spørgsmål** fra en CSV-fil (fx fra Excel/Google Sheets) med kolonnerne `kategori;spørgsmål;svar`.
