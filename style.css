@@ -123,3 +123,10 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 .win{text-align:center;padding:30px}
 .win .big-star{font-size:90px;color:var(--gold2)}
 @media (max-width:600px){.catgrid{grid-template-columns:repeat(2,1fr)}.qtext{font-size:23px}}
+
+.badge{display:inline-block;font-size:12px;font-weight:700;background:var(--gold);color:#1b1405;border-radius:999px;padding:1px 8px;vertical-align:2px}
+.badge.ok{background:var(--ok);color:#fff}
+.fprog{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fprog span{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:20px;opacity:.55;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.fprog span.now{opacity:1;outline:3px solid #1d1d1d;outline-offset:2px}
+.fprog b{margin-left:auto;font-size:17px}

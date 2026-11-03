@@ -19,7 +19,9 @@ Alle spiller på den samme tablet og sender den rundt.
 - Svar rigtigt, og du slår igen. Svar forkert, og turen går videre.
 - Svar rigtigt på et **★ stjernefelt** for at få kategoriens stjerne.
 - **↻** betyder "slå igen". På **♛** vælger du selv kategori.
-- Har du alle seks stjerner, går du tilbage til ♛. Modspillerne vælger kategori til finalespørgsmålet, og et rigtigt svar giver sejren.
+- Har du alle seks stjerner, går du tilbage til ♛ og tager et **finalekort**: 6 spørgsmål i fast rækkefølge (blå, pink, gul, lilla, grøn, orange).
+- Du skal have **x rigtige ud af 6** (standard 4, kan ændres i Menu mellem finalekort). Kortet stopper, når du har nok, eller når det ikke kan nås længere – så går turen videre, og du prøver igen næste tur.
+- Klarer du finalen, spilles runden færdig. Klarer en anden også finalen i samme runde, er der omspil mellem jer.
 
 ## Spørgsmål
 - **Spørgsmål i appen:** Der følger ca. 200 danske spørgsmål med. Appen husker, hvilke der er brugt.

@@ -38,7 +38,7 @@ const store = {
 };
 const K_GAME = 'sj_game', K_SET = 'sj_settings', K_SEEN = 'sj_seen', K_IMP = 'sj_imported';
 
-let settings = store.get(K_SET, { source: 'app', names: ['Spiller 1', 'Spiller 2'] });
+let settings = Object.assign({ source: 'app', names: ['Spiller 1', 'Spiller 2'], need: 4 }, store.get(K_SET, {}));
 let S = null;          // spiltilstand
 let undoStack = [];
 let busy = false;
@@ -112,6 +112,9 @@ function startGame() {
     players: names.map((name, i) => ({ name, color: PCOL[i], pos: 0, stars: [false, false, false, false, false, false] })),
     current: 0, phase: 'roll', roll: null, targets: [], q: null, pickFor: null,
     msg: `Velkommen! ${names[0]} starter.`, winner: null,
+    need: settings.need || 4,   // antal rigtige ud af 6 i finalen
+    pending: [],                // spillere der har klaret finalen i denne runde
+    tie: null,                  // omspil: { players:[...], pos, reached:[] }
   };
   undoStack = []; save(); showGame();
 }
@@ -225,7 +228,7 @@ function render() {
   $('#players').innerHTML = S.players.map((pl, i) => `
     <div class="pcard${i === S.current ? ' cur' : ''}">
       <svg class="tok" viewBox="-26 -26 52 52">${tokenSVG(pl)}</svg>
-      <div style="flex:1;min-width:0"><div class="nm">${esc(pl.name)}</div>
+      <div style="flex:1;min-width:0"><div class="nm">${esc(pl.name)}${(S.pending || []).includes(i) || (S.tie && S.tie.reached.includes(i)) ? ' <span class="badge ok">✓ klaret</span>' : inFinal(pl) ? ' <span class="badge">♛ finale</span>' : ''}</div>
       <div class="stars">${CATS.map((c, k) => `<span class="${pl.stars[k] ? 'got' : ''}" style="--c:${c.color}" title="${c.name}">★</span>`).join('')}</div></div>
     </div>`).join('');
   $('#undoBtn').disabled = busy || !undoStack.length;
@@ -280,8 +283,8 @@ function land() {
   const p = cur(), f = FIELDS[p.pos];
   if (f.type === 'again') { S.phase = 'roll'; S.msg = 'Slå igen!'; }
   else if (f.type === 'crown') {
-    S.phase = 'pick';
-    S.pickFor = hasAll(p) ? 'final' : 'joker';
+    if (hasAll(p)) startFinal(`${p.name} er nået til kronen – finalen begynder!`);
+    else { S.phase = 'pick'; S.pickFor = 'joker'; }
   }
   else if (f.type === 'star') ask(f.cat, p.stars[f.cat] ? 'normal' : 'star');
   else ask(f.cat, 'normal');
@@ -301,22 +304,85 @@ function answer(correct) {
   if (!S.q) return;
   snapshot();
   const p = cur(), q = S.q; S.q = null;
+  if (q.kind === 'final') return answerFinal(q, correct);
   if (correct) {
-    if (q.kind === 'final') {
-      S.winner = S.current; S.phase = 'over'; S.msg = `${p.name} har vundet!`;
-      save(); render(); showPhaseModal(); return;
-    }
     if (q.kind === 'star') {
       p.stars[q.cat] = true;
       S.msg = hasAll(p) ? `★ Alle seks stjerner! Gå mod kronen ♛ for at vinde.` : `Rigtigt! ★ ${CATS[q.cat].name}-stjernen er i hus. Slå igen.`;
     } else S.msg = 'Rigtigt! Slå igen.';
     S.phase = 'roll';
   } else {
-    S.current = (S.current + 1) % S.players.length;
-    S.phase = 'roll';
-    S.msg = `Forkert. Turen går til ${cur().name}.`;
+    S.msg = 'Forkert.';
+    S.roll = null; closeModal(); return nextTurn();
   }
   S.roll = null; save(); closeModal(); render();
+}
+
+/* ---------- Finalen ----------
+   Et finalekort = 6 spørgsmål i fast rækkefølge (blå, pink, gul, lilla, grøn, orange).
+   Kortet stopper, så snart man har S.need rigtige, eller når det ikke længere kan nås.
+   Én tur = ét finalekort. Når nogen klarer finalen, spilles runden færdig
+   (til turen når spiller 1 igen). Klarer flere den i samme runde, er der omspil mellem dem. */
+const inFinal = p => hasAll(p) && p.pos === 0;
+function startFinal(msg) {
+  S.q = { cat: 0, kind: 'final', step: 0, res: [], source: settings.source, revealed: false, item: null, note: '' };
+  if (S.q.source === 'app') loadAppQuestion();
+  S.phase = 'question'; S.roll = null; S.msg = msg || '';
+}
+function answerFinal(q, correct) {
+  const p = cur();
+  q.res.push(!!correct);
+  const right = q.res.filter(Boolean).length, left = 6 - q.res.length;
+  if (right >= S.need) {
+    if (S.tie) S.tie.reached.push(S.current); else S.pending.push(S.current);
+    S.msg = `${p.name} klarede finalen med ${right} rigtige!`;
+    closeModal(); return nextTurn();
+  }
+  if (right + left < S.need) {
+    S.msg = `${p.name} nåede ikke ${S.need} rigtige i finalen (${right} af ${q.res.length}). Prøv igen næste tur.`;
+    closeModal(); return nextTurn();
+  }
+  q.step++; q.cat = q.step; q.revealed = false; q.item = null; q.note = '';
+  if (q.source === 'app') { S.q = q; loadAppQuestion(); }
+  S.q = q; save(); render(); showQuestion();
+}
+function nextTurn() {
+  const n = S.players.length;
+  S.q = null; S.roll = null; S.targets = [];
+  if (S.tie) {                                   // omspil
+    S.tie.pos++;
+    if (S.tie.pos < S.tie.players.length) S.current = S.tie.players[S.tie.pos];
+    else {
+      const r = S.tie.reached;
+      if (r.length === 1) return declareWinner(r[0]);
+      const again = r.length ? r : S.tie.players;
+      S.tie = { players: again, pos: 0, reached: [] };
+      S.current = again[0];
+      S.msg += ` Nyt omspil mellem ${again.map(i => S.players[i].name).join(' og ')}.`;
+    }
+    startFinal(S.msg); save(); render(); showQuestion(); return;
+  }
+  let nxt = (S.current + 1) % n;
+  // spillere der allerede har klaret finalen springes over, mens runden spilles færdig
+  while (nxt !== 0 && S.pending.includes(nxt)) nxt = (nxt + 1) % n;
+  if (S.pending.length && nxt === 0) {           // runden er slut
+    if (S.pending.length === 1) return declareWinner(S.pending[0]);
+    const tied = S.pending.slice(); S.pending = [];
+    S.tie = { players: tied, pos: 0, reached: [] };
+    S.current = tied[0];
+    startFinal(`Uafgjort! ${tied.map(i => S.players[i].name).join(' og ')} klarede finalen i samme runde – omspil.`);
+    save(); render(); showQuestion(); return;
+  }
+  S.current = nxt;
+  const p = cur();
+  S.msg = (S.msg ? S.msg + ' ' : '') + `Turen går til ${p.name}.`;
+  if (inFinal(p)) { startFinal(S.msg); save(); render(); showQuestion(); return; }
+  S.phase = 'roll'; save(); render();
+}
+function declareWinner(i) {
+  S.winner = i; S.phase = 'over'; S.q = null; S.tie = null; S.pending = [];
+  S.msg = `${S.players[i].name} har vundet!`;
+  save(); render(); showWin();
 }
 
 /* =========================================================
@@ -331,7 +397,7 @@ function showPhaseModal() {
   if (S.phase === 'over') return showWin();
 }
 function showPick() {
-  const p = cur(), fin = S.pickFor === 'final';
+  const p = cur(), fin = false;
   openModal(`<div class="qbody">
     <div class="mtitle">${fin ? '♛ Finalen!' : '♛ Kronefeltet'}</div>
     <div class="mtext">${fin
@@ -345,7 +411,14 @@ function showPick() {
 }
 function showQuestion() {
   const q = S.q, c = CATS[q.cat], p = cur();
-  const tag = q.kind === 'final' ? '♛ Finalespørgsmål' : q.kind === 'star' ? '★ Stjernespørgsmål' : '';
+  const fin = q.kind === 'final';
+  const tag = fin ? `♛ Finale ${q.step + 1}/6` : q.kind === 'star' ? '★ Stjernespørgsmål' : '';
+  let prog = '';
+  if (fin) {
+    const right = q.res.filter(Boolean).length;
+    prog = `<div class="fprog">${CATS.map((cc, k) => `<span class="${k === q.step ? 'now' : ''}" style="background:${cc.color}">${k < q.res.length ? (q.res[k] ? '✓' : '✗') : ''}</span>`).join('')}
+      <b>${right} rigtige · skal bruge ${S.need}</b></div>`;
+  }
   let body;
   if (q.source === 'app') {
     body = `<div class="qtext">${esc(q.item.q)}</div>
@@ -357,12 +430,15 @@ function showQuestion() {
       ${q.revealed ? '' : '<button class="btn link" id="skipBtn">Nyt spørgsmål</button>'}</div>`;
   } else {
     body = `${q.note ? `<div class="mtext">${esc(q.note)}</div>` : ''}
-      <div class="qcard">Tag et kort og læs <b>${catSw(q.cat)}${c.name}</b>-spørgsmålet (${c.word}) op for <b>${esc(p.name)}</b>.</div>
+      <div class="qcard">${fin
+        ? (q.step === 0 ? 'Tag <b>ét kort</b> til hele finalen og læs spørgsmålene i rækkefølge. ' : 'Samme kort: ')
+          + `læs <b>${catSw(q.cat)}${c.name}</b>-spørgsmålet (${c.word}) op for <b>${esc(p.name)}</b>.`
+        : `Tag et kort og læs <b>${catSw(q.cat)}${c.name}</b>-spørgsmålet (${c.word}) op for <b>${esc(p.name)}</b>.`}</div>
       <div class="qbtns"><button class="btn bad" id="noBtn">✗ Forkert</button><button class="btn ok" id="yesBtn">✓ Rigtigt</button></div>
       <div class="row center"><button class="btn link" id="swBtn">Brug app-spørgsmål i stedet</button></div>`;
   }
   openModal(`<div class="qhead" style="background:${c.color}">${c.name}<span class="tag">${esc(p.name)}${tag ? ' · ' + tag : ''}</span></div>
-    <div class="qbody">${body}</div>`);
+    <div class="qbody">${prog}${body}</div>`);
   const on = (id, fn) => { const e = document.getElementById(id); if (e) e.onclick = fn; };
   on('revBtn', () => { S.q.revealed = true; save(); showQuestion(); });
   on('yesBtn', () => answer(true));
@@ -378,7 +454,7 @@ function showWin() {
   openModal(`<div class="win">
     <div class="big-star">★</div>
     <div class="mtitle">${esc(p.name)} har vundet!</div>
-    <p class="mtext" style="margin:10px 0 24px">Alle seks stjerner og det rigtige svar på finalespørgsmålet.</p>
+    <p class="mtext" style="margin:10px 0 24px">Alle seks stjerner og ${S.need} rigtige i finalen.</p>
     <div class="row center"><button class="btn primary big" id="againBtn">Nyt spil, samme spillere</button><button class="btn big" id="toMenu">Til menu</button></div>
   </div>`);
   $('#againBtn').onclick = () => { closeModal(); startGame(); };
@@ -390,10 +466,17 @@ function showMenu() {
     <div class="mtext">Spørgsmålskilde for resten af spillet:</div>
     <div class="row"><button class="btn ${settings.source === 'app' ? 'primary' : ''}" data-src="app">Spørgsmål i appen</button>
     <button class="btn ${settings.source === 'card' ? 'primary' : ''}" data-src="card">Fysiske kort</button></div>
+    <div class="mtext">Rigtige svar for at klare finalen (ud af 6):</div>
+    <div class="row">${[1, 2, 3, 4, 5, 6].map(n => `<button class="btn ${S.need === n ? 'primary' : ''}" data-need="${n}" ${S.q && S.q.kind === 'final' ? 'disabled' : ''}>${n}</button>`).join('')}</div>
+    ${S.q && S.q.kind === 'final' ? '<div class="hint">Kan ikke ændres midt i et finalekort.</div>' : ''}
     <div class="row"><button class="btn" id="mFs">Fuld skærm</button><button class="btn" id="mSetup">Afslut til startskærm (spillet gemmes)</button></div>
     <div class="row"><button class="btn primary big" id="mClose">Tilbage til spillet</button></div>
   </div>`);
   document.querySelectorAll('#mbox [data-src]').forEach(b => b.onclick = () => { settings.source = b.dataset.src; store.set(K_SET, settings); showMenu(); });
+  document.querySelectorAll('#mbox [data-need]').forEach(b => b.onclick = () => {
+    if (S.q && S.q.kind === 'final') return;
+    snapshot(); S.need = +b.dataset.need; settings.need = S.need; store.set(K_SET, settings); save(); render(); showMenu();
+  });
   $('#mFs').onclick = goFullscreen;
   $('#mSetup').onclick = showSetup;
   $('#mClose').onclick = () => { closeModal(); if (S.phase !== 'roll' && S.phase !== 'move') showPhaseModal(); };
@@ -402,7 +485,7 @@ function showRules() {
   openModal(`<div class="qbody rules">
     <div class="mtitle">Regler</div>
     <h3>Mål</h3>
-    <p>Saml en stjerne i hver af de seks kategorier, kom tilbage til kronefeltet ♛ og svar rigtigt på finalespørgsmålet.</p>
+    <p>Saml en stjerne i hver af de seks kategorier, kom tilbage til kronefeltet ♛ og klar finalen.</p>
     <h3>Kategorier</h3>
     <ul>${CATS.map((c, i) => `<li>${catSw(i)}<b>${c.name}</b> (${c.word})</li>`).join('')}</ul>
     <h3>En tur</h3>
@@ -417,7 +500,11 @@ function showRules() {
     <h3>Finalen</h3>
     <ul>
       <li>Når du har alle seks stjerner, går du mod kronen. Du må stoppe på kronen, hvis dit slag er mindst lige så stort som afstanden.</li>
-      <li>Modspillerne vælger kategorien. Rigtigt svar = sejr. Forkert svar = turen går videre, og du må prøve at komme tilbage.</li>
+      <li>På kronen tager du et <b>finalekort</b>: 6 spørgsmål i fast rækkefølge – blå, pink, gul, lilla, grøn, orange.</li>
+      <li>Du skal have <b>${S ? S.need : settings.need} rigtige ud af 6</b> (kan ændres i Menu mellem finalekort, hvis I er enige).</li>
+      <li>Kortet stopper, så snart du har nok rigtige – eller når det ikke længere kan nås. Så går turen videre, og du bliver stående på kronen og tager et nyt finalekort næste tur.</li>
+      <li>De andre spiller videre som normalt imens.</li>
+      <li>Klarer du finalen, spilles runden færdig (til turen når første spiller igen). Klarer en anden også finalen i samme runde, er det uafgjort, og I to tager omspil: hver sit nye finalekort, indtil kun én klarer det.</li>
     </ul>
     <h3>Spørgsmål</h3>
     <ul>
@@ -503,7 +590,12 @@ function init() {
     if (saved && saved.phase !== 'over' && !confirm('Starte et nyt spil? Det gemte spil overskrives.')) return;
     startGame();
   };
-  $('#resumeBtn').onclick = () => { S = store.get(K_GAME, null); undoStack = []; if (S) showGame(); };
+  $('#resumeBtn').onclick = () => {
+    S = store.get(K_GAME, null); undoStack = [];
+    if (!S) return;
+    S.need = S.need || settings.need || 4; S.pending = S.pending || []; S.tie = S.tie || null;
+    showGame();
+  };
   $('#rulesBtn').onclick = showRules; $('#rules2Btn').onclick = showRules;
   $('#fsBtn').onclick = goFullscreen;
   $('#menuBtn').onclick = showMenu;
