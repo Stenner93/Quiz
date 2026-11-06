@@ -308,8 +308,12 @@ function answer(correct) {
   if (q.kind === 'final') return answerFinal(q, correct);
   if (correct) {
     if (q.kind === 'star') {
+      // Husregel: når man vinder en stjerne, går turen videre.
       p.stars[q.cat] = true;
-      S.msg = hasAll(p) ? `★ Alle seks stjerner! Gå mod kronen ♛ for at vinde.` : `Rigtigt! ★ ${CATS[q.cat].name}-stjernen er i hus. Slå igen.`;
+      S.msg = hasAll(p)
+        ? `★ ${p.name} har alle seks stjerner! Næste tur går mod kronen ♛.`
+        : `Rigtigt! ★ ${p.name} vandt ${CATS[q.cat].name}-stjernen.`;
+      S.roll = null; closeModal(); return nextTurn();
     } else S.msg = 'Rigtigt! Slå igen.';
     S.phase = 'roll';
   } else {
@@ -494,7 +498,7 @@ function showRules() {
       <li>Alle starter på kronefeltet ♛ øverst.</li>
       <li>Slå med terningen (i appen, eller med en rigtig terning og tryk på tallet). Ryk præcis det antal felter – med eller mod uret. Tryk på det lysende felt.</li>
       <li>Du får et spørgsmål i feltets farve. Svarer du <b>rigtigt</b>, slår du igen. Svarer du <b>forkert</b>, går turen videre.</li>
-      <li><b>★ Stjernefelter</b> (de store felter): svar rigtigt og få kategoriens stjerne.</li>
+      <li><b>★ Stjernefelter</b> (de store felter): svar rigtigt og få kategoriens stjerne. <b>Husregel:</b> når du vinder en stjerne, går turen videre til næste spiller.</li>
       <li><b>↻ Slå igen</b>: slå en gang til.</li>
       <li><b>♛ Kronefeltet</b>: vælg selv kategori.</li>
     </ul>

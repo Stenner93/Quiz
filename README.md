@@ -17,7 +17,7 @@ Alle spiller på den samme tablet og sender den rundt.
 ## Sådan spiller man
 - Alle starter på kronefeltet ♛. Slå med terningen, og ryk med eller mod uret.
 - Svar rigtigt, og du slår igen. Svar forkert, og turen går videre.
-- Svar rigtigt på et **★ stjernefelt** for at få kategoriens stjerne.
+- Svar rigtigt på et **★ stjernefelt** for at få kategoriens stjerne. Husregel: når du vinder en stjerne, går turen videre.
 - **↻** betyder "slå igen". På **♛** vælger du selv kategori.
 - Har du alle seks stjerner, går du tilbage til ♛ og tager et **finalekort**: 6 spørgsmål i fast rækkefølge (blå, pink, gul, lilla, grøn, orange).
 - Du skal have **x rigtige ud af 6** (standard 4, kan ændres i Menu mellem finalekort). Kortet stopper, når du har nok, eller når det ikke kan nås længere – så går turen videre, og du prøver igen næste tur.

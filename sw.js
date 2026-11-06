@@ -1,5 +1,5 @@
 // Offline-cache. Hæv versionen, når filerne ændres.
-const CACHE = 'stjernejagt-v3';
+const CACHE = 'stjernejagt-v4';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'questions.js', 'questions_opentdb.js', 'manifest.webmanifest',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
