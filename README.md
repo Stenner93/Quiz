@@ -35,7 +35,7 @@ Ud over almen viden kan man på forsiden vælge et tema. Hvert tema har sine egn
 og hvert spørgsmål er mærket let, middel eller svær:
 - **Cykelsport** (403 spørgsmål) – med vægt på 2020–2026 og en historie-kategori
 - **Besættelsen** (401) – Danmark 1940–45 og krigen i verden
-- **Politik** (400) – halvt dansk, halvt international politik
+- **Politik** (619) – halvt dansk, halvt international politik
 - **Den kolde krig** (400) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
 - **Odense** (568) – historie, H.C. Andersen og Carl Nielsen, bydele, kultur, sport og nutidens Odense
 - **Dansk geografi** (690) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
