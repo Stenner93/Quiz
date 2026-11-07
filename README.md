@@ -30,6 +30,15 @@ Alle spiller på den samme tablet og sender den rundt.
 - **Importér egne spørgsmål** fra en CSV-fil (fx fra Excel/Google Sheets) med kolonnerne `kategori;spørgsmål;svar`.
   Kategori kan skrives som navn (`historie`), farve (`gul`) eller tal 1–6. Se `eksempel-spoergsmaal.csv`.
 
+## Temaer
+Ud over almen viden kan man på forsiden vælge et tema. Hvert tema har sine egne 3–6 kategorier i de kendte farver,
+og hvert spørgsmål er mærket let, middel eller svær:
+- **Cykelsport** (180 spørgsmål) – med vægt på 2020–2026
+- **Besættelsen** (161) – Danmark 1940–45 og krigen i verden
+- **Politik** (161) – halvt dansk, halvt international politik
+
+Temaerne ligger i `themes/` og bygger på Wikipedia og Lex.dk. Fysiske kort kan kun bruges med almen viden.
+
 ## Andet
 - Spillet gemmes automatisk og kan fortsættes, hvis appen lukkes.
 - **↶ Fortryd** hvis nogen trykkede forkert.

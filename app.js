@@ -3,7 +3,7 @@
    Stjernejagt – quiz-brætspil
    ========================================================= */
 
-const CATS = [
+const CATS_ALM = [
   { name: 'Geografi',            color: '#2f7fe0', word: 'blå' },
   { name: 'Underholdning',       color: '#e0407f', word: 'pink' },
   { name: 'Historie',            color: '#f2c230', word: 'gul' },
@@ -11,24 +11,40 @@ const CATS = [
   { name: 'Naturvidenskab',      color: '#2fa35a', word: 'grøn' },
   { name: 'Sport & fritid',      color: '#f0882e', word: 'orange' },
 ];
+const PALETTE = CATS_ALM.map(c => ({ color: c.color, word: c.word }));
+let THEME = 'alm', CATS = CATS_ALM, NC = 6;   // aktivt tema og antal kategorier
 const PCOL = ['#ffffff', '#222a38', '#e5484d', '#19b5a5', '#9a6a2f', '#9aa6b8'];
 const MAXP = 6;
 
 /* ---------- Brættet: en ring med 48 felter ---------- */
 const N = 48;
-const STAR_AT = { 4: 0, 12: 1, 20: 2, 28: 3, 36: 4, 44: 5 }; // stjernefelter
-const AGAIN = [8, 16, 24, 32, 40];                          // slå igen
-const PERM = [0, 3, 1, 4, 2, 5];
-const FIELDS = (() => {
+// Brættet bygges ud fra antallet af kategorier (3–6): stjernefelter fordeles jævnt,
+// "slå igen" ligger midt imellem, og resten af felterne får kategorifarver på skift.
+const PERMS = { 3: [0, 1, 2], 4: [0, 2, 1, 3], 5: [0, 2, 4, 1, 3], 6: [0, 3, 1, 4, 2, 5] };
+function buildFields(n) {
+  const star = {}, again = new Set();
+  for (let k = 0; k < n; k++) star[Math.round((k + 0.5) * N / n)] = k;
+  for (let k = 0; k < n - 1; k++) again.add(Math.round((k + 1) * N / n));
   const f = []; let k = 0;
   for (let i = 0; i < N; i++) {
     if (i === 0) f.push({ type: 'crown' });
-    else if (i in STAR_AT) f.push({ type: 'star', cat: STAR_AT[i] });
-    else if (AGAIN.includes(i)) f.push({ type: 'again' });
-    else { f.push({ type: 'cat', cat: PERM[k % 6] }); k++; }
+    else if (i in star) f.push({ type: 'star', cat: star[i] });
+    else if (again.has(i)) f.push({ type: 'again' });
+    else { f.push({ type: 'cat', cat: PERMS[n][k % n] }); k++; }
   }
   return f;
-})();
+}
+let FIELDS = buildFields(6);
+const themeList = () => [{ id: 'alm', name: 'Almen viden', desc: 'De klassiske seks kategorier – med app-spørgsmål eller jeres egne kort.', cats: CATS_ALM.map(c => c.name) }]
+  .concat((window.THEMES || []).map(t => ({ id: t.id, name: t.name, desc: t.desc, cats: t.cats })));
+function applyTheme(id) {
+  const t = (window.THEMES || []).find(x => x.id === id);
+  THEME = t ? id : 'alm';
+  CATS = t ? t.cats.map((name, i) => ({ name, color: PALETTE[i].color, word: PALETTE[i].word })) : CATS_ALM;
+  NC = CATS.length;
+  FIELDS = buildFields(NC);
+}
+const defaultNeed = n => ({ 3: 2, 4: 3, 5: 3, 6: 4 })[n];
 
 /* ---------- Lager ---------- */
 const store = {
@@ -38,13 +54,17 @@ const store = {
 };
 const K_GAME = 'sj_game', K_SET = 'sj_settings', K_SEEN = 'sj_seen', K_IMP = 'sj_imported';
 
-let settings = Object.assign({ source: 'app', names: ['Spiller 1', 'Spiller 2'], need: 4 }, store.get(K_SET, {}));
+let settings = Object.assign({ source: 'app', names: ['Spiller 1', 'Spiller 2'], need: 4, theme: 'alm' }, store.get(K_SET, {}));
 let S = null;          // spiltilstand
 let undoStack = [];
 let busy = false;
 
 /* ---------- Spørgsmål ---------- */
 function allQuestions() {
+  if (THEME !== 'alm') {
+    const t = window.THEMES.find(x => x.id === THEME);
+    return t.questions.map((q, i) => ({ id: THEME + ':' + i, c: q[0], q: q[1], a: q[2], d: q[3] }));
+  }
   const b = (window.BUILTIN_QUESTIONS || []).map((q, i) => ({ id: 'b' + i, c: q[0], q: q[1], a: q[2] }))
     .concat((window.OPENTDB_QUESTIONS || []).map((q, i) => ({ id: 'o' + q[3], c: q[0], q: q[1], a: q[2] })));
   const imp = store.get(K_IMP, []).map((q, i) => ({ id: 'i' + i + '_' + hash(q.q), c: q.c, q: q.q, a: q.a }));
@@ -96,6 +116,12 @@ function renderSetup() {
     pl.appendChild(row);
   });
   $('#addP').disabled = settings.names.length >= MAXP;
+  applyTheme(settings.theme);
+  $('#themeList').innerHTML = themeList().map(t => `<button class="theme ${t.id === THEME ? 'on' : ''}" data-theme="${t.id}">
+      <b>${esc(t.name)}</b><span>${esc(t.desc)}</span>
+      <span class="tcats">${t.cats.map((c, i) => `<span class="tc"><i style="background:${PALETTE[i].color}"></i>${esc(c)}</span>`).join(' ')}</span></button>`).join('');
+  document.querySelectorAll('#themeList .theme').forEach(b => b.onclick = () => { settings.theme = b.dataset.theme; store.set(K_SET, settings); renderSetup(); });
+  $('#srcCard').classList.toggle('hidden', THEME !== 'alm');
   document.querySelectorAll('#srcSeg button').forEach(b => b.classList.toggle('on', b.dataset.src === settings.source));
   $('#srcHint').textContent = settings.source === 'app'
     ? 'Appen viser spørgsmål og svar. Du kan altid skifte til et fysisk kort undervejs.'
@@ -103,17 +129,20 @@ function renderSetup() {
   const all = allQuestions(), imp = store.get(K_IMP, []).length;
   const counts = CATS.map((c, i) => `${c.name}: ${all.filter(q => q.c === i).length}`).join(' · ');
   $('#qinfo').textContent = `${all.length} spørgsmål i appen (${imp} importerede). ${counts}`;
+  $('#tinfo').textContent = THEME === 'alm' ? '' : `${all.length} spørgsmål. ${counts}. Finalen: ${NC} spørgsmål – ét i hver kategori.`;
   const saved = store.get(K_GAME, null);
   $('#resumeBox').classList.toggle('hidden', !(saved && saved.phase !== 'over'));
 }
 
 function startGame() {
   const names = settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
+  applyTheme(settings.theme);
   S = {
-    players: names.map((name, i) => ({ name, color: PCOL[i], pos: 0, stars: [false, false, false, false, false, false] })),
+    theme: THEME,
+    players: names.map((name, i) => ({ name, color: PCOL[i], pos: 0, stars: Array(NC).fill(false) })),
     current: 0, phase: 'roll', roll: null, targets: [], q: null, pickFor: null,
     msg: `Velkommen! ${names[0]} starter.`, winner: null,
-    need: settings.need || 4,   // antal rigtige ud af 6 i finalen
+    need: THEME === 'alm' ? (settings.need || 4) : defaultNeed(NC),   // antal rigtige i finalen
     pending: [],                // spillere der har klaret finalen i denne runde
     tie: null,                  // omspil: { players:[...], pos, reached:[] }
   };
@@ -121,6 +150,7 @@ function startGame() {
 }
 
 function showGame() {
+  applyTheme(S.theme || 'alm');
   $('#setup').classList.add('hidden'); $('#game').classList.remove('hidden');
   buildBoard(); render(); keepAwake();
   if (S.phase === 'question' || S.phase === 'pick' || S.phase === 'over') showPhaseModal();
@@ -292,13 +322,13 @@ function land() {
   save(); render(); showPhaseModal();
 }
 function ask(cat, kind) {
-  S.q = { cat, kind, source: settings.source, revealed: false, item: null, note: '' };
+  S.q = { cat, kind, source: THEME === 'alm' ? settings.source : 'app', revealed: false, item: null, note: '' };
   if (S.q.source === 'app') loadAppQuestion();
   S.phase = 'question';
 }
 function loadAppQuestion() {
   const q = pickQuestion(S.q.cat);
-  if (q) { S.q.source = 'app'; S.q.item = { q: q.q, a: q.a }; S.q.revealed = false; S.q.note = ''; }
+  if (q) { S.q.source = 'app'; S.q.item = { q: q.q, a: q.a, d: q.d }; S.q.revealed = false; S.q.note = ''; }
   else { S.q.source = 'card'; S.q.note = 'Der er ingen app-spørgsmål i denne kategori – brug et kort.'; }
 }
 function answer(correct) {
@@ -311,7 +341,7 @@ function answer(correct) {
       // Husregel: når man vinder en stjerne, går turen videre.
       p.stars[q.cat] = true;
       S.msg = hasAll(p)
-        ? `★ ${p.name} har alle seks stjerner! Næste tur går mod kronen ♛.`
+        ? `★ ${p.name} har alle ${NC} stjerner! Næste tur går mod kronen ♛.`
         : `Rigtigt! ★ ${p.name} vandt ${CATS[q.cat].name}-stjernen.`;
       S.roll = null; closeModal(); return nextTurn();
     } else S.msg = 'Rigtigt! Slå igen.';
@@ -324,20 +354,20 @@ function answer(correct) {
 }
 
 /* ---------- Finalen ----------
-   Et finalekort = 6 spørgsmål i fast rækkefølge (blå, pink, gul, lilla, grøn, orange).
+   Et finalekort = ét spørgsmål pr. kategori i fast rækkefølge (blå, pink, gul, lilla, grøn, orange).
    Kortet stopper, så snart man har S.need rigtige, eller når det ikke længere kan nås.
    Én tur = ét finalekort. Når nogen klarer finalen, spilles runden færdig
    (til turen når spiller 1 igen). Klarer flere den i samme runde, er der omspil mellem dem. */
 const inFinal = p => hasAll(p) && p.pos === 0;
 function startFinal(msg) {
-  S.q = { cat: 0, kind: 'final', step: 0, res: [], source: settings.source, revealed: false, item: null, note: '' };
+  S.q = { cat: 0, kind: 'final', step: 0, res: [], source: THEME === 'alm' ? settings.source : 'app', revealed: false, item: null, note: '' };
   if (S.q.source === 'app') loadAppQuestion();
   S.phase = 'question'; S.roll = null; S.msg = msg || '';
 }
 function answerFinal(q, correct) {
   const p = cur();
   q.res.push(!!correct);
-  const right = q.res.filter(Boolean).length, left = 6 - q.res.length;
+  const right = q.res.filter(Boolean).length, left = NC - q.res.length;
   if (right >= S.need) {
     if (S.tie) S.tie.reached.push(S.current); else S.pending.push(S.current);
     S.msg = `${p.name} klarede finalen med ${right} rigtige!`;
@@ -406,7 +436,7 @@ function showPick() {
   openModal(`<div class="qbody">
     <div class="mtitle">${fin ? '♛ Finalen!' : '♛ Kronefeltet'}</div>
     <div class="mtext">${fin
-      ? `<b>${esc(p.name)}</b> har alle seks stjerner. <b>Modspillerne</b> vælger kategorien til det afgørende spørgsmål.`
+      ? `<b>${esc(p.name)}</b> har alle stjerner. <b>Modspillerne</b> vælger kategorien til det afgørende spørgsmål.`
       : `<b>${esc(p.name)}</b> må selv vælge kategori.`}</div>
     <div class="catgrid">${CATS.map((c, i) => `<button data-c="${i}" style="background:${c.color}">${c.name}</button>`).join('')}</div>
   </div>`);
@@ -417,7 +447,7 @@ function showPick() {
 function showQuestion() {
   const q = S.q, c = CATS[q.cat], p = cur();
   const fin = q.kind === 'final';
-  const tag = fin ? `♛ Finale ${q.step + 1}/6` : q.kind === 'star' ? '★ Stjernespørgsmål' : '';
+  const tag = fin ? `♛ Finale ${q.step + 1}/${NC}` : q.kind === 'star' ? '★ Stjernespørgsmål' : '';
   let prog = '';
   if (fin) {
     const right = q.res.filter(Boolean).length;
@@ -426,12 +456,13 @@ function showQuestion() {
   }
   let body;
   if (q.source === 'app') {
-    body = `<div class="qtext">${esc(q.item.q)}</div>
+    const dl = q.item.d ? `<div class="diff d${q.item.d}">${['', 'Let', 'Middel', 'Svær'][q.item.d]}</div>` : '';
+    body = `${dl}<div class="qtext">${esc(q.item.q)}</div>
       ${q.revealed
         ? `<div class="qans"><b>Svar</b>${esc(q.item.a)}</div>
            <div class="qbtns"><button class="btn bad" id="noBtn">✗ Forkert</button><button class="btn ok" id="yesBtn">✓ Rigtigt</button></div>`
         : `<button class="btn primary big" id="revBtn">Vis svar</button>`}
-      <div class="row center"><button class="btn link" id="swBtn">Brug et fysisk kort i stedet</button>
+      <div class="row center">${THEME === 'alm' ? '<button class="btn link" id="swBtn">Brug et fysisk kort i stedet</button>' : ''}
       ${q.revealed ? '' : '<button class="btn link" id="skipBtn">Nyt spørgsmål</button>'}</div>`;
   } else {
     body = `${q.note ? `<div class="mtext">${esc(q.note)}</div>` : ''}
@@ -459,7 +490,7 @@ function showWin() {
   openModal(`<div class="win">
     <div class="big-star">★</div>
     <div class="mtitle">${esc(p.name)} har vundet!</div>
-    <p class="mtext" style="margin:10px 0 24px">Alle seks stjerner og ${S.need} rigtige i finalen.</p>
+    <p class="mtext" style="margin:10px 0 24px">Alle ${NC} stjerner og ${S.need} rigtige i finalen.</p>
     <div class="row center"><button class="btn primary big" id="againBtn">Nyt spil, samme spillere</button><button class="btn big" id="toMenu">Til menu</button></div>
   </div>`);
   $('#againBtn').onclick = () => { closeModal(); startGame(); };
@@ -468,11 +499,11 @@ function showWin() {
 function showMenu() {
   openModal(`<div class="qbody">
     <div class="mtitle">Menu</div>
-    <div class="mtext">Spørgsmålskilde for resten af spillet:</div>
+    ${THEME === 'alm' ? `<div class="mtext">Spørgsmålskilde for resten af spillet:</div>
     <div class="row"><button class="btn ${settings.source === 'app' ? 'primary' : ''}" data-src="app">Spørgsmål i appen</button>
-    <button class="btn ${settings.source === 'card' ? 'primary' : ''}" data-src="card">Fysiske kort</button></div>
-    <div class="mtext">Rigtige svar for at klare finalen (ud af 6):</div>
-    <div class="row">${[1, 2, 3, 4, 5, 6].map(n => `<button class="btn ${S.need === n ? 'primary' : ''}" data-need="${n}" ${S.q && S.q.kind === 'final' ? 'disabled' : ''}>${n}</button>`).join('')}</div>
+    <button class="btn ${settings.source === 'card' ? 'primary' : ''}" data-src="card">Fysiske kort</button></div>` : `<div class="mtext">Tema: <b>${esc(themeList().find(t => t.id === THEME).name)}</b></div>`}
+    <div class="mtext">Rigtige svar for at klare finalen (ud af ${NC}):</div>
+    <div class="row">${Array.from({ length: NC }, (_, i) => i + 1).map(n => `<button class="btn ${S.need === n ? 'primary' : ''}" data-need="${n}" ${S.q && S.q.kind === 'final' ? 'disabled' : ''}>${n}</button>`).join('')}</div>
     ${S.q && S.q.kind === 'final' ? '<div class="hint">Kan ikke ændres midt i et finalekort.</div>' : ''}
     <div class="row"><button class="btn" id="mFs">Fuld skærm</button><button class="btn" id="mSetup">Afslut til startskærm (spillet gemmes)</button></div>
     <div class="row"><button class="btn primary big" id="mClose">Tilbage til spillet</button></div>
@@ -480,7 +511,7 @@ function showMenu() {
   document.querySelectorAll('#mbox [data-src]').forEach(b => b.onclick = () => { settings.source = b.dataset.src; store.set(K_SET, settings); showMenu(); });
   document.querySelectorAll('#mbox [data-need]').forEach(b => b.onclick = () => {
     if (S.q && S.q.kind === 'final') return;
-    snapshot(); S.need = +b.dataset.need; settings.need = S.need; store.set(K_SET, settings); save(); render(); showMenu();
+    snapshot(); S.need = +b.dataset.need; if (THEME === 'alm') { settings.need = S.need; store.set(K_SET, settings); } save(); render(); showMenu();
   });
   $('#mFs').onclick = goFullscreen;
   $('#mSetup').onclick = showSetup;
@@ -490,7 +521,7 @@ function showRules() {
   openModal(`<div class="qbody rules">
     <div class="mtitle">Regler</div>
     <h3>Mål</h3>
-    <p>Saml en stjerne i hver af de seks kategorier, kom tilbage til kronefeltet ♛ og klar finalen.</p>
+    <p>Saml en stjerne i hver kategori, kom tilbage til kronefeltet ♛ og klar finalen.</p>
     <h3>Kategorier</h3>
     <ul>${CATS.map((c, i) => `<li>${catSw(i)}<b>${c.name}</b> (${c.word})</li>`).join('')}</ul>
     <h3>En tur</h3>
@@ -504,9 +535,9 @@ function showRules() {
     </ul>
     <h3>Finalen</h3>
     <ul>
-      <li>Når du har alle seks stjerner, går du mod kronen. Du må stoppe på kronen, hvis dit slag er mindst lige så stort som afstanden.</li>
-      <li>På kronen tager du et <b>finalekort</b>: 6 spørgsmål i fast rækkefølge – blå, pink, gul, lilla, grøn, orange.</li>
-      <li>Du skal have <b>${S ? S.need : settings.need} rigtige ud af 6</b> (kan ændres i Menu mellem finalekort, hvis I er enige).</li>
+      <li>Når du har alle stjerner, går du mod kronen. Du må stoppe på kronen, hvis dit slag er mindst lige så stort som afstanden.</li>
+      <li>På kronen tager du et <b>finalekort</b>: ét spørgsmål i hver kategori i fast farverækkefølge (${CATS.map(c => c.word).join(', ')}).</li>
+      <li>Du skal have <b>${S ? S.need : settings.need} rigtige ud af ${NC}</b> (kan ændres i Menu mellem finalekort, hvis I er enige).</li>
       <li>Kortet stopper, så snart du har nok rigtige – eller når det ikke længere kan nås. Så går turen videre, og du bliver stående på kronen og tager et nyt finalekort næste tur.</li>
       <li>De andre spiller videre som normalt imens.</li>
       <li>Klarer du finalen, spilles runden færdig (til turen når første spiller igen). Klarer en anden også finalen i samme runde, er det uafgjort, og I to tager omspil: hver sit nye finalekort, indtil kun én klarer det.</li>
