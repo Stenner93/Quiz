@@ -1,6 +1,6 @@
 // Offline-cache. Hæv versionen, når filerne ændres.
-const CACHE = 'stjernejagt-v11';
-const FILES = ['./', 'index.html', 'style.css', 'app.js', 'questions.js', 'questions_opentdb.js', 'themes/cykelsport.js', 'themes/besaettelsen.js', 'themes/politik.js', 'themes/koldkrig.js', 'themes/odense.js', 'themes/geografi.js', 'themes/klassisk.js', 'manifest.webmanifest',
+const CACHE = 'stjernejagt-v12';
+const FILES = ['./', 'index.html', 'style.css', 'app.js', 'questions.js', 'questions_opentdb.js', 'themes/cykelsport.js', 'themes/besaettelsen.js', 'themes/politik.js', 'themes/koldkrig.js', 'themes/odense.js', 'themes/geografi.js', 'themes/klassisk.js', 'themes/it.js', 'manifest.webmanifest',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => {

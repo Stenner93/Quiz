@@ -40,6 +40,7 @@ og hvert spørgsmål er mærket let, middel eller svær:
 - **Odense** (405) – historie, H.C. Andersen og Carl Nielsen, bydele, kultur, sport og nutidens Odense
 - **Dansk geografi** (405) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
 - **Klassisk musik** (403) – begynderniveau: komponister, kendte værker, orkestret, opera og ballet, begreber og dansk musik
+- **IT & tech** (403) – internettet, computere, software, tech-giganter, sikkerhed og AI samt dansk IT
 
 Temaerne ligger i `themes/` og bygger på Wikipedia og Lex.dk. Fysiske kort kan kun bruges med almen viden.
 
