@@ -227,7 +227,6 @@ window.THEMES.push({
   [3,"I hvilket Grand Tour-løb har Magnus Cort vundet flest etaper?","Vuelta a España",3],
   [3,"Hvilket etapeløb vandt Mattias Skjelmose i 2023?","Schweiz Rundt (Tour de Suisse)",3],
   [3,"Hvilken københavnsk bydel er Mattias Skjelmose vokset op i?","Amager",3],
-  [3,"Hvilken dansker vandt Flandern Rundt 2021, og hvilken by er han fra?","Kasper Asgreen fra Kolding",2],
   [3,"Hvilken dansk rytter blev U23-verdensmester i enkeltstart tre år i træk (2017–2019)?","Mikkel Bjerg",3],
   [3,"Hvilken tidligere banerytter og OL-mester blev landstræner for herrerne i 2025?","Michael Mørkøv",3],
   [3,"Hvilke to danskere vandt OL-guld i parløb (madison) på bane i Tokyo?","Lasse Norman Leth (tidl. Hansen) og Michael Mørkøv",3],

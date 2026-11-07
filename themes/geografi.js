@@ -146,7 +146,6 @@ window.THEMES.push({
   [1, 'Hvad er Falsters største by?', 'Nykøbing Falster', 2],
   [1, 'I hvilken by ligger Danmarks største regnskov (Randers Regnskov)?', 'Randers', 1],
   [1, 'Hvilken by på Fyn er færgeby til Ærø og kendt for sin havn og Valdemars Slot i nærheden?', 'Svendborg', 2],
-  [1, 'Hvilken by ligger ved Danmarks vestligste punkt?', 'Blåvand (Blåvandshuk)', 2],
   [1, 'Hvilken by var Danmarks hovedstad før København ifølge traditionen?', 'Roskilde', 2],
 
   // ---------- 2 LANDSKAB, HØJDER & ISTID ----------
@@ -371,7 +370,6 @@ window.THEMES.push({
   [5, 'Hvad er Færøernes højeste fjeld?', 'Slættaratindur (880 m)', 3],
   [5, 'Hvilket land ligger nærmest Færøerne?', 'Storbritannien (Shetlandsøerne, ca. 300 km)', 2],
   [5, 'Er Færøerne medlem af EU?', 'Nej – de har aldrig været med i EF/EU', 1],
-  [5, 'Hvornår fik Færøerne hjemmestyre?', '1948', 2],
   [5, 'Hvad er Færøernes vigtigste erhverv?', 'Fiskeri og fiskeindustri (bl.a. lakseopdræt)', 1],
   [5, 'Hvilket land er Danmarks eneste nabo på landjorden?', 'Tyskland', 1],
   [5, 'Hvor lang er den dansk-tyske grænse?', 'Ca. 68 km', 2],
@@ -380,7 +378,6 @@ window.THEMES.push({
   [5, 'Hvordan blev den nuværende dansk-tyske grænse fastlagt?', 'Ved folkeafstemninger i 1920 (efter Versaillestraktaten)', 2],
   [5, 'Hvordan stemte zone 2 med Flensborg ved afstemningen i 1920?', 'Flertal for Tyskland', 2],
   [5, 'Hvilken krig fik Danmark til at miste Slesvig og Holsten?', 'Krigen i 1864', 1],
-  [5, 'Hvilken å var grænse mellem Danmark og Tyskland 1864–1920?', 'Kongeåen', 2],
   [5, 'Hvad hedder området syd for grænsen med et dansk mindretal?', 'Sydslesvig', 2],
   [5, 'Hvor ligger Danmarks nordligste punkt?', 'Grenen ved Skagen (Skagen Odde)', 1],
   [5, 'Hvor ligger Danmarks sydligste punkt?', 'Gedser Odde', 1],
@@ -422,7 +419,6 @@ window.THEMES.push({
   [4, 'Hvilken motorvej forbinder København med Femern og Lolland?', 'Sydmotorvejen (E47)', 3],
   [4, 'Hvad hedder den kunstige ø i Storebælt, hvor Storebæltsforbindelsens bro og tunnel mødes?', 'Sprogø', 1],
   [4, 'Hvilken by i Tyskland lander Femern-forbindelsen ved?', 'Puttgarden på Femern', 2],
-  [5, 'Hvilket land er Danmarks nabo mod nord på den anden side af Skagerrak?', 'Norge', 1],
   [5, 'Hvilket hav ligger Færøerne i?', 'Atlanterhavet (Nordatlanten)', 1],
   [5, 'Hvad er det tyndest befolkede land i verden målt på befolkningstæthed?', 'Grønland', 2],
   [5, 'Hvor mange km er Grønland ca. fra nord til syd?', 'Ca. 2.700 km', 3],

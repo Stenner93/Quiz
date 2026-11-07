@@ -422,6 +422,5 @@ window.THEMES.push({
   [5, 'Hvad hedder den danske app, hvor man kan se sit kørekort og sundhedskort digitalt?', 'Kørekort-appen og Sundhedskortet (MitID-baserede apps)', 3],
   [5, 'Hvad er et "CPR-nummer"?', 'Det danske personnummer (10 cifre)', 1],
   [5, 'Hvornår blev CPR-registret indført i Danmark?', '1968', 2],
-  [5, 'Hvad er "Mit.dk"?', 'Den offentlige digitale postkasse (Digital Post)', 1],
   ],
 });
