@@ -36,7 +36,7 @@ og hvert spørgsmål er mærket let, middel eller svær:
 - **Cykelsport** (403 spørgsmål) – med vægt på 2020–2026 og en historie-kategori
 - **Besættelsen** (401) – Danmark 1940–45 og krigen i verden
 - **Politik** (619) – halvt dansk, halvt international politik
-- **Den kolde krig** (400) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
+- **Den kolde krig** (548) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
 - **Odense** (568) – historie, H.C. Andersen og Carl Nielsen, bydele, kultur, sport og nutidens Odense
 - **Dansk geografi** (690) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
 - **Klassisk musik** (467) – begynderniveau: komponister, kendte værker, orkestret, en hel operakategori, ballet, begreber og dansk musik
