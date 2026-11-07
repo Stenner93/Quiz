@@ -53,6 +53,7 @@ const store = {
   del(k) { try { localStorage.removeItem(k); } catch {} },
 };
 const K_GAME = 'sj_game', K_SET = 'sj_settings', K_SEEN = 'sj_seen', K_IMP = 'sj_imported';
+const K_FLAGS = 'sj_flags', K_HIDE = 'sj_hidden';   // rapporterede spørgsmål og skjulte spørgsmål
 
 let settings = Object.assign({ source: 'app', names: ['Spiller 1', 'Spiller 2'], need: 4, theme: 'alm' }, store.get(K_SET, {}));
 let S = null;          // spiltilstand
@@ -63,7 +64,7 @@ let busy = false;
 function allQuestions() {
   if (THEME !== 'alm') {
     const t = window.THEMES.find(x => x.id === THEME);
-    return t.questions.map((q, i) => ({ id: THEME + ':' + i, c: q[0], q: q[1], a: q[2], d: q[3] }));
+    return t.questions.map(q => ({ id: THEME + ':' + hash(q[1]), c: q[0], q: q[1], a: q[2], d: q[3] }));
   }
   const b = (window.BUILTIN_QUESTIONS || []).map((q, i) => ({ id: 'b' + i, c: q[0], q: q[1], a: q[2] }))
     .concat((window.OPENTDB_QUESTIONS || []).map((q, i) => ({ id: 'o' + q[3], c: q[0], q: q[1], a: q[2] })));
@@ -72,7 +73,8 @@ function allQuestions() {
 }
 function hash(s) { let h = 0; for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) | 0; return (h >>> 0).toString(36); }
 function pickQuestion(cat) {
-  const pool = allQuestions().filter(q => q.c === cat);
+  const hidden = store.get(K_HIDE, {});
+  const pool = allQuestions().filter(q => q.c === cat && !hidden[q.id]);
   if (!pool.length) return null;
   const seen = store.get(K_SEEN, {});
   let fresh = pool.filter(q => !seen[q.id]);
@@ -262,6 +264,7 @@ function render() {
       <div style="flex:1;min-width:0"><div class="nm">${esc(pl.name)}${(S.pending || []).includes(i) || (S.tie && S.tie.reached.includes(i)) ? ' <span class="badge ok">✓ klaret</span>' : inFinal(pl) ? ' <span class="badge">♛ finale</span>' : ''}</div>
       <div class="stars">${CATS.map((c, k) => `<span class="${pl.stars[k] ? 'got' : ''}" style="--c:${c.color}" title="${c.name}">★</span>`).join('')}</div></div>
     </div>`).join('');
+  $('#legend').innerHTML = CATS.map((c, k) => `<div class="lg"><i style="background:${c.color}"></i><span>${esc(c.name)}</span></div>`).join('');
   $('#undoBtn').disabled = busy || !undoStack.length;
   document.querySelectorAll('#manualBtns button').forEach(b => b.disabled = busy || S.phase !== 'roll');
 }
@@ -328,7 +331,7 @@ function ask(cat, kind) {
 }
 function loadAppQuestion() {
   const q = pickQuestion(S.q.cat);
-  if (q) { S.q.source = 'app'; S.q.item = { q: q.q, a: q.a, d: q.d }; S.q.revealed = false; S.q.note = ''; }
+  if (q) { S.q.source = 'app'; S.q.item = { id: q.id, q: q.q, a: q.a, d: q.d }; S.q.revealed = false; S.q.note = ''; }
   else { S.q.source = 'card'; S.q.note = 'Der er ingen app-spørgsmål i denne kategori – brug et kort.'; }
 }
 function answer(correct) {
@@ -463,7 +466,8 @@ function showQuestion() {
            <div class="qbtns"><button class="btn bad" id="noBtn">✗ Forkert</button><button class="btn ok" id="yesBtn">✓ Rigtigt</button></div>`
         : `<button class="btn primary big" id="revBtn">Vis svar</button>`}
       <div class="row center">${THEME === 'alm' ? '<button class="btn link" id="swBtn">Brug et fysisk kort i stedet</button>' : ''}
-      ${q.revealed ? '' : '<button class="btn link" id="skipBtn">Nyt spørgsmål</button>'}</div>`;
+      ${q.revealed ? '' : '<button class="btn link" id="skipBtn">Nyt spørgsmål</button>'}
+      <button class="btn link" id="flagBtn">⚑ Markér spørgsmålet</button></div>`;
   } else {
     body = `${q.note ? `<div class="mtext">${esc(q.note)}</div>` : ''}
       <div class="qcard">${fin
@@ -480,10 +484,96 @@ function showQuestion() {
   on('yesBtn', () => answer(true));
   on('noBtn', () => answer(false));
   on('skipBtn', () => { loadAppQuestion(); save(); showQuestion(); });
+  on('flagBtn', () => showFlagForm());
   on('swBtn', () => {
     if (S.q.source === 'app') { S.q.source = 'card'; S.q.note = ''; } else loadAppQuestion();
     save(); showQuestion();
   });
+}
+/* ---------- Rapportering af dårlige spørgsmål ----------
+   Rapporter gemmes lokalt (virker offline). Fejl-rapporter skjuler spørgsmålet med det samme.
+   Når der er net, kan de sendes samlet som et GitHub-issue i repoet, så de kan rettes for alle. */
+const FLAG_REASONS = [
+  ['wrong', 'Svaret er forkert', true],
+  ['bad', 'Uklart eller dårligt spørgsmål', true],
+  ['old', 'Forældet', true],
+  ['easy', 'Alt for nemt', false],
+  ['hard', 'Alt for svært', false],
+];
+const themeName = id => (themeList().find(t => t.id === id) || { name: id }).name;
+function showFlagForm() {
+  const it = S.q.item;
+  openModal(`<div class="qbody">
+    <div class="mtitle">⚑ Markér spørgsmål</div>
+    <div class="qans"><b>Spørgsmål</b>${esc(it.q)}<br><b style="margin-top:8px">Svar</b>${esc(it.a)}</div>
+    <div class="flagopts">${FLAG_REASONS.map(([k, t], i) => `<label><input type="radio" name="fr" value="${k}" ${i === 0 ? 'checked' : ''}> ${t}</label>`).join('')}</div>
+    <input id="flagNote" class="flagnote" placeholder="Kommentar – fx det rigtige svar (valgfrit)">
+    <p class="hint" style="color:#6b6250">"Forkert", "uklart" og "forældet" skjuler spørgsmålet fremover. Rapporten gemmes på tabletten og kan sendes, når der er net (Menu → Rapporter).</p>
+    <div class="row"><button class="btn primary" id="flagSave">Gem markering</button><button class="btn" id="flagCancel">Annullér</button></div>
+  </div>`);
+  $('#flagCancel').onclick = showQuestion;
+  $('#flagSave').onclick = () => {
+    const reason = document.querySelector('input[name="fr"]:checked').value;
+    const note = $('#flagNote').value.trim();
+    const flags = store.get(K_FLAGS, []);
+    flags.push({ id: it.id, theme: THEME, cat: CATS[S.q.cat].name, q: it.q, a: it.a, reason, note, ts: new Date().toISOString().slice(0, 16), sent: false });
+    store.set(K_FLAGS, flags);
+    const hides = FLAG_REASONS.find(r => r[0] === reason)[2];
+    if (hides) { const h = store.get(K_HIDE, {}); h[it.id] = 1; store.set(K_HIDE, h); }
+    // er spørgsmålet ikke besvaret endnu og skal skjules, får man et nyt i stedet
+    if (hides && !S.q.revealed) loadAppQuestion();
+    save(); showQuestion();
+  };
+}
+function reportText(list) {
+  const r = Object.fromEntries(FLAG_REASONS.map(([k, t]) => [k, t]));
+  return list.map(f => `- **${r[f.reason]}** · ${themeName(f.theme)} / ${f.cat} · \`${f.id}\`\n  - Spørgsmål: ${f.q}\n  - Svar: ${f.a}${f.note ? `\n  - Kommentar: ${f.note}` : ''}`).join('\n');
+}
+function showReports(back) {
+  const flags = store.get(K_FLAGS, []), unsent = flags.filter(f => !f.sent);
+  const online = navigator.onLine !== false;
+  openModal(`<div class="qbody">
+    <div class="mtitle">⚑ Rapporterede spørgsmål</div>
+    <div class="mtext">${flags.length} markeringer i alt – <b>${unsent.length} ikke sendt</b>.</div>
+    ${unsent.length ? `<div class="row">
+      <button class="btn primary" id="repGh" ${online ? '' : 'disabled'}>Send via GitHub</button>
+      <button class="btn" id="repCopy">Kopiér som tekst</button>
+      ${navigator.share ? '<button class="btn" id="repShare">Del…</button>' : ''}</div>
+      ${online ? '' : '<p class="hint" style="color:#6b6250">Ingen internetforbindelse – rapporterne bliver liggende, til der er net.</p>'}
+      <p class="hint" style="color:#6b6250">"Send via GitHub" åbner et udfyldt GitHub-issue i Quiz-repoet (kræver at du er logget ind på GitHub). Derfra kan spørgsmålene rettes for alle.</p>` : ''}
+    <div class="replist">${flags.slice().reverse().map((f, i) => `<div class="rep ${f.sent ? 'sent' : ''}">
+      <div><b>${esc(FLAG_REASONS.find(r => r[0] === f.reason)[1])}</b> · ${esc(themeName(f.theme))} / ${esc(f.cat)} ${f.sent ? '· sendt' : ''}</div>
+      <div>${esc(f.q)} <i>→ ${esc(f.a)}</i></div>${f.note ? `<div>💬 ${esc(f.note)}</div>` : ''}
+      <button class="btn link" data-undo="${flags.length - 1 - i}">Fortryd markering</button></div>`).join('') || '<p class="mtext">Ingen markeringer endnu.</p>'}</div>
+    <div class="row"><button class="btn primary big" id="repClose">Luk</button></div>
+  </div>`);
+  const markSent = list => { const all = store.get(K_FLAGS, []); list.forEach(f => { const x = all.find(y => y.ts === f.ts && y.id === f.id); if (x) x.sent = true; }); store.set(K_FLAGS, all); };
+  const on = (id, fn) => { const e = document.getElementById(id); if (e) e.onclick = fn; };
+  on('repGh', () => {
+    // GitHub-links må ikke blive for lange – send højst ca. 6000 tegn ad gangen
+    const batch = []; let len = 0;
+    for (const f of unsent) { const t = reportText([f]); if (batch.length && len + t.length > 6000) break; batch.push(f); len += t.length; }
+    const body = `Rapporteret fra Stjernejagt-appen (${batch.length} spørgsmål):\n\n${reportText(batch)}\n`;
+    const url = 'https://github.com/Stenner93/Quiz/issues/new?title=' + encodeURIComponent(`Spørgsmålsrapport: ${batch.length} markeringer`) + '&body=' + encodeURIComponent(body);
+    window.open(url, '_blank');
+    markSent(batch); showReports(back);
+  });
+  on('repCopy', async () => {
+    try { await navigator.clipboard.writeText(reportText(unsent)); markSent(unsent); alert('Kopieret – indsæt teksten, hvor du vil sende den.'); }
+    catch { alert('Kunne ikke kopiere automatisk.'); }
+    showReports(back);
+  });
+  on('repShare', async () => {
+    try { await navigator.share({ title: 'Spørgsmålsrapport', text: reportText(unsent) }); markSent(unsent); } catch {}
+    showReports(back);
+  });
+  document.querySelectorAll('#mbox [data-undo]').forEach(b => b.onclick = () => {
+    const all = store.get(K_FLAGS, []); const f = all.splice(+b.dataset.undo, 1)[0];
+    store.set(K_FLAGS, all);
+    if (f && !all.some(x => x.id === f.id)) { const h = store.get(K_HIDE, {}); delete h[f.id]; store.set(K_HIDE, h); }
+    showReports(back);
+  });
+  on('repClose', back);
 }
 function showWin() {
   const p = S.players[S.winner];
@@ -505,6 +595,7 @@ function showMenu() {
     <div class="mtext">Rigtige svar for at klare finalen (ud af ${NC}):</div>
     <div class="row">${Array.from({ length: NC }, (_, i) => i + 1).map(n => `<button class="btn ${S.need === n ? 'primary' : ''}" data-need="${n}" ${S.q && S.q.kind === 'final' ? 'disabled' : ''}>${n}</button>`).join('')}</div>
     ${S.q && S.q.kind === 'final' ? '<div class="hint">Kan ikke ændres midt i et finalekort.</div>' : ''}
+    <div class="row"><button class="btn" id="mRep">⚑ Rapporter (${store.get(K_FLAGS, []).filter(f => !f.sent).length} ikke sendt)</button></div>
     <div class="row"><button class="btn" id="mFs">Fuld skærm</button><button class="btn" id="mSetup">Afslut til startskærm (spillet gemmes)</button></div>
     <div class="row"><button class="btn primary big" id="mClose">Tilbage til spillet</button></div>
   </div>`);
@@ -514,6 +605,7 @@ function showMenu() {
     snapshot(); S.need = +b.dataset.need; if (THEME === 'alm') { settings.need = S.need; store.set(K_SET, settings); } save(); render(); showMenu();
   });
   $('#mFs').onclick = goFullscreen;
+  $('#mRep').onclick = () => showReports(showMenu);
   $('#mSetup').onclick = showSetup;
   $('#mClose').onclick = () => { closeModal(); if (S.phase !== 'roll' && S.phase !== 'move') showPhaseModal(); };
 }
@@ -635,6 +727,7 @@ function init() {
   };
   $('#rulesBtn').onclick = showRules; $('#rules2Btn').onclick = showRules;
   $('#fsBtn').onclick = goFullscreen;
+  $('#repBtn').onclick = () => showReports(() => { closeModal(); renderSetup(); });
   $('#menuBtn').onclick = showMenu;
   $('#undoBtn').onclick = undo;
   $('#importBtn').onclick = () => $('#importFile').click();

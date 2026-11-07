@@ -2,7 +2,7 @@
   --bg:#0f1a33; --bg2:#14223f; --card:#1b2c50; --line:#2c416d;
   --txt:#f5f1e6; --mut:#aab6cf; --gold:#e8c06a; --gold2:#b98d35;
   --ok:#22a55a; --bad:#d9443b;
-  --s:min(100dvh, calc(100vw - 340px));
+  --s:min(100dvh, calc(100vw - 420px));
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -50,7 +50,7 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 #game{height:100%;display:flex;align-items:center;justify-content:center;gap:0}
 #boardWrap{position:relative;width:var(--s);height:var(--s);flex:none}
 #board{width:100%;height:100%;display:block}
-#panel{width:330px;height:100%;max-height:100dvh;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+#panel{width:420px;height:100%;max-height:100dvh;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
 @media (orientation:portrait){
   :root{--s:min(100vw, calc(100dvh - 300px))}
   #game{flex-direction:column;justify-content:flex-start}
@@ -141,3 +141,20 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 .tcats i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
 .diff{align-self:flex-start;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;background:#e9e2cd;color:#5b533f}
 .diff.d1{background:#d8efd9;color:#1f5b27}.diff.d3{background:#f6d6d3;color:#7a231c}
+
+/* spillerliste + farveforklaring side om side */
+.side-top{display:flex;gap:10px;align-items:flex-start}
+.side-top #players{flex:1;min-width:0}
+#legend{flex:none;width:150px;background:var(--card);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:7px}
+#legend .lg{display:flex;align-items:center;gap:8px;font-size:14px;line-height:1.2}
+#legend .lg i{flex:none;width:16px;height:16px;border-radius:4px;border:1px solid rgba(0,0,0,.4)}
+.pcard{padding:8px 10px}
+.stars span{width:18px;height:18px;font-size:15px}
+@media (orientation:portrait){ #legend{width:190px} .side-top #players{max-width:340px} }
+/* rapportering */
+.flagopts{display:flex;flex-direction:column;gap:8px;font-size:18px}
+.flagopts input{transform:scale(1.3);margin-right:8px}
+.flagnote{width:100%;padding:12px;border-radius:10px;border:1px solid #d4cbb1;font:inherit;user-select:text;-webkit-user-select:text}
+.replist{display:flex;flex-direction:column;gap:10px;max-height:45vh;overflow-y:auto}
+.rep{background:#efe8d4;border-radius:12px;padding:10px 12px;font-size:15px}
+.rep.sent{opacity:.6}
