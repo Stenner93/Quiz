@@ -39,6 +39,7 @@ og hvert spørgsmål er mærket let, middel eller svær:
 - **Den kolde krig** (400) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
 - **Odense** (405) – historie, H.C. Andersen og Carl Nielsen, bydele, kultur, sport og nutidens Odense
 - **Dansk geografi** (405) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
+- **Klassisk musik** (403) – begynderniveau: komponister, kendte værker, orkestret, opera og ballet, begreber og dansk musik
 
 Temaerne ligger i `themes/` og bygger på Wikipedia og Lex.dk. Fysiske kort kan kun bruges med almen viden.
 
