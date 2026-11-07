@@ -36,6 +36,7 @@ og hvert spørgsmål er mærket let, middel eller svær:
 - **Cykelsport** (403 spørgsmål) – med vægt på 2020–2026 og en historie-kategori
 - **Besættelsen** (384) – Danmark 1940–45 og krigen i verden
 - **Politik** (400) – halvt dansk, halvt international politik
+- **Den kolde krig** (400) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
 
 Temaerne ligger i `themes/` og bygger på Wikipedia og Lex.dk. Fysiske kort kan kun bruges med almen viden.
 
