@@ -38,7 +38,7 @@ og hvert spørgsmål er mærket let, middel eller svær:
 - **Politik** (400) – halvt dansk, halvt international politik
 - **Den kolde krig** (400) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
 - **Odense** (405) – historie, H.C. Andersen og Carl Nielsen, bydele, kultur, sport og nutidens Odense
-- **Dansk geografi** (405) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
+- **Dansk geografi** (690) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
 - **Klassisk musik** (467) – begynderniveau: komponister, kendte værker, orkestret, en hel operakategori, ballet, begreber og dansk musik
 - **IT & tech** (403) – internettet, computere, software, tech-giganter, sikkerhed og AI samt dansk IT
 
