@@ -167,11 +167,11 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 #krRing{position:absolute;inset:0}
 .kitem{position:absolute;transform:translate(-50%,-50%);width:19%;height:19%;border-radius:50%;
   background:radial-gradient(circle at 35% 30%,#2c4677,#1b2c50);border:3px solid var(--gold2);color:var(--txt);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4%;text-align:center;
-  font-size:calc(var(--s)*.024);line-height:1.12;font-weight:700;overflow:visible;box-shadow:0 6px 14px rgba(0,0,0,.45)}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;text-align:center;
+  font-size:calc(var(--s)*.03);line-height:1.12;font-weight:700;overflow:visible;box-shadow:0 6px 14px rgba(0,0,0,.45)}
 .kitem:active{transform:translate(-50%,-50%) scale(.95)}
-.kitem .kt{display:flex;align-items:center;justify-content:center;width:86%;height:74%;overflow:hidden;overflow-wrap:normal;word-break:keep-all;hyphens:manual}
-.kitem.pic{padding:12%}
+.kitem .kt{display:block;width:82%;max-height:72%;overflow:hidden;text-align:center;overflow-wrap:normal;word-break:keep-all;hyphens:manual}
+.kitem.pic{padding:0}
 .kitem .shape{position:absolute;left:17%;top:17%;width:66%;height:66%;fill:var(--txt)}
 .kitem .kimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
 .kitem .ka{position:absolute;bottom:-12%;left:50%;transform:translateX(-50%);background:#fbf8ef;color:#1d1d1d;border-radius:999px;
@@ -215,3 +215,5 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 #krCenter .kkind{align-self:center;font-size:calc(var(--s)*.018);font-weight:800;padding:.2em .9em;border-radius:999px;background:#fff;color:#1d1d1d;text-transform:uppercase;letter-spacing:.05em}
 #krCenter .k-Sandtfalsk{background:#d8efd9}#krCenter .k-Nummer{background:#fbe7a1}#krCenter .k-Farve{background:#f6d6d3}
 #krCenter .k-Diverse{background:#cfe0fb}#krCenter .k-Rkkeflge{background:#e3d4f3}
+.kitem.small{width:21.5%;height:21.5%}
+.kitem .kt.brk{overflow-wrap:anywhere;word-break:normal;hyphens:auto;-webkit-hyphens:auto}

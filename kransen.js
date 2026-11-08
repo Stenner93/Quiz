@@ -149,11 +149,12 @@ function krRender() {
   const n = c.items.length;
   $('#krRing').innerHTML = c.items.map((it, i) => {
     const a = (-90 + i * 360 / n) * Math.PI / 180;
-    const x = 50 + 37.5 * Math.cos(a), y = 50 + 37.5 * Math.sin(a);
+    const big = $('#krWrap').clientWidth < 560, rr = big ? 38.5 : 37.5;
+    const x = 50 + rr * Math.cos(a), y = 50 + rr * Math.sin(a);
     const r = KR.res[i];
     const showAns = r || KR.phase !== 'play';
     const cls = r ? (r.ok ? 'ok' : 'bad') : (KR.phase !== 'play' ? 'rest' : '');
-    return `<button class="kitem ${cls} ${it.shape || it.img ? 'pic' : ''}" data-i="${i}" style="left:${x}%;top:${y}%" ${r || KR.phase !== 'play' ? 'disabled' : ''}>
+    return `<button class="kitem ${cls}${big ? ' small' : ''} ${it.shape || it.img ? 'pic' : ''}" data-i="${i}" style="left:${x}%;top:${y}%" ${r || KR.phase !== 'play' ? 'disabled' : ''}>
       ${krItemFace(it)}${showAns ? `<span class="ka">${esc(krAnsText(c, it))}</span>` : ''}</button>`;
   }).join('');
   $('#krCenter').innerHTML = `<div class="kset">${esc(setName)} · kort ${KR.n}</div><div class="kkind k-${(c.kind || krKind(c)).replace(/[^a-zA-Z]/g, '')}">${esc(c.kind || krKind(c))}</div>
@@ -169,12 +170,20 @@ function krRender() {
   $('#krPass').textContent = KR.phase === 'play' ? `Pas – ${p.name} gemmer ${p.round} point` : 'Pas';
   document.querySelectorAll('.kitem').forEach(b => b.onclick = () => krAsk(+b.dataset.i));
   krFit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(krFit);
 }
 // formindsk teksten i hver boble, til den passer uden at ord bliver klippet
 function krFit() {
+  const minF = 9;
   document.querySelectorAll('#krRing .kt').forEach(el => {
+    el.classList.remove('brk');
     let f = parseFloat(getComputedStyle(el.parentNode).fontSize); el.style.fontSize = f + 'px';
-    for (let k = 0; k < 30 && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1) && f > 8; k++) { f *= 0.92; el.style.fontSize = f + 'px'; }
+    const over = () => el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1;
+    for (let k = 0; k < 30 && over() && f > minF; k++) { f *= 0.92; el.style.fontSize = f + 'px'; }
+    if (over()) {                     // stadig for langt: del lange ord med bindestreg frem for at klippe dem
+      el.classList.add('brk');
+      for (let k = 0; k < 6 && over() && f > 7; k++) { f *= 0.94; el.style.fontSize = f + 'px'; }
+    }
   });
 }
 window.addEventListener('resize', () => { if (KR && !$('#kransen').classList.contains('hidden')) krRender(); });
