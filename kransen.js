@@ -157,7 +157,7 @@ function krRender() {
       ${krItemFace(it)}${showAns ? `<span class="ka">${esc(krAnsText(c, it))}</span>` : ''}</button>`;
   }).join('');
   $('#krCenter').innerHTML = `<div class="kset">${esc(setName)} · kort ${KR.n}</div><div class="kkind k-${(c.kind || krKind(c)).replace(/[^a-zA-Z]/g, '')}">${esc(c.kind || krKind(c))}</div>
-    <div class="kq">${esc(c.q)}</div>
+    <div class="kq">${esc(c.q.replace(/\s\(\d\)$/, ''))}</div>
     ${KR.phase === 'play' ? `<div class="kwho"><span class="dot" style="background:${p.color}"></span>${esc(p.name)}s tur</div>
       <div class="khint">${c.type === 'yn' ? 'Vælg et svar, du mener er sandt – eller sig pas' : 'Vælg et felt og sig svaret højt – eller sig pas'}</div>` : ''}`;
   $('#krPlayers').innerHTML = KR.players.map((pl, i) => `<div class="pcard ${i === KR.turn && KR.phase === 'play' ? 'cur' : ''} st-${pl.status}">
