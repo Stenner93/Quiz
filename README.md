@@ -33,10 +33,10 @@ Alle spiller på den samme tablet og sender den rundt.
 ## Temaer
 Ud over almen viden kan man på forsiden vælge et tema. Hvert tema har sine egne 3–6 kategorier i de kendte farver,
 og hvert spørgsmål er mærket let, middel eller svær:
-- **Cykelsport** (476) – med vægt på 2020–2026 og en historie-kategori
+- **Cykelsport** (536) – med vægt på 2020–2026 og en historie-kategori
 - **Besættelsen** (560) – Danmark 1940–45 og krigen i verden
 - **Politik** (619) – halvt dansk, halvt international politik
-- **Den kolde krig** (548) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
+- **Den kolde krig** (610) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
 - **Odense** (568) – historie, H.C. Andersen og Carl Nielsen, bydele, kultur, sport og nutidens Odense
 - **Dansk geografi** (795) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
 - **Klassisk musik** (555) – begynderniveau: komponister, kendte værker, orkestret, en hel operakategori, ballet, begreber og dansk musik

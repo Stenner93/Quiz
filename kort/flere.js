@@ -52,4 +52,18 @@ A('klassisk', 'I hvilket århundrede blev værket skrevet?', [['Monteverdis Orfe
 // ---------- IT ----------
 Y('it', 'Er virksomheden amerikansk?', [['Apple',1],['Microsoft',1],['Google',1],['Amazon',1],['Nvidia',1],['Intel',1],['Samsung',0],['Sony',0],['Nokia',0],['Spotify',0]]);
 A('it', 'I hvilket årti kom det?', [['Transistoren','1940’erne'],['Den første e-mail','1970’erne'],['Spillet Pong','1970’erne'],['Commodore 64','1980’erne'],['World Wide Web','1990’erne'],['Windows 95','1990’erne'],['Facebook','2000’erne'],['Den første iPhone','2000’erne'],['Bitcoin','2000’erne'],['ChatGPT','2020’erne']]);
+
+// ---------- RUNDE 5 ----------
+Y('alm', 'Ligger landet i Sydamerika?', [['Brasilien',1],['Argentina',1],['Chile',1],['Peru',1],['Colombia',1],['Ecuador',1],['Uruguay',1],['Mexico',0],['Panama',0],['Cuba',0]]);
+O('alm', 'Hvilket sprog er landets hovedsprog?', [['Brasilien','Portugisisk'],['Mexico','Spansk'],['Østrig','Tysk'],['Egypten','Arabisk'],['Iran','Persisk'],['Island','Islandsk'],['Holland','Nederlandsk (hollandsk)'],['Grønland','Grønlandsk'],['Angola','Portugisisk'],['Israel','Hebraisk']]);
+O('alm', 'Hvad måler instrumentet?', [['Termometer','Temperatur'],['Barometer','Lufttryk'],['Speedometer','Hastighed'],['Seismograf','Jordskælv (rystelser)'],['Hygrometer','Luftfugtighed'],['Anemometer','Vindhastighed'],['Kronometer','Tid'],['Kilometertæller','Kørt distance'],['Voltmeter','Elektrisk spænding'],['Decibelmeter','Lydstyrke']]);
+R('alm', 'Placer opfindelserne i tidsorden (1 = tidligst)', ['Gutenbergs bogtryk','James Watts dampmaskine','Telefonen','Edisons glødepære','Benz’ bil','Marconis radio','Brødrene Wrights flyvemaskine','Fjernsynet','Penicillinen','Mobiltelefonen']);
+A('alm', 'I hvilket århundrede skete det?', [['Jellingstenen rejses','900-tallet'],['Kalmarunionen dannes','1300-tallet'],['Københavns Universitet grundlægges','1400-tallet'],['Columbus når Amerika','1400-tallet'],['Reformationen i Danmark','1500-tallet'],['Rundetårn bygges','1600-tallet'],['Den Franske Revolution','1700-tallet'],['Slaget på Reden','1800-tallet'],['Danmarks første grundlov','1800-tallet'],['Første menneske på Månen','1900-tallet']]);
+Y('geografi', 'Ligger byen på Sjælland?', [['Roskilde',1],['Køge',1],['Næstved',1],['Holbæk',1],['Kalundborg',1],['Slagelse',1],['Hillerød',1],['Nykøbing Falster',0],['Stege',0],['Rønne',0]]);
+Y('besaettelsen', 'Var det en modstandsgruppe eller illegal organisation?', [['Holger Danske',1],['BOPA',1],['Hvidstengruppen',1],['Churchill-klubben',1],['Frit Danmark',1],['Studenternes Efterretningstjeneste',1],['Ringen',1],['Schalburgkorpset',0],['Hipo-korpset',0],['Frikorps Danmark',0]]);
+Y('politik', 'Har landet en monark som statsoverhoved?', [['Danmark',1],['Norge',1],['Sverige',1],['Storbritannien',1],['Spanien',1],['Holland',1],['Belgien',1],['Frankrig',0],['Tyskland',0],['Finland',0]]);
+Y('koldkrig', 'Var landet alliancefrit under den kolde krig?', [['Sverige',1],['Finland',1],['Schweiz',1],['Østrig',1],['Irland',1],['Jugoslavien',1],['Norge',0],['Danmark',0],['Polen',0],['Tyrkiet',0]]);
+Y('klassisk', 'Har Puccini skrevet operaen?', [['Tosca',1],['La Bohème',1],['Madama Butterfly',1],['Turandot',1],['Gianni Schicchi',1],['Manon Lescaut',1],['Aida',0],['Carmen',0],['Rigoletto',0],['Fidelio',0]]);
+Y('it', 'Er det et styresystem?', [['Windows',1],['macOS',1],['Linux',1],['Android',1],['iOS',1],['ChromeOS',1],['Google Chrome',0],['Microsoft Office',0],['Java',0],['Python',0]]);
+Y('cykel', 'Har rytteren vundet alle tre Grand Tours?', [['Jacques Anquetil',1],['Felice Gimondi',1],['Eddy Merckx',1],['Bernard Hinault',1],['Alberto Contador',1],['Vincenzo Nibali',1],['Chris Froome',1],['Miguel Induráin',0],['Greg LeMond',0],['Bjarne Riis',0]]);
 })();
