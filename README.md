@@ -34,11 +34,11 @@ Alle spiller på den samme tablet og sender den rundt.
 Ud over almen viden kan man på forsiden vælge et tema. Hvert tema har sine egne 3–6 kategorier i de kendte farver,
 og hvert spørgsmål er mærket let, middel eller svær:
 - **Cykelsport** (476) – med vægt på 2020–2026 og en historie-kategori
-- **Besættelsen** (522) – Danmark 1940–45 og krigen i verden
+- **Besættelsen** (560) – Danmark 1940–45 og krigen i verden
 - **Politik** (619) – halvt dansk, halvt international politik
 - **Den kolde krig** (548) – supermagter, kriser, spioner, rumkapløb og Danmarks rolle
 - **Odense** (568) – historie, H.C. Andersen og Carl Nielsen, bydele, kultur, sport og nutidens Odense
-- **Dansk geografi** (690) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
+- **Dansk geografi** (795) – øer, byer og regioner, landskab og istid, søer og farvande, broer og rigsfællesskabet
 - **Klassisk musik** (555) – begynderniveau: komponister, kendte værker, orkestret, en hel operakategori, ballet, begreber og dansk musik
 - **IT & tech** (577) – internettet, computere, software, tech-giganter, sikkerhed og AI samt dansk IT
 
@@ -66,8 +66,8 @@ Når du ændrer filer, så hæv `CACHE`-versionen i `sw.js`.
 ## Kransen – et andet spil i samme app
 Hvert kort har ét spørgsmål og 10 svar placeret i en krans. Spillerne peger på skift på et svar:
 rigtigt giver et point i runden, forkert koster rundens point, og man kan altid passe og gemme sine point.
-Første til fx 15 point vinder. Kortene ligger i `kort/`:
+Første til 30 point vinder (15 eller 20 for et kortere spil). Kortene ligger i `kort/`:
 - `kort/alm.js` – almen viden
-- `kort/temaer.js` – kort til hvert tema (cykelsport, besættelsen, politik, den kolde krig, Odense, geografi, klassisk musik, IT)
+- `kort/temaer.js` + `kort/flere.js` – kort til hvert tema (cykelsport, besættelsen, politik, den kolde krig, Odense, geografi, klassisk musik, IT)
 - `kort/lande.js` + `kort/lande-former.js` – landesilhuetter genereret fra [Natural Earth](https://www.naturalearthdata.com/) (public domain)
 - `kort/billeder.js` – fotos af monumenter og genstande (Creative Commons, med kreditering)
