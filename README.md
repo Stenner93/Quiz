@@ -62,3 +62,12 @@ under **Menu → Rapporter** sendes samlet som et GitHub-issue i dette repo, så
 ## Teknik
 Ren HTML/CSS/JavaScript uden byggetrin: `index.html`, `style.css`, `app.js`, `questions.js` (de indbyggede spørgsmål), `sw.js` (offline) og `manifest.webmanifest`.
 Når du ændrer filer, så hæv `CACHE`-versionen i `sw.js`.
+
+## Kransen – et andet spil i samme app
+Hvert kort har ét spørgsmål og 10 svar placeret i en krans. Spillerne peger på skift på et svar:
+rigtigt giver et point i runden, forkert koster rundens point, og man kan altid passe og gemme sine point.
+Første til fx 15 point vinder. Kortene ligger i `kort/`:
+- `kort/alm.js` – almen viden
+- `kort/temaer.js` – kort til hvert tema (cykelsport, besættelsen, politik, den kolde krig, Odense, geografi, klassisk musik, IT)
+- `kort/lande.js` + `kort/lande-former.js` – landesilhuetter genereret fra [Natural Earth](https://www.naturalearthdata.com/) (public domain)
+- `kort/billeder.js` – fotos af monumenter og genstande (Creative Commons, med kreditering)

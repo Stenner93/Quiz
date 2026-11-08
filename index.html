@@ -67,6 +67,12 @@
       <button id="fsBtn" class="btn big">Fuld skærm</button>
       <button id="repBtn" class="btn big">⚑ Rapporter</button>
     </div>
+
+    <div class="card krpromo">
+      <h2>◎ Kransen</h2>
+      <p class="hint">Et andet spil: hvert kort har 10 svar i en krans – tør du tage et svar mere, eller passer du? Kort fra alle temaerne, landes silhuetter og billeder.</p>
+      <div class="row"><button id="krStartBtn" class="btn primary big">Spil Kransen</button></div>
+    </div>
   </div>
 </section>
 
@@ -93,6 +99,23 @@
   </aside>
 </section>
 
+<!-- ============ KRANSEN ============ -->
+<section id="kransen" class="screen hidden">
+  <div id="krWrap">
+    <div id="krRing"></div>
+    <div id="krCenter"></div>
+  </div>
+  <aside id="krPanel">
+    <div id="krPlayers"></div>
+    <button id="krPass" class="btn primary big">Pas</button>
+    <div class="row">
+      <button id="krUndo" class="btn">↶ Fortryd</button>
+      <button id="krRulesBtn" class="btn">Regler</button>
+      <button id="krMenu" class="btn">Menu</button>
+    </div>
+  </aside>
+</section>
+
 <div id="modal" class="hidden"><div id="mbox"></div></div>
 
 <script src="questions.js"></script>
@@ -105,6 +128,12 @@
 <script src="themes/geografi.js"></script>
 <script src="themes/klassisk.js"></script>
 <script src="themes/it.js"></script>
+<script src="kort/alm.js"></script>
+<script src="kort/temaer.js"></script>
+<script src="kort/lande-former.js"></script>
+<script src="kort/lande.js"></script>
+<script src="kort/billeder.js"></script>
 <script src="app.js"></script>
+<script src="kransen.js"></script>
 </body>
 </html>
