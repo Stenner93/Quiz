@@ -118,5 +118,16 @@ O('it', 'Hvad er personen kendt for?', [['Steve Jobs','Medstifter af Apple'],['B
 Y('it', 'Er det en type cyberangreb eller skadelig software?', [['Phishing',1],['Ransomware',1],['Trojansk hest',1],['Orm',1],['DDoS',1],['Firewall',0],['VPN',0],['To-faktor-login',0],['Backup',0],['Kryptering',0]]);
 O('it', 'Hvem lavede spillet?', [['Super Mario','Nintendo'],['Tetris','Aleksej Pajitnov (Sovjetunionen)'],['Minecraft','Mojang'],['Fortnite','Epic Games'],['The Sims','Maxis (EA)'],['Pac-Man','Namco'],['Angry Birds','Rovio'],['Candy Crush Saga','King'],['Pokémon','Game Freak (Nintendo)'],['Hitman','IO Interactive']]);
 Y('it', 'Er det et socialt medie?', [['TikTok',1],['Instagram',1],['Snapchat',1],['LinkedIn',1],['Reddit',1],['Excel',0],['Dropbox',0],['Zoom',0],['Photoshop',0],['Google Maps',0]]);
+// ---------- RÆKKEFØLGE (svaret er placeringen 1–10) ----------
+const R = (set, q, names) => { window.KO(set, q, names.map((n, i) => [n, String(i + 1)])); window.KRANS[window.KRANS.length - 1].kind = 'Rækkefølge'; };
+R('geografi', 'Placer øerne efter størrelse (1 = størst)', ['Sjælland','Den Nørrejyske Ø','Fyn','Lolland','Bornholm','Falster','Mors','Als','Langeland','Møn']);
+R('politik', 'Placer statsministrene efter, hvornår de første gang tiltrådte (1 = tidligst)', ['Thorvald Stauning','Hans Hedtoft','H.C. Hansen','Jens Otto Krag','Hilmar Baunsgaard','Anker Jørgensen','Poul Schlüter','Poul Nyrup Rasmussen','Anders Fogh Rasmussen','Helle Thorning-Schmidt']);
+R('koldkrig', 'Placer begivenhederne i tidsorden (1 = tidligst)', ['Berlinblokaden','Koreakrigen begynder','Opstanden i Ungarn','Sputnik','Berlinmuren bygges','Cubakrisen','Prags forår','Månelandingen','Sovjets invasion af Afghanistan','Berlinmurens fald']);
+R('klassisk', 'Placer komponisterne efter fødselsår (1 = ældst)', ['Antonio Vivaldi','J.S. Bach','Joseph Haydn','W.A. Mozart','Ludwig van Beethoven','Franz Schubert','Frédéric Chopin','Giuseppe Verdi','Pjotr Tjajkovskij','Carl Nielsen']);
+R('it', 'Placer opfindelserne efter, hvornår de kom (1 = tidligst)', ['Commodore 64','World Wide Web','Windows 95','Google','Wikipedia','Facebook','YouTube','iPhone','Bitcoin','ChatGPT']);
+R('besaettelsen', 'Placer begivenhederne i tidsorden (1 = tidligst)', ['Besættelsen 9. april','Alsangen i Kongens Have','Antikominternpagten','Telegramkrisen','Valget med ca. 90 % valgdeltagelse','Samarbejdets sammenbrud 29. august','Aktionen mod jøderne','Mordet på Kaj Munk','Folkestrejken i København','Befrielsen']);
+R('cykel', 'Placer Tour-sejrene i tidsorden (1 = tidligst)', ['Bjarne Riis','Jan Ullrich','Marco Pantani','Cadel Evans','Bradley Wiggins','Chris Froome (første)','Vincenzo Nibali','Geraint Thomas','Egan Bernal','Tadej Pogačar (første)']);
+R('odense', 'Placer begivenhederne i tidsorden (1 = tidligst)', ['Odense nævnes første gang','Knud den Hellige dræbes','Danmarks første bøger trykkes','Odense Kanal åbner','H.C. Andersen fødes','Carl Nielsen fødes','Odinstårnet bygges','Rosengårdcentret åbner','Syddansk Universitet dannes','Letbanen åbner']);
+R('alm', 'Placer bjergene efter højde (1 = højest)', ['Mount Everest','K2','Kangchenjunga','Aconcagua','Denali','Kilimanjaro','Elbrus','Mont Blanc','Matterhorn','Zugspitze']);
 window.KRANS.filter(c => c.q === 'Hvilken farve har trøjen?').forEach(c => c.kind = 'Farve');
 })();
