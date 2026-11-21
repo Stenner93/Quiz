@@ -63,7 +63,7 @@ under **Menu → Rapporter** sendes samlet som et GitHub-issue i dette repo, så
 Ren HTML/CSS/JavaScript uden byggetrin: `index.html`, `style.css`, `app.js`, `questions.js` (de indbyggede spørgsmål), `sw.js` (offline) og `manifest.webmanifest`.
 Når du ændrer filer, så hæv `CACHE`-versionen i `sw.js`.
 
-## Kransen – et andet spil i samme app
+## Quizisk Roulette – et andet spil i samme app (koden hedder stadig `kransen`)
 Hvert kort har ét spørgsmål og 10 svar placeret i en krans. Spillerne peger på skift på et svar:
 rigtigt giver et point i runden, forkert koster rundens point, og man kan altid passe og gemme sine point.
 Første til 30 point vinder (15 eller 20 for et kortere spil).

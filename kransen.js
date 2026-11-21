@@ -34,7 +34,7 @@ function krSetup() {
   const draw = () => {
     const total = window.KRANS.filter(c => st.sets.includes(c.set)).length;
     openModal(`<div class="qbody">
-      <div class="mtitle">◎ Kransen</div>
+      <div class="mtitle">◎ Quizisk Roulette</div>
       <div class="mtext">Hvert kort har ét spørgsmål og 10 svarmuligheder i en krans. På skift vælger I et svar – eller siger pas.
         Rigtigt = 1 point. Forkert = I mister kortets point og er ude af kortet. Siger I <b>pas</b>, beholder I kortets point. Første til 30 point vinder (standard).</div>
       <h3>Hvilke kort skal med?</h3>
@@ -47,7 +47,7 @@ function krSetup() {
       ${st.flip ? `<p class="hint" style="color:#6b6250">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
       <div class="krsides">${pnames.map((n, i) => `<button class="krside" data-i="${i}"><span class="dot" style="background:${PCOL[i]}"></span>${esc(n)} <b>${side(i) === 'up' ? '⬆ overfor' : '⬇ her'}</b></button>`).join('')}</div>` : ''}
       <p class="hint" style="color:#6b6250">${total} kort valgt · spillerne fra forsiden: ${pnames.map(esc).join(', ')}</p>
-      <div class="row center"><button class="btn primary big" id="krGo" ${total ? '' : 'disabled'}>Start Kransen</button>
+      <div class="row center"><button class="btn primary big" id="krGo" ${total ? '' : 'disabled'}>Start Quizisk Roulette</button>
         <button class="btn big" id="krBack">Tilbage</button></div>
     </div>`);
     document.querySelectorAll('.krset').forEach(b => b.onclick = () => {
@@ -271,7 +271,7 @@ function krFlag() {
   const note = prompt('Hvad er galt med kortet? (fx et forkert svar)');
   if (note === null) return;
   const setName = (KR_SETS().find(s => s.id === c.set) || { name: c.set }).name;
-  flags.push({ id: c.id, theme: 'Kransen', cat: setName, q: c.q, a: c.items.map(it => `${it.t || it.shape || it.img}=${krAnsText(c, it)}`).join('; '),
+  flags.push({ id: c.id, theme: 'Quizisk Roulette', cat: setName, q: c.q, a: c.items.map(it => `${it.t || it.shape || it.img}=${krAnsText(c, it)}`).join('; '),
     reason: 'wrong', note, ts: new Date().toISOString().slice(0, 16), sent: false });
   store.set(K_FLAGS, flags);
   const hidden = store.get(K_HIDE, {}); hidden[c.id] = 1; store.set(K_HIDE, hidden);
@@ -282,7 +282,7 @@ function krShowEnd() {
   krRender();
   if (KR.phase === 'over') {
     const w = KR.players[KR.winner];
-    openModal(`<div class="win"><div class="big-star">◎</div><div class="mtitle">${esc(w.name)} vinder Kransen!</div>
+    openModal(`<div class="win"><div class="big-star">◎</div><div class="mtitle">${esc(w.name)} vinder Quizisk Roulette!</div>
       <div class="mtext">${KR.players.slice().sort((a, b) => b.score - a.score).map(p => `${esc(p.name)}: ${p.score}`).join(' · ')}</div>
       <div class="row center" style="margin-top:20px"><button class="btn primary big" id="krNew">Nyt spil</button><button class="btn big" id="krHome">Forsiden</button>
         ${krLeft() ? `<button class="btn big" id="krFree">Gæt resten gratis</button>` : ''}</div></div>`);
@@ -299,7 +299,7 @@ function krShowEnd() {
       ${left ? `<div class="mtext">Der er ${left} svar tilbage. I kan gætte på dem ét ad gangen – det tæller ikke i pointene.</div>` : ''}
       <div class="row center">${left ? `<button class="btn primary big" id="krFree">Gæt gratis</button>` : ''}
         <button class="btn ${left ? '' : 'primary '}big" id="krNext">Næste kort</button>
-        ${left ? '' : `<button class="btn big" id="krLook">Se kransen</button>`}</div></div>`);
+        ${left ? '' : `<button class="btn big" id="krLook">Se svarene</button>`}</div></div>`);
     $('#krNext').onclick = () => { krSnap(); closeModal(); krNextCard(); krRender(); };
     const fr = document.getElementById('krFree'); if (fr) fr.onclick = closeModal;
     const lk = document.getElementById('krLook'); if (lk) lk.onclick = closeModal;
@@ -307,7 +307,7 @@ function krShowEnd() {
 }
 function krHome() { closeModal(); document.body.classList.remove('krflip'); $('#kransen').classList.add('hidden'); $('#setup').classList.remove('hidden'); renderSetup(); }
 function krRules() {
-  openModal(`<div class="qbody rules"><div class="mtitle">Regler for Kransen</div>
+  openModal(`<div class="qbody rules"><div class="mtitle">Regler for Quizisk Roulette</div>
     <ul>
       <li>Hvert kort har et spørgsmål og 10 svarmuligheder i en krans. Spillerne skiftes til at <b>svare</b> eller sige <b>pas</b>.</li>
       <li><b>Sandt/falsk-kort:</b> Kun nogle af de 10 er sande (mindst 4, og der er altid falske imellem). Man må kun vælge et svar, man mener er <b>sandt</b>. Man ved aldrig, hvor mange sande der er – tror man, der kun er falske tilbage, siger man pas.</li>
@@ -333,7 +333,7 @@ function krMenu() {
 function krInit() {
   $('#krStartBtn').onclick = () => {
     const saved = store.get(K_KR, null);
-    if (saved && saved.phase !== 'over' && confirm('Fortsæt det gemte Kransen-spil? (Annuller = start nyt)')) { KR = saved; KR.free = KR.free || {}; krUndo = []; krShow(); return; }
+    if (saved && saved.phase !== 'over' && confirm('Fortsæt det gemte spil Quizisk Roulette? (Annuller = start nyt)')) { KR = saved; KR.free = KR.free || {}; krUndo = []; krShow(); return; }
     krSetup();
   };
   $('#krPass').onclick = krPass;
