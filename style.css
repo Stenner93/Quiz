@@ -217,3 +217,15 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 #krCenter .k-Diverse{background:#cfe0fb}#krCenter .k-rti{background:#d3eeee}#krCenter .k-Rkkeflge{background:#e3d4f3}
 .kitem.small{width:21.5%;height:21.5%}
 .kitem .kt.brk{overflow-wrap:anywhere;word-break:normal;hyphens:auto;-webkit-hyphens:auto}
+
+/* Kransen: vend skærmen mod spilleren, der har tur */
+#kransen,#mbox{transition:transform .45s ease}
+body.krflip #kransen{transform:rotate(180deg)}
+body.krflip:has(#kransen:not(.hidden)) #mbox{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){#kransen,#mbox{transition:none}}
+.krsides{display:flex;flex-wrap:wrap;gap:8px}
+.krside{display:flex;align-items:center;gap:8px;border:2px solid #d4cbb1;background:#efe8d4;border-radius:999px;padding:8px 14px;font-weight:600;min-height:44px}
+.krside .dot{width:16px;height:16px;border-radius:50%;border:2px solid #000}
+/* gratis gæt */
+.kitem.free{opacity:.9;border-style:dashed;border-color:var(--gold)}
+#krCenter .kall{align-self:center;font-size:calc(var(--s)*.022);padding:.3em .9em;min-height:0}

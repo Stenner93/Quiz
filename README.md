@@ -66,7 +66,9 @@ Når du ændrer filer, så hæv `CACHE`-versionen i `sw.js`.
 ## Kransen – et andet spil i samme app
 Hvert kort har ét spørgsmål og 10 svar placeret i en krans. Spillerne peger på skift på et svar:
 rigtigt giver et point i runden, forkert koster rundens point, og man kan altid passe og gemme sine point.
-Første til 30 point vinder (15 eller 20 for et kortere spil). Kortene ligger i `kort/`:
+Første til 30 point vinder (15 eller 20 for et kortere spil).
+Når et kort er slut, kan man gætte gratis på de resterende svar (tæller ikke). Sidder spillerne overfor hinanden,
+kan skærmen automatisk vende sig mod den, der har tur (vælges ved opsætningen: ⬇ her / ⬆ overfor). Kortene ligger i `kort/`:
 - `kort/alm.js` – almen viden
 - `kort/temaer.js` + `kort/flere.js` – kort til hvert tema (cykelsport, besættelsen, politik, den kolde krig, Odense, geografi, klassisk musik, IT)
 - `kort/lande.js` + `kort/lande-former.js` – landesilhuetter genereret fra [Natural Earth](https://www.naturalearthdata.com/) (public domain)

@@ -25,7 +25,10 @@ const krSnap = () => { krUndo.push(JSON.stringify(KR)); if (krUndo.length > 80) 
 /* ---------- opsætning ---------- */
 function krSetup() {
   const sets = KR_SETS();
-  const st = Object.assign({ sets: sets.map(s => s.id), target: 30 }, store.get(K_KRSET, {}));
+  document.body.classList.remove('krflip');
+  const st = Object.assign({ sets: sets.map(s => s.id), target: 30, flip: true, sides: [] }, store.get(K_KRSET, {}));
+  const pnames = settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
+  const side = i => st.sides[i] || (i % 2 ? 'up' : 'down');
   st.sets = st.sets.filter(id => sets.some(s => s.id === id));
   if (!st.sets.length) st.sets = sets.map(s => s.id);
   const draw = () => {
@@ -39,7 +42,11 @@ function krSetup() {
       <div class="row"><button class="btn" id="krAll">Vælg alle</button><button class="btn" id="krNone">Fravælg alle</button></div>
       <h3>Spil til</h3>
       <div class="seg" id="krTarget">${[15, 20, 30].map(n => `<button data-n="${n}" class="${st.target === n ? 'on' : ''}">${n} point</button>`).join('')}</div>
-      <p class="hint" style="color:#6b6250">${total} kort valgt · spillerne fra forsiden: ${settings.names.map(n => esc(n.trim() || '?')).join(', ')}</p>
+      <h3>Vend skærmen mod den, der har tur</h3>
+      <div class="seg" id="krFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
+      ${st.flip ? `<p class="hint" style="color:#6b6250">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
+      <div class="krsides">${pnames.map((n, i) => `<button class="krside" data-i="${i}"><span class="dot" style="background:${PCOL[i]}"></span>${esc(n)} <b>${side(i) === 'up' ? '⬆ overfor' : '⬇ her'}</b></button>`).join('')}</div>` : ''}
+      <p class="hint" style="color:#6b6250">${total} kort valgt · spillerne fra forsiden: ${pnames.map(esc).join(', ')}</p>
       <div class="row center"><button class="btn primary big" id="krGo" ${total ? '' : 'disabled'}>Start Kransen</button>
         <button class="btn big" id="krBack">Tilbage</button></div>
     </div>`);
@@ -47,10 +54,14 @@ function krSetup() {
       const id = b.dataset.id; st.sets = st.sets.includes(id) ? st.sets.filter(x => x !== id) : st.sets.concat(id); draw();
     });
     document.querySelectorAll('#krTarget button').forEach(b => b.onclick = () => { st.target = +b.dataset.n; draw(); });
+    document.querySelectorAll('#krFlipSeg button').forEach(b => b.onclick = () => { st.flip = b.dataset.f === '1'; draw(); });
+    document.querySelectorAll('.krside').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i; st.sides = pnames.map((_, k) => side(k)); st.sides[i] = side(i) === 'up' ? 'down' : 'up'; draw();
+    });
     $('#krAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
     $('#krNone').onclick = () => { st.sets = []; draw(); };
     $('#krBack').onclick = closeModal;
-    $('#krGo').onclick = () => { store.set(K_KRSET, st); closeModal(); krStart(st); };
+    $('#krGo').onclick = () => { st.sides = pnames.map((_, k) => side(k)); store.set(K_KRSET, st); closeModal(); krStart(st); };
   };
   draw();
 }
@@ -58,7 +69,8 @@ function krSetup() {
 function krStart(st) {
   const names = settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
   KR = {
-    players: names.map((name, i) => ({ name, color: PCOL[i], score: 0, round: 0, status: 'in' })),
+    players: names.map((name, i) => ({ name, color: PCOL[i], score: 0, round: 0, status: 'in', side: (st.sides || [])[i] || (i % 2 ? 'up' : 'down') })),
+    flip: !!st.flip, flipX: false, free: {}, revealAll: false,
     sets: st.sets, target: st.target, starter: 0, turn: 0, card: null, res: {}, phase: 'play', winner: null, n: 0,
   };
   krUndo = []; krNextCard(true); krShow();
@@ -83,7 +95,7 @@ function krPickCard() {
 function krNextCard(first) {
   if (!first) KR.starter = (KR.starter + 1) % KR.players.length;
   KR.players.forEach(p => { p.round = 0; p.status = 'in'; });
-  KR.card = krPickCard(); KR.res = {}; KR.turn = KR.starter; KR.phase = 'play'; KR.n++;
+  KR.card = krPickCard(); KR.res = {}; KR.free = {}; KR.revealAll = false; KR.turn = KR.starter; KR.phase = 'play'; KR.n++;
   krSave();
 }
 
@@ -115,6 +127,8 @@ function krJudge(i, correct, said) {
   if (KR.phase !== 'play') krShowEnd();
 }
 function krPass() {
+  if (KR.phase === 'cardend') { krSnap(); closeModal(); krNextCard(); krRender(); return; }
+  if (KR.phase === 'over') { krShowEnd(); return; }
   if (KR.phase !== 'play') return;
   krSnap();
   const p = KR.players[KR.turn];
@@ -124,6 +138,30 @@ function krPass() {
 }
 
 /* ---------- visning ---------- */
+const krLeft = () => KR.card.items.filter((_, i) => !KR.res[i] && !KR.free[i]).length * (KR.revealAll ? 0 : 1);
+// vend skærmen (kransen + dialoger) mod den spiller, der har tur
+function krOrient() {
+  const p = KR.players[KR.turn];
+  const up = (!!KR.flip && !!p && p.side === 'up') !== !!KR.flipX;
+  document.body.classList.toggle('krflip', up);
+}
+// gratis gæt efter kortet: vis ét svar ad gangen uden point
+function krFreeAsk(i) {
+  const c = KR.card, it = c.items[i];
+  const face = `<div class="kbig">${krItemFace(it, true)}</div>${it.credit ? `<div class="kcredit">Foto: ${esc(it.credit)}</div>` : ''}`;
+  openModal(`<div class="qbody"><div class="mtext"><b>Gratis gæt</b> · ${esc(c.q)}</div>${face}
+    <div class="mtext">${c.type === 'yn' ? 'Sandt eller falsk? Gæt højt' : 'Sig svaret højt'} – og tryk så "Vis svar". Det tæller ikke i pointene.</div>
+    <div class="row center"><button class="btn primary big" id="krFRev">Vis svar</button><button class="btn big" id="krFNo">Fortryd</button></div></div>`);
+  $('#krFNo').onclick = closeModal;
+  $('#krFRev').onclick = () => {
+    KR.free[i] = 1; krSave();
+    const yn = c.type === 'yn';
+    openModal(`<div class="qbody"><div class="mtext"><b>Gratis gæt</b> · ${esc(c.q)}</div>${face}
+      <div class="qans ${yn ? (it.a ? 'good' : 'wrong') : ''}"><b>Svar</b>${yn ? (it.a ? '✓ Sandt' : '✗ Falsk') : esc(String(it.a))}${it.note ? `<small> – ${esc(it.note)}</small>` : ''}</div>
+      <div class="row center"><button class="btn primary big" id="krFOk">OK</button></div></div>`);
+    $('#krFOk').onclick = () => { closeModal(); krRender(); if (!krLeft()) krShowEnd(); };
+  };
+}
 function krItemFace(it, big) {
   if (it.shape && window.SHAPES && SHAPES[it.shape]) {
     const s = SHAPES[it.shape];
@@ -151,24 +189,29 @@ function krRender() {
     const a = (-90 + i * 360 / n) * Math.PI / 180;
     const big = $('#krWrap').clientWidth < 560, rr = big ? 38.5 : 37.5;
     const x = 50 + rr * Math.cos(a), y = 50 + rr * Math.sin(a);
-    const r = KR.res[i];
-    const showAns = r || KR.phase !== 'play';
-    const cls = r ? (r.ok ? 'ok' : 'bad') : (KR.phase !== 'play' ? 'rest' : '');
-    return `<button class="kitem ${cls}${big ? ' small' : ''} ${it.shape || it.img ? 'pic' : ''}" data-i="${i}" style="left:${x}%;top:${y}%" ${r || KR.phase !== 'play' ? 'disabled' : ''}>
+    const r = KR.res[i], end = KR.phase !== 'play';
+    const shown = end && (KR.free[i] || KR.revealAll);
+    const showAns = r || shown;
+    const cls = r ? (r.ok ? 'ok' : 'bad') : end ? (shown ? 'rest' : 'free') : '';
+    return `<button class="kitem ${cls}${big ? ' small' : ''} ${it.shape || it.img ? 'pic' : ''}" data-i="${i}" style="left:${x}%;top:${y}%" ${showAns ? 'disabled' : ''}>
       ${krItemFace(it)}${showAns ? `<span class="ka">${esc(krAnsText(c, it))}</span>` : ''}</button>`;
   }).join('');
   $('#krCenter').innerHTML = `<div class="kset">${esc(setName)} · kort ${KR.n}</div><div class="kkind k-${(c.kind || krKind(c)).replace(/[^a-zA-Z]/g, '')}">${esc(c.kind || krKind(c))}</div>
     <div class="kq">${esc(c.q.replace(/\s\(\d\)$/, ''))}</div>
     ${KR.phase === 'play' ? `<div class="kwho"><span class="dot" style="background:${p.color}"></span>${esc(p.name)}s tur</div>
-      <div class="khint">${c.type === 'yn' ? 'Vælg et svar, du mener er sandt – eller sig pas' : 'Vælg et felt og sig svaret højt – eller sig pas'}</div>` : ''}`;
+      <div class="khint">${c.type === 'yn' ? 'Vælg et svar, du mener er sandt – eller sig pas' : 'Vælg et felt og sig svaret højt – eller sig pas'}</div>`
+    : krLeft() ? `<div class="kwho">Gratis gæt</div><div class="khint">Tryk på et svar for at gætte – det tæller ikke i pointene</div>
+      <button class="btn kall" id="krAllAns">Vis alle svar</button>` : ''}`;
   $('#krPlayers').innerHTML = KR.players.map((pl, i) => `<div class="pcard ${i === KR.turn && KR.phase === 'play' ? 'cur' : ''} st-${pl.status}">
       <span class="dot" style="background:${pl.color}"></span><span class="nm">${esc(pl.name)}</span>
       <span class="kround">${pl.round ? '+' + pl.round : ''}</span>
       <span class="kstat">${pl.status === 'out' ? 'ude' : pl.status === 'pass' ? 'passet' : ''}</span>
       <b class="kscore">${pl.score}</b></div>`).join('') + `<p class="hint">Spil til ${KR.target} point</p>`;
-  $('#krPass').disabled = KR.phase !== 'play';
-  $('#krPass').textContent = KR.phase === 'play' ? `Pas – ${p.name} gemmer ${p.round} point` : 'Pas';
-  document.querySelectorAll('.kitem').forEach(b => b.onclick = () => krAsk(+b.dataset.i));
+  $('#krPass').disabled = false;
+  $('#krPass').textContent = KR.phase === 'play' ? `Pas – ${p.name} gemmer ${p.round} point` : KR.phase === 'over' ? 'Se resultatet' : 'Næste kort →';
+  document.querySelectorAll('.kitem').forEach(b => b.onclick = () => KR.phase === 'play' ? krAsk(+b.dataset.i) : krFreeAsk(+b.dataset.i));
+  const all = document.getElementById('krAllAns'); if (all) all.onclick = () => { KR.revealAll = true; krSave(); krRender(); };
+  krOrient();
   krFit();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(krFit);
 }
@@ -241,21 +284,28 @@ function krShowEnd() {
     const w = KR.players[KR.winner];
     openModal(`<div class="win"><div class="big-star">◎</div><div class="mtitle">${esc(w.name)} vinder Kransen!</div>
       <div class="mtext">${KR.players.slice().sort((a, b) => b.score - a.score).map(p => `${esc(p.name)}: ${p.score}`).join(' · ')}</div>
-      <div class="row center" style="margin-top:20px"><button class="btn primary big" id="krNew">Nyt spil</button><button class="btn big" id="krHome">Forsiden</button></div></div>`);
+      <div class="row center" style="margin-top:20px"><button class="btn primary big" id="krNew">Nyt spil</button><button class="btn big" id="krHome">Forsiden</button>
+        ${krLeft() ? `<button class="btn big" id="krFree">Gæt resten gratis</button>` : ''}</div></div>`);
     $('#krNew').onclick = () => { closeModal(); krSetup(); };
+    const fr = document.getElementById('krFree'); if (fr) fr.onclick = closeModal;
     $('#krHome').onclick = krHome;
     return;
   }
   const lead = KR.players.slice().sort((a, b) => b.score - a.score);
+  const left = krLeft();
   setTimeout(() => {
     openModal(`<div class="qbody"><div class="mtitle">Kortet er slut</div>
-      <div class="mtext">Se de resterende svar i kransen. Stillingen: ${lead.map(p => `<b>${esc(p.name)}</b> ${p.score}`).join(' · ')}</div>
-      <div class="row center"><button class="btn primary big" id="krNext">Næste kort</button><button class="btn big" id="krLook">Se kransen</button></div></div>`);
+      <div class="mtext">Stillingen: ${lead.map(p => `<b>${esc(p.name)}</b> ${p.score}`).join(' · ')}</div>
+      ${left ? `<div class="mtext">Der er ${left} svar tilbage. I kan gætte på dem ét ad gangen – det tæller ikke i pointene.</div>` : ''}
+      <div class="row center">${left ? `<button class="btn primary big" id="krFree">Gæt gratis</button>` : ''}
+        <button class="btn ${left ? '' : 'primary '}big" id="krNext">Næste kort</button>
+        ${left ? '' : `<button class="btn big" id="krLook">Se kransen</button>`}</div></div>`);
     $('#krNext').onclick = () => { krSnap(); closeModal(); krNextCard(); krRender(); };
-    $('#krLook').onclick = () => { closeModal(); $('#krPass').disabled = false; $('#krPass').textContent = 'Næste kort →'; $('#krPass').onclick = () => { $('#krPass').onclick = krPass; krSnap(); krNextCard(); krRender(); }; };
+    const fr = document.getElementById('krFree'); if (fr) fr.onclick = closeModal;
+    const lk = document.getElementById('krLook'); if (lk) lk.onclick = closeModal;
   }, 350);
 }
-function krHome() { closeModal(); $('#kransen').classList.add('hidden'); $('#setup').classList.remove('hidden'); renderSetup(); }
+function krHome() { closeModal(); document.body.classList.remove('krflip'); $('#kransen').classList.add('hidden'); $('#setup').classList.remove('hidden'); renderSetup(); }
 function krRules() {
   openModal(`<div class="qbody rules"><div class="mtitle">Regler for Kransen</div>
     <ul>
@@ -266,6 +316,7 @@ function krRules() {
       <li>Forkert svar: man mister alle point fra dette kort og kan ikke svare mere på kortet. (Point fra tidligere kort beholder man.)</li>
       <li>Pas: man beholder kortets point, men kan ikke svare mere på kortet.</li>
       <li>Kortet slutter, når alle 10 svar er brugt, eller når alle har sagt pas eller er ude. Så lægges pointene sammen.</li>
+      <li><b>Gratis gæt:</b> Når kortet er slut, kan I gætte på de svar, der er tilbage, ét ad gangen. Det tæller ikke i pointene – eller I kan gå direkte videre til næste kort.</li>
       <li>Næste kort startes af spilleren efter den, der startede sidst. Standard er at spille til <b>30 point</b> – eller kortere, fx 15.</li>
     </ul>
     <div class="row center"><button class="btn primary" onclick="closeModal()">OK</button></div></div>`);
@@ -274,14 +325,15 @@ function krMenu() {
   openModal(`<div class="qbody"><div class="mtitle">Menu</div>
     <div class="row center">
       <button class="btn" id="krM1">Fortsæt</button><button class="btn" id="krM2">Regler</button>
-      <button class="btn" id="krM3">Spring kortet over</button><button class="btn" id="krM4">Forsiden</button></div></div>`);
-  $('#krM1').onclick = closeModal; $('#krM2').onclick = krRules; $('#krM4').onclick = krHome;
+      <button class="btn" id="krM3">Spring kortet over</button><button class="btn" id="krM5">⟲ Vend skærmen</button><button class="btn" id="krM4">Forsiden</button></div></div>`);
+  $('#krM1').onclick = closeModal;
+  $('#krM5').onclick = () => { KR.flipX = !KR.flipX; krSave(); closeModal(); krRender(); }; $('#krM2').onclick = krRules; $('#krM4').onclick = krHome;
   $('#krM3').onclick = () => { krSnap(); KR.players.forEach(p => { p.round = 0; }); closeModal(); krNextCard(); krRender(); };
 }
 function krInit() {
   $('#krStartBtn').onclick = () => {
     const saved = store.get(K_KR, null);
-    if (saved && saved.phase !== 'over' && confirm('Fortsæt det gemte Kransen-spil? (Annuller = start nyt)')) { KR = saved; krUndo = []; krShow(); return; }
+    if (saved && saved.phase !== 'over' && confirm('Fortsæt det gemte Kransen-spil? (Annuller = start nyt)')) { KR = saved; KR.free = KR.free || {}; krUndo = []; krShow(); return; }
     krSetup();
   };
   $('#krPass').onclick = krPass;
