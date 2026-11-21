@@ -70,6 +70,6 @@ Første til 30 point vinder (15 eller 20 for et kortere spil).
 Når et kort er slut, kan man gætte gratis på de resterende svar (tæller ikke). Sidder spillerne overfor hinanden,
 kan skærmen automatisk vende sig mod den, der har tur (vælges ved opsætningen: ⬇ her / ⬆ overfor). Kortene ligger i `kort/`:
 - `kort/alm.js` – almen viden
-- `kort/temaer.js` + `kort/flere.js` – kort til hvert tema (cykelsport, besættelsen, politik, den kolde krig, Odense, geografi, klassisk musik, IT)
+- `kort/temaer.js` + `kort/flere.js` + `kort/runde6.js` – kort til hvert tema (cykelsport, besættelsen, politik, den kolde krig, Odense, geografi, klassisk musik, IT)
 - `kort/lande.js` + `kort/lande-former.js` – landesilhuetter genereret fra [Natural Earth](https://www.naturalearthdata.com/) (public domain)
 - `kort/billeder.js` – fotos af monumenter og genstande (Creative Commons, med kreditering)
