@@ -229,3 +229,5 @@ body.krflip:has(#kransen:not(.hidden)) #mbox{transform:rotate(180deg)}
 /* gratis gæt */
 .kitem.free{opacity:.9;border-style:dashed;border-color:var(--gold)}
 #krCenter .kall{align-self:center;font-size:calc(var(--s)*.022);padding:.3em .9em;min-height:0}
+
+.krtarget button{padding:12px 4px;min-width:0}

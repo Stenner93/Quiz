@@ -15,7 +15,7 @@ let KR = null, krUndo = [];
 const KR_SETS = () => {
   const base = [{ id: 'alm', name: 'Almen viden' }]
     .concat((window.THEMES || []).map(t => ({ id: t.id, name: t.name })))
-    .concat([{ id: 'lande', name: 'Billeder: landes form' }, { id: 'billeder', name: 'Billeder: steder & ting' }]);
+    .concat([{ id: 'lande', name: 'Billeder: landes form' }, { id: 'billeder', name: 'Billeder: steder & ting' }, { id: 'malerier', name: 'Billeder: berømte malerier' }]);
   return base.map(s => ({ ...s, n: window.KRANS.filter(c => c.set === s.id).length })).filter(s => s.n > 0);
 };
 const krCardId = c => 'k' + hash(c.set + c.q + c.items.map(i => i.t || i.shape || i.img).join('|'));
@@ -36,12 +36,13 @@ function krSetup() {
     openModal(`<div class="qbody">
       <div class="mtitle">◎ Quizisk Roulette</div>
       <div class="mtext">Hvert kort har ét spørgsmål og 10 svarmuligheder i en krans. På skift vælger I et svar – eller siger pas.
-        Rigtigt = 1 point. Forkert = I mister kortets point og er ude af kortet. Siger I <b>pas</b>, beholder I kortets point. Første til 30 point vinder (standard).</div>
+        Rigtigt = 1 point. Forkert = I mister kortets point og er ude af kortet. Siger I <b>pas</b>, beholder I kortets point. Første til 30 point vinder (standard) – I kan også vælge kortere eller længere spil.</div>
       <h3>Hvilke kort skal med?</h3>
       <div class="krsets">${sets.map(s => `<button class="krset ${st.sets.includes(s.id) ? 'on' : ''}" data-id="${s.id}">${esc(s.name)} <small>${s.n}</small></button>`).join('')}</div>
       <div class="row"><button class="btn" id="krAll">Vælg alle</button><button class="btn" id="krNone">Fravælg alle</button></div>
       <h3>Spil til</h3>
-      <div class="seg" id="krTarget">${[15, 20, 30].map(n => `<button data-n="${n}" class="${st.target === n ? 'on' : ''}">${n} point</button>`).join('')}</div>
+      <div class="seg krtarget" id="krTarget">${[15, 20, 30, 40, 50, 60].map(n => `<button data-n="${n}" class="${st.target === n ? 'on' : ''}">${n}</button>`).join('')}</div>
+      <p class="hint" style="color:#6b6250">Point – standard er 30. 15–20 giver et kort spil, 50–60 et langt.</p>
       <h3>Vend skærmen mod den, der har tur</h3>
       <div class="seg" id="krFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
       ${st.flip ? `<p class="hint" style="color:#6b6250">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
@@ -148,7 +149,7 @@ function krOrient() {
 // gratis gæt efter kortet: vis ét svar ad gangen uden point
 function krFreeAsk(i) {
   const c = KR.card, it = c.items[i];
-  const face = `<div class="kbig">${krItemFace(it, true)}</div>${it.credit ? `<div class="kcredit">Foto: ${esc(it.credit)}</div>` : ''}`;
+  const face = krFace(c, it, false), faceA = krFace(c, it, true);
   openModal(`<div class="qbody"><div class="mtext"><b>Gratis gæt</b> · ${esc(c.q)}</div>${face}
     <div class="mtext">${c.type === 'yn' ? 'Sandt eller falsk? Gæt højt' : 'Sig svaret højt'} – og tryk så "Vis svar". Det tæller ikke i pointene.</div>
     <div class="row center"><button class="btn primary big" id="krFRev">Vis svar</button><button class="btn big" id="krFNo">Fortryd</button></div></div>`);
@@ -156,7 +157,7 @@ function krFreeAsk(i) {
   $('#krFRev').onclick = () => {
     KR.free[i] = 1; krSave();
     const yn = c.type === 'yn';
-    openModal(`<div class="qbody"><div class="mtext"><b>Gratis gæt</b> · ${esc(c.q)}</div>${face}
+    openModal(`<div class="qbody"><div class="mtext"><b>Gratis gæt</b> · ${esc(c.q)}</div>${faceA}
       <div class="qans ${yn ? (it.a ? 'good' : 'wrong') : ''}"><b>Svar</b>${yn ? (it.a ? '✓ Sandt' : '✗ Falsk') : esc(String(it.a))}${it.note ? `<small> – ${esc(it.note)}</small>` : ''}</div>
       <div class="row center"><button class="btn primary big" id="krFOk">OK</button></div></div>`);
     $('#krFOk').onclick = () => { closeModal(); krRender(); if (!krLeft()) krShowEnd(); };
@@ -170,6 +171,9 @@ function krItemFace(it, big) {
   if (it.img) return `<img class="kimg" src="${esc(it.img)}" alt="">`;
   return `<span class="kt">${esc(it.t)}</span>`;
 }
+// billede + kreditering; ved malerier vises krediteringen (maler og år) først sammen med svaret
+const krFace = (c, it, answered) => `<div class="kbig">${krItemFace(it, true)}</div>${it.credit && (answered || c.set !== 'malerier')
+  ? `<div class="kcredit">${c.set === 'malerier' ? '' : 'Foto: '}${esc(it.credit)}</div>` : ''}`;
 const krAnsText = (card, it) => card.type === 'yn' ? (it.a ? '✓' : '✗') : String(it.a);
 // Kategori som i reglerne: Sandt/falsk, Nummer, Rækkefølge, Århundrede/årti, Farve eller Diverse
 const krKind = c => c.kind || (c.type === 'yn' ? 'Sandt/falsk'
@@ -233,7 +237,7 @@ window.addEventListener('resize', () => { if (KR && !$('#kransen').classList.con
 
 function krAsk(i) {
   const c = KR.card, it = c.items[i], p = KR.players[KR.turn];
-  const face = `<div class="kbig">${krItemFace(it, true)}</div>${it.credit ? `<div class="kcredit">Foto: ${esc(it.credit)}</div>` : ''}`;
+  const face = krFace(c, it, false), faceA = krFace(c, it, true);
   const flag = `<button class="btn link" id="krFlag">⚑ Markér kortet</button>`;
   if (c.type === 'yn') {
     openModal(`<div class="qbody"><div class="mtext"><b>${esc(p.name)}</b> · ${esc(c.q)}</div>${face}
@@ -243,7 +247,7 @@ function krAsk(i) {
     $('#krCancel2').onclick = closeModal;
     $('#krYes').onclick = () => {
       const correct = !!it.a;
-      openModal(`<div class="qbody"><div class="mtext"><b>${esc(p.name)}</b> · ${esc(c.q)}</div>${face}
+      openModal(`<div class="qbody"><div class="mtext"><b>${esc(p.name)}</b> · ${esc(c.q)}</div>${faceA}
         <div class="qans ${correct ? 'good' : 'wrong'}"><b>Svar</b>${correct ? '✓ Sandt' : '✗ Falsk'}${it.note ? ` – ${esc(it.note)}` : ''}</div>
         <div class="mtitle">${correct ? '✓ Rigtigt! +1 point' : `✗ Forkert – ${esc(p.name)} mister kortets point og er ude`}</div>
         <div class="row center"><button class="btn primary big" id="krOk">Videre</button></div></div>`);
@@ -255,7 +259,7 @@ function krAsk(i) {
       <div class="row center"><button class="btn primary big" id="krRev">Vis svar</button></div>
       <div class="row center"><button class="btn link" id="krCancel">Fortryd valget</button>${flag}</div></div>`);
     $('#krRev').onclick = () => {
-      openModal(`<div class="qbody"><div class="mtext"><b>${esc(p.name)}</b> · ${esc(c.q)}</div>${face}
+      openModal(`<div class="qbody"><div class="mtext"><b>${esc(p.name)}</b> · ${esc(c.q)}</div>${faceA}
         <div class="qans"><b>Svar</b>${esc(String(it.a))}${it.note ? `<small> – ${esc(it.note)}</small>` : ''}</div>
         <div class="qbtns"><button class="btn bad" id="krNo">✗ Forkert</button><button class="btn ok" id="krYes">✓ Rigtigt</button></div></div>`);
       $('#krYes').onclick = () => krJudge(i, true); $('#krNo').onclick = () => krJudge(i, false);
@@ -317,7 +321,7 @@ function krRules() {
       <li>Pas: man beholder kortets point, men kan ikke svare mere på kortet.</li>
       <li>Kortet slutter, når alle 10 svar er brugt, eller når alle har sagt pas eller er ude. Så lægges pointene sammen.</li>
       <li><b>Gratis gæt:</b> Når kortet er slut, kan I gætte på de svar, der er tilbage, ét ad gangen. Det tæller ikke i pointene – eller I kan gå direkte videre til næste kort.</li>
-      <li>Næste kort startes af spilleren efter den, der startede sidst. Standard er at spille til <b>30 point</b> – eller kortere, fx 15.</li>
+      <li>Næste kort startes af spilleren efter den, der startede sidst. Standard er at spille til <b>30 point</b> – eller kortere (15–20) eller længere (40–60).</li>
     </ul>
     <div class="row center"><button class="btn primary" onclick="closeModal()">OK</button></div></div>`);
 }

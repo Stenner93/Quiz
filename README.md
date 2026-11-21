@@ -66,10 +66,11 @@ Når du ændrer filer, så hæv `CACHE`-versionen i `sw.js`.
 ## Quizisk Roulette – et andet spil i samme app (koden hedder stadig `kransen`)
 Hvert kort har ét spørgsmål og 10 svar placeret i en krans. Spillerne peger på skift på et svar:
 rigtigt giver et point i runden, forkert koster rundens point, og man kan altid passe og gemme sine point.
-Første til 30 point vinder (15 eller 20 for et kortere spil).
+Første til 30 point vinder (standard) – eller vælg 15, 20, 40, 50 eller 60 point.
 Når et kort er slut, kan man gætte gratis på de resterende svar (tæller ikke). Sidder spillerne overfor hinanden,
 kan skærmen automatisk vende sig mod den, der har tur (vælges ved opsætningen: ⬇ her / ⬆ overfor). Kortene ligger i `kort/`:
 - `kort/alm.js` – almen viden
 - `kort/temaer.js` + `kort/flere.js` + `kort/runde6.js` – kort til hvert tema (cykelsport, besættelsen, politik, den kolde krig, Odense, geografi, klassisk musik, IT)
 - `kort/lande.js` + `kort/lande-former.js` – landesilhuetter genereret fra [Natural Earth](https://www.naturalearthdata.com/) (public domain)
 - `kort/billeder.js` – fotos af monumenter og genstande (Creative Commons, med kreditering)
+- `kort/malerier.js` – 37 berømte malerier (public domain) fra Wikimedia Commons og Statens Museum for Kunst (CC0); maler og år vises først sammen med svaret
