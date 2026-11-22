@@ -63,6 +63,12 @@ under **Menu → Rapporter** sendes samlet som et GitHub-issue i dette repo, så
 Ren HTML/CSS/JavaScript uden byggetrin: `index.html`, `style.css`, `app.js`, `questions.js` (de indbyggede spørgsmål), `sw.js` (offline) og `manifest.webmanifest`.
 Når du ændrer filer, så hæv `CACHE`-versionen i `sw.js`.
 
+## Tidslinje – læg begivenhederne i rækkefølge
+Hver spiller får 3–6 begivenheder uden årstal. På skift lægger man en af dem ind i den fælles tidslinje: før, efter eller mellem
+kortene. Rigtigt: kortet bliver liggende. Forkert: kortet smides væk, og man trækker et nyt. Først til at tømme hånden vinder
+(runden spilles færdig; står flere lige, spilles der omspil). Samme årstal tæller som rigtigt; har begge kort en dato, gælder datoen.
+Kortene ligger i `kort/tidslinje.js` (380 begivenheder fra appens egne årstalsspørgsmål og rouletten), spillet i `tidslinje.js`.
+
 ## Quizisk Roulette – et andet spil i samme app (koden hedder stadig `kransen`)
 Hvert kort har ét spørgsmål og 10 svar placeret i en krans. Spillerne peger på skift på et svar:
 rigtigt giver et point i runden, forkert koster rundens point, og man kan altid passe og gemme sine point.

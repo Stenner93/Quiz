@@ -231,3 +231,33 @@ body.krflip:has(#kransen:not(.hidden)) #mbox{transform:rotate(180deg)}
 #krCenter .kall{align-self:center;font-size:calc(var(--s)*.022);padding:.3em .9em;min-height:0}
 
 .krtarget button{padding:12px 4px;min-width:0}
+
+/* ---------- Tidslinje ---------- */
+#tidslinje{height:100%;display:flex;flex-direction:column;gap:10px;padding:12px;transition:transform .45s ease}
+body.tlflip #tidslinje{transform:rotate(180deg)}
+body.tlflip:has(#tidslinje:not(.hidden)) #mbox{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){#tidslinje{transition:none}}
+#tlInfo{display:flex;gap:8px;align-items:center;font-size:18px;flex-wrap:wrap}
+#tlInfo .dot,#tlPlayers .dot{width:20px;height:20px;border-radius:50%;border:2px solid #000;flex:none}
+#tlLine{display:flex;align-items:stretch;overflow-x:auto;gap:0;padding:8px 4px;min-height:170px;flex:none;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;scroll-behavior:smooth}
+.tlcard{flex:none;width:150px;min-height:140px;border-radius:14px;padding:10px;background:#fbf8ef;color:#1d1d1d;
+  display:flex;flex-direction:column;gap:6px;box-shadow:0 4px 10px rgba(0,0,0,.35);text-align:left;border:3px solid transparent}
+.tlcard .tly{font-weight:800;font-size:20px;color:#8a5a00}
+.tlcard .tlt{font-size:15px;line-height:1.25;font-weight:600;overflow-wrap:break-word;hyphens:auto}
+.tlcard.new{border-color:var(--ok)}
+.tlslot{flex:none;width:14px;margin:0 4px;border:none;background:transparent;border-radius:10px;color:#1b1405;font-size:24px;font-weight:800;padding:0}
+.tlslot.on{width:44px;background:linear-gradient(var(--gold),var(--gold2));cursor:pointer}
+#tlHand{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#tlHand .tlcard{cursor:pointer}
+#tlHand .tlcard .tly{color:#9aa6b8}
+#tlHand .tlcard.sel{border-color:var(--gold);transform:translateY(-6px)}
+#tlPanel{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+#tlPlayers{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+#tlPlayers .kscore{color:var(--gold);font-size:22px;min-width:2ch;text-align:right}
+#tlPlayers .kstat{color:var(--mut);font-size:14px}
+@media (max-width:560px){.tlcard{width:128px;min-height:122px}.tlcard .tlt{font-size:14px}.tlcard .tly{font-size:18px}}
+#tlPlayers{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+#tlPlayers .pcard{margin:0;padding:8px 10px;gap:6px}
+#tlPlayers .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#tlPlayers .kstat{font-size:13px;white-space:nowrap}

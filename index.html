@@ -73,6 +73,12 @@
       <p class="hint">Et andet spil: hvert kort har 10 svar i en krans – tør du tage et svar mere, eller passer du? Kort fra alle temaerne, landes silhuetter og billeder.</p>
       <div class="row"><button id="krStartBtn" class="btn primary big">Spil Quizisk Roulette</button></div>
     </div>
+
+    <div class="card krpromo">
+      <h2>⟷ Tidslinje</h2>
+      <p class="hint">Læg begivenhederne i den rigtige rækkefølge – kom Titanic før eller efter genforeningen? Først til at tømme hånden vinder.</p>
+      <div class="row"><button id="tlStartBtn" class="btn primary big">Spil Tidslinje</button></div>
+    </div>
   </div>
 </section>
 
@@ -116,6 +122,21 @@
   </aside>
 </section>
 
+<!-- ============ TIDSLINJE ============ -->
+<section id="tidslinje" class="screen hidden">
+  <div id="tlInfo"></div>
+  <div id="tlLine"></div>
+  <div id="tlHand"></div>
+  <aside id="tlPanel">
+    <div id="tlPlayers"></div>
+    <div class="row">
+      <button id="tlUndo" class="btn">↶ Fortryd</button>
+      <button id="tlRulesBtn" class="btn">Regler</button>
+      <button id="tlMenu" class="btn">Menu</button>
+    </div>
+  </aside>
+</section>
+
 <div id="modal" class="hidden"><div id="mbox"></div></div>
 
 <script src="questions.js"></script>
@@ -139,5 +160,7 @@
 <script src="kort/billeder.js"></script>
 <script src="app.js"></script>
 <script src="kransen.js"></script>
+<script src="kort/tidslinje.js"></script>
+<script src="tidslinje.js"></script>
 </body>
 </html>
