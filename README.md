@@ -69,9 +69,14 @@ Ren HTML/CSS/JavaScript uden byggetrin: `index.html`, `style.css`, `app.js`, `qu
 Når du ændrer filer, så hæv `CACHE`-versionen i `sw.js`.
 
 ## Tidslinje – læg begivenhederne i rækkefølge
-Hver spiller får 3–6 begivenheder uden årstal. På skift lægger man en af dem ind i den fælles tidslinje: før, efter eller mellem
-kortene. Rigtigt: kortet bliver liggende. Forkert: kortet smides væk, og man trækker et nyt. Først til at tømme hånden vinder
-(runden spilles færdig; står flere lige, spilles der omspil). Samme årstal tæller som rigtigt; har begge kort en dato, gælder datoen.
+Tidslinjen starter med 4 begivenheder. Hver spiller får 3–6 begivenheder uden årstal og lægger på skift en af dem ind i tidslinjen:
+før, efter eller mellem kortene. Rigtigt: kortet bliver liggende. Forkert: kortet smides væk, og man trækker et nyt. Den første,
+der tømmer hånden, vinder runden (1 point; runden spilles færdig, så alle får lige mange ture). Efter hver runde tyndes tidslinjen
+ud – hvert andet kort fjernes, til der kun er 4 tilbage – og alle får nye kort. Man vælger 1–5 runder; flest point vinder.
+Samme årstal tæller som rigtigt; har begge kort en dato, gælder datoen.
+
+Alle tre spil kan vende skærmen mod den spiller, der har tur (⬇ her / ⬆ overfor vælges i den fælles spillerliste),
+og funktionen kan slås til og fra undervejs med knappen "⟲ Vend skærm" i spillets panel.
 Kortene ligger i `kort/tidslinje.js` (begivenheder fra appens egne årstalsspørgsmål, rouletten, Danmarkshistoriens kanon og Wikidata), spillet i `tidslinje.js`.
 
 ## Quizisk Roulette – et andet spil i samme app (koden hedder stadig `kransen`)

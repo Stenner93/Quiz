@@ -292,3 +292,11 @@ details.adv[open] summary{margin-bottom:12px}
 .screen .krset{color:#1d1d1d}
 .screen .krside{color:#1d1d1d}
 .qlogo-img{width:72px;height:72px;border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,.4);flex:none}
+/* Stjernejagt: vend skærmen + fælles flip-knapper */
+#game{transition:transform .45s ease}
+body.sjflip #game{transform:rotate(180deg)}
+body.sjflip:has(#game:not(.hidden)) #mbox{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){#game{transition:none}}
+.prow .side{flex:none;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:#0d1730;color:var(--txt);font-size:14px;white-space:nowrap}
+.flipbtn{width:100%;margin-top:8px}
+.tlround{background:var(--gold);color:#1b1405;font-weight:800;border-radius:999px;padding:2px 10px;font-size:14px}

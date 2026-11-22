@@ -107,29 +107,44 @@ function undo() {
    OPSÆTNING
    ========================================================= */
 // fælles spillerliste – vises på alle tre spils opsætningssider (onChange: tegn siden igen)
+// hvor sidder spilleren? 'down' = den side, hvor skærmen vender rigtigt; 'up' = overfor
+const sideOf = i => (settings.sides || [])[i] || (i % 2 ? 'up' : 'down');
+function fixSides() { settings.sides = settings.names.map((_, i) => sideOf(i)); }
 function renderPlayers(pl, onChange, onType) {
-  pl.innerHTML = '';
+  fixSides(); pl.innerHTML = '';
   settings.names.forEach((n, i) => {
     const row = document.createElement('div'); row.className = 'prow';
     row.innerHTML = `<span class="dot" style="background:${PCOL[i]}"></span>
       <input value="${esc(n)}" maxlength="24" placeholder="Navn på spiller/hold ${i + 1}">
+      <button class="side" title="Hvor sidder spilleren? Bruges, når skærmen vender mod den, der har tur">${sideOf(i) === 'up' ? '⬆ overfor' : '⬇ her'}</button>
       <button class="x" title="Fjern" ${settings.names.length <= 2 ? 'disabled' : ''}>✕</button>`;
     row.querySelector('input').addEventListener('input', e => { settings.names[i] = e.target.value; store.set(K_SET, settings); if (onType) onType(); });
-    row.querySelector('.x').addEventListener('click', () => { settings.names.splice(i, 1); store.set(K_SET, settings); onChange(); });
+    row.querySelector('.side').addEventListener('click', () => { settings.sides[i] = sideOf(i) === 'up' ? 'down' : 'up'; store.set(K_SET, settings); onChange(); });
+    row.querySelector('.x').addEventListener('click', () => { settings.names.splice(i, 1); settings.sides.splice(i, 1); store.set(K_SET, settings); onChange(); });
     pl.appendChild(row);
   });
   const bar = document.createElement('div'); bar.className = 'row';
   bar.innerHTML = `<button class="btn" data-add ${settings.names.length >= MAXP ? 'disabled' : ''}>+ Tilføj spiller</button><button class="btn" data-shuffle>Bland rækkefølge</button>`;
-  bar.querySelector('[data-add]').onclick = () => { if (settings.names.length < MAXP) { settings.names.push(`Spiller ${settings.names.length + 1}`); store.set(K_SET, settings); onChange(); } };
-  bar.querySelector('[data-shuffle]').onclick = () => { const a = settings.names; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } store.set(K_SET, settings); onChange(); };
+  bar.querySelector('[data-add]').onclick = () => { if (settings.names.length < MAXP) { settings.names.push(`Spiller ${settings.names.length + 1}`); fixSides(); store.set(K_SET, settings); onChange(); } };
+  bar.querySelector('[data-shuffle]').onclick = () => {
+    const a = settings.names, b = settings.sides;
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; [b[i], b[j]] = [b[j], b[i]]; }
+    store.set(K_SET, settings); onChange();
+  };
   pl.appendChild(bar);
-  const h = document.createElement('p'); h.className = 'hint'; h.textContent = 'Den øverste spiller starter. Spillerne er de samme i alle tre spil.'; pl.appendChild(h);
+  const h = document.createElement('p'); h.className = 'hint';
+  h.textContent = 'Den øverste spiller starter. Spillerne er de samme i alle tre spil. ⬇ her / ⬆ overfor: hvor spilleren sidder, så skærmen kan vende sig mod den, der har tur.';
+  pl.appendChild(h);
 }
+// vend-skærm-knap til spillenes panel: viser og skifter til/fra undervejs
+const flipLabel = on => `⟲ Vend skærm: ${on ? 'til' : 'fra'}`;
 // skift skærm: skjul alle andre
 function showScreen(sel) {
   document.querySelectorAll('.screen').forEach(x => x.classList.add('hidden'));
   $(sel).classList.remove('hidden'); $(sel).scrollTop = 0;
-  if (!['#kransen', '#tidslinje'].includes(sel)) document.body.classList.remove('krflip', 'tlflip');
+  if (sel !== '#kransen') document.body.classList.remove('krflip');
+  if (sel !== '#tidslinje') document.body.classList.remove('tlflip');
+  if (sel !== '#game') document.body.classList.remove('sjflip');
 }
 function renderHome() {
   const has = k => { const g = store.get(k, null); return !!(g && g.phase !== 'over'); };
@@ -140,6 +155,7 @@ function renderHome() {
 function goHome() { closeModal(); showScreen('#home'); renderHome(); }
 function renderSetup() {
   renderPlayers($('#plist'), renderSetup);
+  document.querySelectorAll('#sjFlipSeg button').forEach(b => { b.classList.toggle('on', (b.dataset.f === '1') === !!settings.sjFlip); b.onclick = () => { settings.sjFlip = b.dataset.f === '1'; store.set(K_SET, settings); renderSetup(); }; });
   applyTheme(settings.theme);
   $('#themeList').innerHTML = themeList().map(t => `<button class="theme ${t.id === THEME ? 'on' : ''}" data-theme="${t.id}">
       <b>${esc(t.name)}</b><span>${esc(t.desc)}</span>
@@ -163,7 +179,8 @@ function startGame() {
   applyTheme(settings.theme);
   S = {
     theme: THEME,
-    players: names.map((name, i) => ({ name, color: PCOL[i], pos: 0, stars: Array(NC).fill(false) })),
+    players: names.map((name, i) => ({ name, color: PCOL[i], pos: 0, stars: Array(NC).fill(false), side: sideOf(i) })),
+    flip: !!settings.sjFlip, flipX: false,
     current: 0, phase: 'roll', roll: null, targets: [], q: null, pickFor: null,
     msg: `Velkommen! ${names[0]} starter.`, winner: null,
     need: THEME === 'alm' ? (settings.need || 4) : defaultNeed(NC),   // antal rigtige i finalen
@@ -260,7 +277,13 @@ function dieHTML(n, cls = '') {
   const pips = on.map(k => `<circle cx="${25 + (k % 3) * 25}" cy="${25 + Math.floor(k / 3) * 25}" r="8.5" fill="#1b1b1b"/>`).join('');
   return `<div class="die ${cls}" id="die" role="button" aria-label="Terning ${n}"><svg viewBox="0 0 100 100">${pips}</svg></div>`;
 }
+function sjOrient() {
+  const p = S && S.players[S.current];
+  document.body.classList.toggle('sjflip', !!S && !$('#game').classList.contains('hidden') && ((!!S.flip && !!p && p.side === 'up') !== !!S.flipX));
+  const b = document.getElementById('sjFlipBtn'); if (b && S) b.textContent = flipLabel(!!S.flip);
+}
 function render() {
+  setTimeout(sjOrient, 0);
   if (!S) return;
   const p = cur();
   // felter der kan vælges
@@ -739,7 +762,7 @@ function init() {
   $('#krGoBtn').onclick = () => krSetup();
   $('#krResume').onclick = () => { const g = store.get('kr_game', null); if (g) { KR = g; KR.free = KR.free || {}; krUndo = []; krShow(); } };
   $('#tlGoBtn').onclick = () => tlSetup();
-  $('#tlResume').onclick = () => { const g = store.get('tl_game', null); if (g) { TLG = g; tlUndo = []; tlShow(); } };
+  $('#tlResume').onclick = () => { const g = store.get('tl_game', null); if (g) { if (!g.rounds) Object.assign(g, { rounds: 1, round: 1, starter: 0, hand: 4, winners: [] }); g.players.forEach(p => p.pts = p.pts || 0); TLG = g; tlUndo = []; tlShow(); } };
   document.querySelectorAll('[data-home]').forEach(b => b.onclick = goHome);
   document.querySelectorAll('#srcSeg button').forEach(b => b.onclick = () => { settings.source = b.dataset.src; store.set(K_SET, settings); renderSetup(); });
   $('#startBtn').onclick = () => {
@@ -758,6 +781,7 @@ function init() {
   $('#repBtn').onclick = () => showReports(() => { closeModal(); renderHome(); });
   $('#menuBtn').onclick = showMenu;
   $('#undoBtn').onclick = undo;
+  $('#sjFlipBtn').onclick = () => { if (!S) return; S.flip = !S.flip; save(); sjOrient(); };
   $('#importBtn').onclick = () => $('#importFile').click();
   $('#importFile').onchange = e => {
     const file = e.target.files[0]; if (!file) return;

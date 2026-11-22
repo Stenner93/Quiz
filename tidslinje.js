@@ -37,29 +37,31 @@ const tlSnap = () => { tlUndo.push(JSON.stringify(TLG)); if (tlUndo.length > 60)
 function tlSetup() {
   document.body.classList.remove('tlflip');
   const sets = TL_SETS();
-  const st = Object.assign({ sets: ['alm'], hand: 4, flip: true, sides: [] }, store.get(K_TLSET, {}));
+  const st = Object.assign({ sets: ['alm'], hand: 4, rounds: 3, flip: true }, store.get(K_TLSET, {}));
   st.sets = st.sets.filter(id => sets.some(s => s.id === id));
   if (!st.sets.length) st.sets = ['alm'];
-  const side = i => st.sides[i] || (i % 2 ? 'up' : 'down');
   const draw = () => {
     const hidden = store.get(K_HIDE, {});
     const pn = () => settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
     const total = tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id]).length;
-    const need = pn().length * st.hand + 12;
+    const need = pn().length * st.hand + 16;
     $('#tlSetupBody').innerHTML = `
       <div class="card"><p class="intro">Hver spiller får ${st.hand} begivenheder. På skift lægger I en af dem ind i tidslinjen – før, efter eller mellem de kort, der ligger der.
-        Rigtigt: kortet bliver liggende. Forkert: kortet smides væk, og du trækker et nyt. Først til at tømme hånden vinder.</p></div>
+        Rigtigt: kortet bliver liggende. Forkert: kortet smides væk, og du trækker et nyt. Den, der først tømmer hånden, vinder runden.
+        Efter hver runde tyndes tidslinjen ud – hvert andet kort fjernes, til der kun er 4 tilbage – og alle får ${st.hand} nye kort.</p></div>
       <div class="card"><h2>Spillere / hold</h2><div id="tlPl"></div></div>
       <div class="card"><h2>Hvilke kort skal med?</h2>
         <div class="krsets">${sets.map(s => `<button class="krset ${st.sets.includes(s.id) ? 'on' : ''}" data-id="${s.id}">${esc(s.name)} <small>${s.n}</small></button>`).join('')}</div>
         <div class="row"><button class="btn" id="tlAll">Vælg alle</button><button class="btn" id="tlNone">Fravælg alle</button></div>
         <p class="hint">${total} kort valgt${total < need ? ` – vælg flere emner (mindst ${need} kort til ${pn().length} spillere)` : ''}</p></div>
+      <div class="card"><h2>Antal runder</h2>
+        <div class="seg" id="tlRoundSeg">${[1, 2, 3, 4, 5].map(n => `<button data-n="${n}" class="${st.rounds === n ? 'on' : ''}">${n}</button>`).join('')}</div>
+        <p class="hint">Vinderen af hver runde får 1 point. Flest point efter sidste runde vinder.</p></div>
       <div class="card"><h2>Kort på hånden</h2>
         <div class="seg" id="tlHandSeg">${[3, 4, 5, 6].map(n => `<button data-n="${n}" class="${st.hand === n ? 'on' : ''}">${n}</button>`).join('')}</div></div>
       <div class="card"><h2>Vend skærmen mod den, der har tur</h2>
         <div class="seg" id="tlFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
-        ${st.flip ? `<p class="hint">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
-        <div class="krsides">${pn().map((n, i) => `<button class="krside" data-i="${i}"><span class="dot" style="background:${PCOL[i]}"></span>${esc(n)} <b>${side(i) === 'up' ? '⬆ overfor' : '⬇ her'}</b></button>`).join('')}</div>` : ''}</div>
+        <p class="hint">Hvor hver spiller sidder (⬇ her / ⬆ overfor), vælges i spillerlisten. Kan også slås til og fra undervejs.</p></div>
       <div class="row center"><button class="btn primary big" id="tlGo" ${total >= need ? '' : 'disabled'}>Start Tidslinje</button>
         <button class="btn big" id="tlRules0">Regler</button></div>`;
     renderPlayers($('#tlPl'), draw);
@@ -67,32 +69,33 @@ function tlSetup() {
       const id = b.dataset.id; st.sets = st.sets.includes(id) ? st.sets.filter(x => x !== id) : st.sets.concat(id); draw();
     });
     document.querySelectorAll('#tlHandSeg button').forEach(b => b.onclick = () => { st.hand = +b.dataset.n; draw(); });
+    document.querySelectorAll('#tlRoundSeg button').forEach(b => b.onclick = () => { st.rounds = +b.dataset.n; draw(); });
     document.querySelectorAll('#tlFlipSeg button').forEach(b => b.onclick = () => { st.flip = b.dataset.f === '1'; draw(); });
-    document.querySelectorAll('#tlSetupBody .krside').forEach(b => b.onclick = () => {
-      const i = +b.dataset.i; st.sides = pn().map((_, k) => side(k)); st.sides[i] = side(i) === 'up' ? 'down' : 'up'; draw();
-    });
     $('#tlAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
     $('#tlNone').onclick = () => { st.sets = []; draw(); };
     $('#tlRules0').onclick = tlRules;
     $('#tlGo').onclick = () => {
       const saved = store.get(K_TL, null);
       if (saved && saved.phase !== 'over' && !confirm('Starte et nyt spil? Det gemte spil Tidslinje overskrives.')) return;
-      st.sides = pn().map((_, k) => side(k)); store.set(K_TLSET, st); tlStart(st, pn());
+      store.set(K_TLSET, st); tlStart(st, pn());
     };
   };
   showScreen('#tlSetup');
   draw();
 }
 
+const TL_START = 4;   // kort i tidslinjen ved start og efter hver udtynding
 function tlShuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function tlStart(st, names) {
   const hidden = store.get(K_HIDE, {});
   const deck = tlShuffle(tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id]).map(c => c.id));
   TLG = {
-    players: names.map((name, i) => ({ name, color: PCOL[i], hand: [], side: st.sides[i] || (i % 2 ? 'up' : 'down'), out: false, ok: 0 })),
-    sets: st.sets, flip: !!st.flip, flipX: false, deck, discard: [], line: [], turn: 0, sel: null, phase: 'play', winner: null, sudden: false, n: 0,
+    players: names.map((name, i) => ({ name, color: PCOL[i], hand: [], side: sideOf(i), pts: 0, ok: 0 })),
+    sets: st.sets, flip: !!st.flip, flipX: false, deck, discard: [], line: [], turn: 0, starter: 0, sel: null, phase: 'play',
+    winners: [], n: 0, hand: st.hand, rounds: st.rounds || 3, round: 1,
   };
-  TLG.line.push(deck.pop());
+  for (let k = 0; k < TL_START; k++) TLG.line.push(deck.pop());
+  TLG.line.sort((a, b) => tlCmp(tlById(a), tlById(b)));
   TLG.players.forEach(p => { for (let k = 0; k < st.hand; k++) p.hand.push(deck.pop()); });
   tlUndo = []; tlSave(); tlShow();
 }
@@ -102,7 +105,6 @@ function tlDraw() {
 }
 
 /* ---------- spillogik ---------- */
-const tlActive = () => TLG.players.filter(p => !p.out);
 function tlCorrectSlot(card) {               // første hul, hvor kortet passer
   const L = TLG.line.map(tlById);
   for (let i = 0; i <= L.length; i++) {
@@ -139,29 +141,46 @@ function tlPlace(slot) {
   $('#tlFlag').onclick = () => tlFlag(card);
 }
 function tlAdvance() {
-  const act = tlActive();
-  const order = TLG.players.map((_, i) => i).filter(i => !TLG.players[i].out);
-  const pos = order.indexOf(TLG.turn);
-  const roundEnd = pos === order.length - 1;            // alle aktive har haft lige mange ture
-  if (roundEnd) {
-    const empty = act.filter(p => !p.hand.length);
-    if (empty.length === 1) { TLG.phase = 'over'; TLG.winner = TLG.players.indexOf(empty[0]); tlSave(); tlRender(); return tlShowEnd(); }
-    if (empty.length > 1) {                              // omspil mellem dem, der står lige
-      TLG.players.forEach(p => { if (!empty.includes(p)) p.out = true; });
-      empty.forEach(p => { const c = tlDraw(); if (c) p.hand.push(c); });
-      TLG.sudden = true;
-      if (empty.every(p => !p.hand.length)) { TLG.phase = 'over'; TLG.winner = TLG.players.indexOf(empty[0]); tlSave(); tlRender(); return tlShowEnd(); }
-      TLG.turn = TLG.players.indexOf(empty[0]); tlSave(); tlRender();
-      return openModal(`<div class="qbody"><div class="mtitle">Omspil!</div><div class="mtext">${empty.map(p => esc(p.name)).join(' og ')} tømte hånden i samme runde. De trækker ét kort hver og spiller videre, til kun én tømmer hånden i en runde.</div>
-        <div class="row center"><button class="btn primary big" onclick="closeModal()">OK</button></div></div>`);
-    }
-    if (!TLG.deck.length && !TLG.discard.length) {     // ingen kort tilbage: færrest kort vinder
-      const min = Math.min(...act.map(p => p.hand.length));
-      TLG.phase = 'over'; TLG.winner = TLG.players.indexOf(act.find(p => p.hand.length === min)); tlSave(); tlRender(); return tlShowEnd();
+  const n = TLG.players.length, next = (TLG.turn + 1) % n;
+  if (next === TLG.starter) {                          // runden er slut, når alle har haft lige mange ture
+    const empty = TLG.players.filter(p => !p.hand.length);
+    if (empty.length) return tlRoundEnd(empty);
+    if (!TLG.deck.length && !TLG.discard.length) {     // ingen kort tilbage: færrest kort vinder runden
+      const min = Math.min(...TLG.players.map(p => p.hand.length));
+      return tlRoundEnd(TLG.players.filter(p => p.hand.length === min));
     }
   }
-  TLG.turn = order[(pos + 1) % order.length]; TLG.sel = null;
+  TLG.turn = next; TLG.sel = null;
   tlSave(); tlRender();
+}
+// fjern hvert andet kort fra tidslinjen, til der kun er TL_START tilbage
+function tlThin() {
+  let i = 1;
+  while (TLG.line.length > TL_START) { if (i >= TLG.line.length) i = 1; TLG.discard.push(TLG.line.splice(i, 1)[0]); i++; }
+}
+function tlRoundEnd(winners) {
+  winners.forEach(p => p.pts++);
+  const names = winners.map(p => esc(p.name)).join(' og ');
+  const last = TLG.round >= TLG.rounds;
+  if (last) {
+    const top = Math.max(...TLG.players.map(p => p.pts));
+    let best = TLG.players.filter(p => p.pts === top);
+    if (best.length > 1) { const ok = Math.max(...best.map(p => p.ok)); best = best.filter(p => p.ok === ok); }
+    TLG.phase = 'over'; TLG.winners = best.map(p => TLG.players.indexOf(p));
+    tlSave(); tlRender(); return tlShowEnd(names);
+  }
+  const before = TLG.line.length;
+  TLG.players.forEach(p => { TLG.discard.push(...p.hand); p.hand = []; });
+  tlThin();
+  TLG.round++; TLG.starter = (TLG.starter + 1) % TLG.players.length; TLG.turn = TLG.starter; TLG.sel = null; TLG.last = null;
+  TLG.players.forEach(p => { for (let k = 0; k < TLG.hand; k++) { const c = tlDraw(); if (c) p.hand.push(c); } });
+  tlSave(); tlRender();
+  openModal(`<div class="qbody"><div class="mtitle">Runde ${TLG.round - 1} af ${TLG.rounds} er slut</div>
+    <div class="mtext"><b>${names}</b> ${winners.length > 1 ? 'tømte hånden og får hver 1 point' : 'vandt runden og får 1 point'}.</div>
+    <div class="mtext">Stillingen: ${TLG.players.slice().sort((a, b) => b.pts - a.pts).map(p => `<b>${esc(p.name)}</b> ${p.pts}`).join(' · ')}</div>
+    <div class="mtext">Tidslinjen tyndes ud: hvert andet kort fjernes, til der er ${TL_START} tilbage (${before} → ${TLG.line.length}). Alle får ${TLG.hand} nye kort.
+      ${esc(TLG.players[TLG.turn].name)} starter runde ${TLG.round}.</div>
+    <div class="row center"><button class="btn primary big" onclick="closeModal()">Start runde ${TLG.round}</button></div></div>`);
 }
 
 /* ---------- visning ---------- */
@@ -173,6 +192,7 @@ function tlShow() {
 function tlOrient() {
   const p = TLG.players[TLG.turn];
   document.body.classList.toggle('tlflip', (!!TLG.flip && !!p && p.side === 'up') !== !!TLG.flipX);
+  $('#tlFlipBtn').textContent = flipLabel(!!TLG.flip);
 }
 function tlRender() {
   const p = TLG.players[TLG.turn], play = TLG.phase === 'play', sel = TLG.sel !== null && play;
@@ -181,13 +201,13 @@ function tlRender() {
   $('#tlLine').innerHTML = slot(0) + L.map((c, i) => `<div class="tlcard ${TLG.last && TLG.last.ok && TLG.last.id === c.id ? 'new' : ''}">
       <div class="tly">${esc(tlFmt(c.w))}</div><div class="tlt">${esc(c.t)}</div></div>${slot(i + 1)}`).join('');
   $('#tlInfo').innerHTML = play
-    ? `<span class="dot" style="background:${p.color}"></span><b>${esc(p.name)}s tur</b> · ${sel ? 'tryk på ＋ der, hvor kortet hører til' : 'vælg et af dine kort'}${TLG.sudden ? ' · <b>omspil</b>' : ''}`
+    ? `<span class="tlround">Runde ${TLG.round}/${TLG.rounds}</span><span class="dot" style="background:${p.color}"></span><b>${esc(p.name)}s tur</b> · ${sel ? 'tryk på ＋ der, hvor kortet hører til' : 'vælg et af dine kort'}`
     : 'Spillet er slut';
   $('#tlHand').innerHTML = play ? p.hand.map((id, i) => { const c = tlById(id); return `<button class="tlcard hand ${TLG.sel === i ? 'sel' : ''}" data-i="${i}"><div class="tly">?</div><div class="tlt">${esc(c.t)}</div></button>`; }).join('') : '';
-  $('#tlPlayers').innerHTML = TLG.players.map((pl, i) => `<div class="pcard ${i === TLG.turn && play ? 'cur' : ''} ${pl.out ? 'st-out' : ''}">
+  $('#tlPlayers').innerHTML = TLG.players.map((pl, i) => `<div class="pcard ${i === TLG.turn && play ? 'cur' : ''}">
       <span class="dot" style="background:${pl.color}"></span><span class="nm">${esc(pl.name)}</span>
-      <span class="kstat">${pl.out ? 'ude' : pl.hand.length === 1 ? '1 kort' : pl.hand.length + ' kort'}</span><b class="kscore">${pl.ok}</b></div>`).join('')
-    + `<p class="hint">Tal = rigtigt placerede kort · ${TLG.deck.length} kort i bunken</p>`;
+      <span class="kstat">${pl.hand.length === 1 ? '1 kort' : pl.hand.length + ' kort'}</span><b class="kscore">${pl.pts}</b></div>`).join('')
+    + `<p class="hint">Tal = vundne runder · ${TLG.deck.length} kort i bunken</p>`;
   document.querySelectorAll('#tlHand .tlcard').forEach(b => b.onclick = () => { TLG.sel = TLG.sel === +b.dataset.i ? null : +b.dataset.i; tlSave(); tlRender(); });
   document.querySelectorAll('.tlslot').forEach(b => b.onclick = () => tlPlace(+b.dataset.s));
   tlOrient();
@@ -195,10 +215,12 @@ function tlRender() {
   if (nw) nw.scrollIntoView({ block: 'nearest', inline: 'center' });
 }
 
-function tlShowEnd() {
-  const w = TLG.players[TLG.winner];
-  openModal(`<div class="win"><div class="big-star">⟷</div><div class="mtitle">${esc(w.name)} vinder Tidslinje!</div>
-    <div class="mtext">${TLG.players.slice().sort((a, b) => a.hand.length - b.hand.length || b.ok - a.ok).map(p => `${esc(p.name)}: ${p.hand.length} kort tilbage, ${p.ok} rigtige`).join(' · ')}</div>
+function tlShowEnd(lastNames) {
+  const W = (TLG.winners || []).map(i => TLG.players[i]);
+  const title = W.length === 1 ? `${esc(W[0].name)} vinder Tidslinje!` : `Uafgjort mellem ${W.map(p => esc(p.name)).join(' og ')}!`;
+  openModal(`<div class="win"><div class="big-star">⟷</div><div class="mtitle">${title}</div>
+    ${lastNames ? `<div class="mtext">Sidste runde blev vundet af <b>${lastNames}</b>.</div>` : ''}
+    <div class="mtext">${TLG.players.slice().sort((a, b) => b.pts - a.pts || b.ok - a.ok).map(p => `${esc(p.name)}: ${p.pts} ${p.pts === 1 ? 'runde' : 'runder'} (${p.ok} rigtige)`).join(' · ')}</div>
     <div class="row center" style="margin-top:20px"><button class="btn primary big" id="tlNew">Nyt spil</button><button class="btn big" id="tlHome">Forsiden</button>
       <button class="btn big" id="tlSee">Se tidslinjen</button></div></div>`);
   $('#tlNew').onclick = () => { closeModal(); tlSetup(); };
@@ -219,12 +241,14 @@ function tlHome() { goHome(); }
 function tlRules() {
   openModal(`<div class="qbody rules"><div class="mtitle">Regler for Tidslinje</div>
     <ul>
-      <li>Hver spiller får nogle kort med en begivenhed – men uden årstal. Midt på bordet ligger én begivenhed med årstal: starten på tidslinjen.</li>
+      <li>Hver spiller får nogle kort med en begivenhed – men uden årstal. Tidslinjen starter med 4 begivenheder med årstal.</li>
       <li>På sin tur vælger man et af sine kort og lægger det ind i tidslinjen: før, efter eller mellem de kort, der ligger der.</li>
       <li><b>Rigtigt:</b> kortet vendes og bliver liggende – tidslinjen bliver længere og sværere.</li>
       <li><b>Forkert:</b> kortet smides væk, man ser det rigtige årstal og trækker et nyt kort.</li>
       <li>Har to begivenheder samme årstal, er begge placeringer rigtige. Står der en dato på begge kort, gælder datoen.</li>
-      <li>Den første, der tømmer sin hånd, vinder – men runden spilles færdig, så alle får lige mange ture. Tømmer flere hånden i samme runde, trækker de ét kort hver og spiller omspil.</li>
+      <li>Den første, der tømmer sin hånd, vinder runden og får 1 point – men runden spilles færdig, så alle får lige mange ture. Tømmer flere hånden i samme runde, får de alle 1 point.</li>
+      <li>Efter hver runde tyndes tidslinjen ud: hvert andet kort fjernes, til der kun er 4 tilbage. Alle får nye kort, og næste spiller starter den nye runde.</li>
+      <li>I vælger antal runder ved start. Flest point efter sidste runde vinder; står det lige, vinder den med flest rigtigt placerede kort.</li>
     </ul>
     <div class="row center"><button class="btn primary" onclick="closeModal()">OK</button></div></div>`);
 }
@@ -238,6 +262,7 @@ function tlMenu() {
 function tlInit() {
   $('#tlUndo').onclick = () => { if (!tlUndo.length) return; TLG = JSON.parse(tlUndo.pop()); tlSave(); closeModal(); tlRender(); };
   $('#tlMenu').onclick = tlMenu;
+  $('#tlFlipBtn').onclick = () => { if (!TLG) return; TLG.flip = !TLG.flip; tlSave(); tlOrient(); };
   $('#tlRulesBtn').onclick = tlRules;
 }
 tlInit();

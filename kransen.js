@@ -46,8 +46,7 @@ function krSetup() {
         <p class="hint">Point – standard er 30. 15–20 giver et kort spil, 50–60 et langt.</p></div>
       <div class="card"><h2>Vend skærmen mod den, der har tur</h2>
         <div class="seg" id="krFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
-        ${st.flip ? `<p class="hint">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
-        <div class="krsides">${pn().map((n, i) => `<button class="krside" data-i="${i}"><span class="dot" style="background:${PCOL[i]}"></span>${esc(n)} <b>${side(i) === 'up' ? '⬆ overfor' : '⬇ her'}</b></button>`).join('')}</div>` : ''}</div>
+        <p class="hint">Hvor hver spiller sidder (⬇ her / ⬆ overfor), vælges i spillerlisten. Kan også slås til og fra undervejs.</p></div>
       <div class="row center"><button class="btn primary big" id="krGo" ${total ? '' : 'disabled'}>Start Quizisk Roulette</button>
         <button class="btn big" id="krRules0">Regler</button></div>`;
     renderPlayers($('#krPl'), draw);
@@ -56,16 +55,13 @@ function krSetup() {
     });
     document.querySelectorAll('#krTarget button').forEach(b => b.onclick = () => { st.target = +b.dataset.n; draw(); });
     document.querySelectorAll('#krFlipSeg button').forEach(b => b.onclick = () => { st.flip = b.dataset.f === '1'; draw(); });
-    document.querySelectorAll('#krSetupBody .krside').forEach(b => b.onclick = () => {
-      const i = +b.dataset.i; st.sides = pn().map((_, k) => side(k)); st.sides[i] = side(i) === 'up' ? 'down' : 'up'; draw();
-    });
     $('#krAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
     $('#krNone').onclick = () => { st.sets = []; draw(); };
     $('#krRules0').onclick = krRules;
     $('#krGo').onclick = () => {
       const saved = store.get(K_KR, null);
       if (saved && saved.phase !== 'over' && !confirm('Starte et nyt spil? Det gemte spil Quizisk Roulette overskrives.')) return;
-      st.sides = pn().map((_, k) => side(k)); store.set(K_KRSET, st); krStart(st);
+      store.set(K_KRSET, st); krStart(st);
     };
   };
   showScreen('#krSetup');
@@ -75,7 +71,7 @@ function krSetup() {
 function krStart(st) {
   const names = settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
   KR = {
-    players: names.map((name, i) => ({ name, color: PCOL[i], score: 0, round: 0, status: 'in', side: (st.sides || [])[i] || (i % 2 ? 'up' : 'down') })),
+    players: names.map((name, i) => ({ name, color: PCOL[i], score: 0, round: 0, status: 'in', side: sideOf(i) })),
     flip: !!st.flip, flipX: false, free: {}, revealAll: false,
     sets: st.sets, target: st.target, starter: 0, turn: 0, card: null, res: {}, phase: 'play', winner: null, n: 0,
   };
@@ -150,6 +146,7 @@ function krOrient() {
   const p = KR.players[KR.turn];
   const up = (!!KR.flip && !!p && p.side === 'up') !== !!KR.flipX;
   document.body.classList.toggle('krflip', up);
+  $('#krFlipBtn').textContent = flipLabel(!!KR.flip);
 }
 // gratis gæt efter kortet: vis ét svar ad gangen uden point
 function krFreeAsk(i) {
@@ -343,6 +340,7 @@ function krInit() {
   $('#krPass').onclick = krPass;
   $('#krUndo').onclick = () => { if (!krUndo.length) return; KR = JSON.parse(krUndo.pop()); krSave(); closeModal(); krRender(); };
   $('#krMenu').onclick = krMenu;
+  $('#krFlipBtn').onclick = () => { if (!KR) return; KR.flip = !KR.flip; krSave(); krOrient(); };
   $('#krRulesBtn').onclick = krRules;
 }
 krInit();
