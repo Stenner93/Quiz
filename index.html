@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#14223f">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Stjernejagt</title>
+<title>Quiz app</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -13,16 +13,47 @@
 </head>
 <body>
 
-<!-- ============ OPSÆTNING ============ -->
-<section id="setup" class="screen">
+<!-- ============ FORSIDE ============ -->
+<section id="home" class="screen">
   <div class="setup-inner">
     <header class="brand">
-      <div class="brand-logo" aria-hidden="true">★</div>
+      <img class="qlogo-img" src="icons/icon.svg" alt="" aria-hidden="true">
       <div>
-        <h1>Stjernejagt</h1>
-        <p class="sub">Quiz-brætspil for 2–6 spillere eller hold</p>
+        <h1>Quiz app</h1>
+        <p class="sub">Tre quizspil til hele bordet – 2–6 spillere eller hold</p>
       </div>
     </header>
+    <div class="tiles">
+      <div class="tile t-sj">
+        <div class="ticon">★</div>
+        <h2>Stjernejagt</h2>
+        <p>Quiz-brætspil: slå med terningen, svar rigtigt og saml en stjerne i hver af de seks kategorier.</p>
+        <div class="tbtns"><button class="btn tres hidden" id="sjResume">Fortsæt</button><button class="btn primary" id="sjGo">Spil →</button></div>
+      </div>
+      <div class="tile t-kr">
+        <div class="ticon">◎</div>
+        <h2>Quizisk Roulette</h2>
+        <p>Ti svar i en krans. Tag et svar mere – eller sig pas og gem dine point.</p>
+        <div class="tbtns"><button class="btn tres hidden" id="krResume">Fortsæt</button><button class="btn primary" id="krGoBtn">Spil →</button></div>
+      </div>
+      <div class="tile t-tl">
+        <div class="ticon">⟷</div>
+        <h2>Tidslinje</h2>
+        <p>Læg begivenhederne i den rigtige rækkefølge. Først til at tømme hånden vinder.</p>
+        <div class="tbtns"><button class="btn tres hidden" id="tlResume">Fortsæt</button><button class="btn primary" id="tlGoBtn">Spil →</button></div>
+      </div>
+    </div>
+    <div class="row center homefoot">
+      <button id="fsBtn" class="btn">Fuld skærm</button>
+      <button id="repBtn" class="btn">⚑ Rapporter</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STJERNEJAGT: OPSÆTNING ============ -->
+<section id="setup" class="screen hidden">
+  <div class="setup-inner">
+    <header class="pagehead"><button class="btn back" data-home>←</button><h1><span class="ph-ico">★</span> Stjernejagt</h1></header>
 
     <div id="resumeBox" class="card hidden">
       <p>Der er et gemt spil.</p>
@@ -32,11 +63,6 @@
     <div class="card">
       <h2>Spillere / hold</h2>
       <div id="plist"></div>
-      <div class="row">
-        <button id="addP" class="btn">+ Tilføj spiller</button>
-        <button id="shuffleP" class="btn">Bland rækkefølge</button>
-      </div>
-      <p class="hint">Den øverste spiller starter.</p>
     </div>
 
     <div class="card">
@@ -45,7 +71,7 @@
       <p class="hint" id="tinfo"></p>
     </div>
 
-    <div class="card" id="srcCard">
+    <details class="card adv" id="srcCard"><summary>Spørgsmål og avanceret</summary>
       <h2>Spørgsmål</h2>
       <div class="seg" id="srcSeg">
         <button data-src="app">Spørgsmål i appen</button>
@@ -59,25 +85,11 @@
         <button id="clearImp" class="btn">Slet importerede</button>
         <button id="resetSeen" class="btn">Nulstil brugte spørgsmål</button>
       </div>
-    </div>
+    </details>
 
     <div class="row center">
-      <button id="startBtn" class="btn primary big">Start nyt spil</button>
+      <button id="startBtn" class="btn primary big">Start Stjernejagt</button>
       <button id="rulesBtn" class="btn big">Regler</button>
-      <button id="fsBtn" class="btn big">Fuld skærm</button>
-      <button id="repBtn" class="btn big">⚑ Rapporter</button>
-    </div>
-
-    <div class="card krpromo">
-      <h2>◎ Quizisk Roulette</h2>
-      <p class="hint">Et andet spil: hvert kort har 10 svar i en krans – tør du tage et svar mere, eller passer du? Kort fra alle temaerne, landes silhuetter og billeder.</p>
-      <div class="row"><button id="krStartBtn" class="btn primary big">Spil Quizisk Roulette</button></div>
-    </div>
-
-    <div class="card krpromo">
-      <h2>⟷ Tidslinje</h2>
-      <p class="hint">Læg begivenhederne i den rigtige rækkefølge – kom Titanic før eller efter genforeningen? Først til at tømme hånden vinder.</p>
-      <div class="row"><button id="tlStartBtn" class="btn primary big">Spil Tidslinje</button></div>
     </div>
   </div>
 </section>
@@ -120,6 +132,22 @@
       <button id="krMenu" class="btn">Menu</button>
     </div>
   </aside>
+</section>
+
+<!-- ============ ROULETTE: OPSÆTNING ============ -->
+<section id="krSetup" class="screen hidden">
+  <div class="setup-inner">
+    <header class="pagehead"><button class="btn back" data-home>←</button><h1><span class="ph-ico">◎</span> Quizisk Roulette</h1></header>
+    <div id="krSetupBody"></div>
+  </div>
+</section>
+
+<!-- ============ TIDSLINJE: OPSÆTNING ============ -->
+<section id="tlSetup" class="screen hidden">
+  <div class="setup-inner">
+    <header class="pagehead"><button class="btn back" data-home>←</button><h1><span class="ph-ico">⟷</span> Tidslinje</h1></header>
+    <div id="tlSetupBody"></div>
+  </div>
 </section>
 
 <!-- ============ TIDSLINJE ============ -->

@@ -40,42 +40,47 @@ function tlSetup() {
   const st = Object.assign({ sets: ['alm'], hand: 4, flip: true, sides: [] }, store.get(K_TLSET, {}));
   st.sets = st.sets.filter(id => sets.some(s => s.id === id));
   if (!st.sets.length) st.sets = ['alm'];
-  const pnames = settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
   const side = i => st.sides[i] || (i % 2 ? 'up' : 'down');
   const draw = () => {
     const hidden = store.get(K_HIDE, {});
+    const pn = () => settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
     const total = tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id]).length;
-    const need = pnames.length * st.hand + 12;
-    openModal(`<div class="qbody">
-      <div class="mtitle">⟷ Tidslinje</div>
-      <div class="mtext">Hver spiller får ${st.hand} begivenheder. På skift lægger I en af dem ind i tidslinjen – før, efter eller mellem de kort, der ligger der.
-        Rigtigt: kortet bliver liggende. Forkert: kortet smides væk, og du trækker et nyt. Først til at tømme hånden vinder.</div>
-      <h3>Hvilke kort skal med?</h3>
-      <div class="krsets">${sets.map(s => `<button class="krset ${st.sets.includes(s.id) ? 'on' : ''}" data-id="${s.id}">${esc(s.name)} <small>${s.n}</small></button>`).join('')}</div>
-      <div class="row"><button class="btn" id="tlAll">Vælg alle</button><button class="btn" id="tlNone">Fravælg alle</button></div>
-      <h3>Kort på hånden</h3>
-      <div class="seg" id="tlHandSeg">${[3, 4, 5, 6].map(n => `<button data-n="${n}" class="${st.hand === n ? 'on' : ''}">${n}</button>`).join('')}</div>
-      <h3>Vend skærmen mod den, der har tur</h3>
-      <div class="seg" id="tlFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
-      ${st.flip ? `<p class="hint" style="color:#6b6250">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
-      <div class="krsides">${pnames.map((n, i) => `<button class="krside" data-i="${i}"><span class="dot" style="background:${PCOL[i]}"></span>${esc(n)} <b>${side(i) === 'up' ? '⬆ overfor' : '⬇ her'}</b></button>`).join('')}</div>` : ''}
-      <p class="hint" style="color:#6b6250">${total} kort valgt${total < need ? ` – vælg flere emner (mindst ${need} kort til ${pnames.length} spillere)` : ''} · spillerne fra forsiden: ${pnames.map(esc).join(', ')}</p>
+    const need = pn().length * st.hand + 12;
+    $('#tlSetupBody').innerHTML = `
+      <div class="card"><p class="intro">Hver spiller får ${st.hand} begivenheder. På skift lægger I en af dem ind i tidslinjen – før, efter eller mellem de kort, der ligger der.
+        Rigtigt: kortet bliver liggende. Forkert: kortet smides væk, og du trækker et nyt. Først til at tømme hånden vinder.</p></div>
+      <div class="card"><h2>Spillere / hold</h2><div id="tlPl"></div></div>
+      <div class="card"><h2>Hvilke kort skal med?</h2>
+        <div class="krsets">${sets.map(s => `<button class="krset ${st.sets.includes(s.id) ? 'on' : ''}" data-id="${s.id}">${esc(s.name)} <small>${s.n}</small></button>`).join('')}</div>
+        <div class="row"><button class="btn" id="tlAll">Vælg alle</button><button class="btn" id="tlNone">Fravælg alle</button></div>
+        <p class="hint">${total} kort valgt${total < need ? ` – vælg flere emner (mindst ${need} kort til ${pn().length} spillere)` : ''}</p></div>
+      <div class="card"><h2>Kort på hånden</h2>
+        <div class="seg" id="tlHandSeg">${[3, 4, 5, 6].map(n => `<button data-n="${n}" class="${st.hand === n ? 'on' : ''}">${n}</button>`).join('')}</div></div>
+      <div class="card"><h2>Vend skærmen mod den, der har tur</h2>
+        <div class="seg" id="tlFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
+        ${st.flip ? `<p class="hint">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
+        <div class="krsides">${pn().map((n, i) => `<button class="krside" data-i="${i}"><span class="dot" style="background:${PCOL[i]}"></span>${esc(n)} <b>${side(i) === 'up' ? '⬆ overfor' : '⬇ her'}</b></button>`).join('')}</div>` : ''}</div>
       <div class="row center"><button class="btn primary big" id="tlGo" ${total >= need ? '' : 'disabled'}>Start Tidslinje</button>
-        <button class="btn big" id="tlBack">Tilbage</button></div>
-    </div>`);
-    document.querySelectorAll('.krset').forEach(b => b.onclick = () => {
+        <button class="btn big" id="tlRules0">Regler</button></div>`;
+    renderPlayers($('#tlPl'), draw);
+    document.querySelectorAll('#tlSetupBody .krset').forEach(b => b.onclick = () => {
       const id = b.dataset.id; st.sets = st.sets.includes(id) ? st.sets.filter(x => x !== id) : st.sets.concat(id); draw();
     });
     document.querySelectorAll('#tlHandSeg button').forEach(b => b.onclick = () => { st.hand = +b.dataset.n; draw(); });
     document.querySelectorAll('#tlFlipSeg button').forEach(b => b.onclick = () => { st.flip = b.dataset.f === '1'; draw(); });
-    document.querySelectorAll('.krside').forEach(b => b.onclick = () => {
-      const i = +b.dataset.i; st.sides = pnames.map((_, k) => side(k)); st.sides[i] = side(i) === 'up' ? 'down' : 'up'; draw();
+    document.querySelectorAll('#tlSetupBody .krside').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i; st.sides = pn().map((_, k) => side(k)); st.sides[i] = side(i) === 'up' ? 'down' : 'up'; draw();
     });
     $('#tlAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
     $('#tlNone').onclick = () => { st.sets = []; draw(); };
-    $('#tlBack').onclick = closeModal;
-    $('#tlGo').onclick = () => { st.sides = pnames.map((_, k) => side(k)); store.set(K_TLSET, st); closeModal(); tlStart(st, pnames); };
+    $('#tlRules0').onclick = tlRules;
+    $('#tlGo').onclick = () => {
+      const saved = store.get(K_TL, null);
+      if (saved && saved.phase !== 'over' && !confirm('Starte et nyt spil? Det gemte spil Tidslinje overskrives.')) return;
+      st.sides = pn().map((_, k) => side(k)); store.set(K_TLSET, st); tlStart(st, pn());
+    };
   };
+  showScreen('#tlSetup');
   draw();
 }
 
@@ -161,7 +166,7 @@ function tlAdvance() {
 
 /* ---------- visning ---------- */
 function tlShow() {
-  ['#setup', '#game', '#kransen'].forEach(s => $(s).classList.add('hidden')); $('#tidslinje').classList.remove('hidden');
+  showScreen('#tidslinje');
   keepAwake(); tlRender();
   if (TLG.phase === 'over') tlShowEnd();
 }
@@ -210,7 +215,7 @@ function tlFlag(card) {
   const hidden = store.get(K_HIDE, {}); hidden[card.id] = 1; store.set(K_HIDE, hidden);
   alert('Tak! Kortet er markeret og kommer ikke med i nye spil. Send rapporten under ⚑ Rapporter, når der er net.');
 }
-function tlHome() { closeModal(); document.body.classList.remove('tlflip'); $('#tidslinje').classList.add('hidden'); $('#setup').classList.remove('hidden'); renderSetup(); }
+function tlHome() { goHome(); }
 function tlRules() {
   openModal(`<div class="qbody rules"><div class="mtitle">Regler for Tidslinje</div>
     <ul>
@@ -231,11 +236,6 @@ function tlMenu() {
   $('#tlM5').onclick = () => { TLG.flipX = !TLG.flipX; tlSave(); closeModal(); tlRender(); };
 }
 function tlInit() {
-  $('#tlStartBtn').onclick = () => {
-    const saved = store.get(K_TL, null);
-    if (saved && saved.phase !== 'over' && confirm('Fortsæt det gemte spil Tidslinje? (Annuller = start nyt)')) { TLG = saved; tlUndo = []; tlShow(); return; }
-    tlSetup();
-  };
   $('#tlUndo').onclick = () => { if (!tlUndo.length) return; TLG = JSON.parse(tlUndo.pop()); tlSave(); closeModal(); tlRender(); };
   $('#tlMenu').onclick = tlMenu;
   $('#tlRulesBtn').onclick = tlRules;

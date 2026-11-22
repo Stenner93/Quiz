@@ -27,43 +27,48 @@ function krSetup() {
   const sets = KR_SETS();
   document.body.classList.remove('krflip');
   const st = Object.assign({ sets: sets.map(s => s.id), target: 30, flip: true, sides: [] }, store.get(K_KRSET, {}));
-  const pnames = settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
   const side = i => st.sides[i] || (i % 2 ? 'up' : 'down');
   st.sets = st.sets.filter(id => sets.some(s => s.id === id));
   if (!st.sets.length) st.sets = sets.map(s => s.id);
   const draw = () => {
     const total = window.KRANS.filter(c => st.sets.includes(c.set)).length;
-    openModal(`<div class="qbody">
-      <div class="mtitle">◎ Quizisk Roulette</div>
-      <div class="mtext">Hvert kort har ét spørgsmål og 10 svarmuligheder i en krans. På skift vælger I et svar – eller siger pas.
-        Rigtigt = 1 point. Forkert = I mister kortets point og er ude af kortet. Siger I <b>pas</b>, beholder I kortets point. Første til 30 point vinder (standard) – I kan også vælge kortere eller længere spil.</div>
-      <h3>Hvilke kort skal med?</h3>
-      <div class="krsets">${sets.map(s => `<button class="krset ${st.sets.includes(s.id) ? 'on' : ''}" data-id="${s.id}">${esc(s.name)} <small>${s.n}</small></button>`).join('')}</div>
-      <div class="row"><button class="btn" id="krAll">Vælg alle</button><button class="btn" id="krNone">Fravælg alle</button></div>
-      <h3>Spil til</h3>
-      <div class="seg krtarget" id="krTarget">${[15, 20, 30, 40, 50, 60].map(n => `<button data-n="${n}" class="${st.target === n ? 'on' : ''}">${n}</button>`).join('')}</div>
-      <p class="hint" style="color:#6b6250">Point – standard er 30. 15–20 giver et kort spil, 50–60 et langt.</p>
-      <h3>Vend skærmen mod den, der har tur</h3>
-      <div class="seg" id="krFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
-      ${st.flip ? `<p class="hint" style="color:#6b6250">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
-      <div class="krsides">${pnames.map((n, i) => `<button class="krside" data-i="${i}"><span class="dot" style="background:${PCOL[i]}"></span>${esc(n)} <b>${side(i) === 'up' ? '⬆ overfor' : '⬇ her'}</b></button>`).join('')}</div>` : ''}
-      <p class="hint" style="color:#6b6250">${total} kort valgt · spillerne fra forsiden: ${pnames.map(esc).join(', ')}</p>
+    const pn = () => settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
+    $('#krSetupBody').innerHTML = `
+      <div class="card"><p class="intro">Hvert kort har ét spørgsmål og 10 svarmuligheder i en krans. På skift vælger I et svar – eller siger pas.
+        Rigtigt = 1 point. Forkert = I mister kortets point og er ude af kortet. Siger I <b>pas</b>, beholder I kortets point.</p></div>
+      <div class="card"><h2>Spillere / hold</h2><div id="krPl"></div></div>
+      <div class="card"><h2>Hvilke kort skal med?</h2>
+        <div class="krsets">${sets.map(s => `<button class="krset ${st.sets.includes(s.id) ? 'on' : ''}" data-id="${s.id}">${esc(s.name)} <small>${s.n}</small></button>`).join('')}</div>
+        <div class="row"><button class="btn" id="krAll">Vælg alle</button><button class="btn" id="krNone">Fravælg alle</button></div>
+        <p class="hint">${total} kort valgt</p></div>
+      <div class="card"><h2>Spil til</h2>
+        <div class="seg krtarget" id="krTarget">${[15, 20, 30, 40, 50, 60].map(n => `<button data-n="${n}" class="${st.target === n ? 'on' : ''}">${n}</button>`).join('')}</div>
+        <p class="hint">Point – standard er 30. 15–20 giver et kort spil, 50–60 et langt.</p></div>
+      <div class="card"><h2>Vend skærmen mod den, der har tur</h2>
+        <div class="seg" id="krFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
+        ${st.flip ? `<p class="hint">Hvor sidder spillerne? ⬇ = den side, hvor skærmen vender rigtigt nu · ⬆ = overfor. Tryk for at skifte.</p>
+        <div class="krsides">${pn().map((n, i) => `<button class="krside" data-i="${i}"><span class="dot" style="background:${PCOL[i]}"></span>${esc(n)} <b>${side(i) === 'up' ? '⬆ overfor' : '⬇ her'}</b></button>`).join('')}</div>` : ''}</div>
       <div class="row center"><button class="btn primary big" id="krGo" ${total ? '' : 'disabled'}>Start Quizisk Roulette</button>
-        <button class="btn big" id="krBack">Tilbage</button></div>
-    </div>`);
-    document.querySelectorAll('.krset').forEach(b => b.onclick = () => {
+        <button class="btn big" id="krRules0">Regler</button></div>`;
+    renderPlayers($('#krPl'), draw);
+    document.querySelectorAll('#krSetupBody .krset').forEach(b => b.onclick = () => {
       const id = b.dataset.id; st.sets = st.sets.includes(id) ? st.sets.filter(x => x !== id) : st.sets.concat(id); draw();
     });
     document.querySelectorAll('#krTarget button').forEach(b => b.onclick = () => { st.target = +b.dataset.n; draw(); });
     document.querySelectorAll('#krFlipSeg button').forEach(b => b.onclick = () => { st.flip = b.dataset.f === '1'; draw(); });
-    document.querySelectorAll('.krside').forEach(b => b.onclick = () => {
-      const i = +b.dataset.i; st.sides = pnames.map((_, k) => side(k)); st.sides[i] = side(i) === 'up' ? 'down' : 'up'; draw();
+    document.querySelectorAll('#krSetupBody .krside').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i; st.sides = pn().map((_, k) => side(k)); st.sides[i] = side(i) === 'up' ? 'down' : 'up'; draw();
     });
     $('#krAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
     $('#krNone').onclick = () => { st.sets = []; draw(); };
-    $('#krBack').onclick = closeModal;
-    $('#krGo').onclick = () => { st.sides = pnames.map((_, k) => side(k)); store.set(K_KRSET, st); closeModal(); krStart(st); };
+    $('#krRules0').onclick = krRules;
+    $('#krGo').onclick = () => {
+      const saved = store.get(K_KR, null);
+      if (saved && saved.phase !== 'over' && !confirm('Starte et nyt spil? Det gemte spil Quizisk Roulette overskrives.')) return;
+      st.sides = pn().map((_, k) => side(k)); store.set(K_KRSET, st); krStart(st);
+    };
   };
+  showScreen('#krSetup');
   draw();
 }
 
@@ -180,7 +185,7 @@ const krKind = c => c.kind || (c.type === 'yn' ? 'Sandt/falsk'
   : c.items.every(it => /^[\d.,\s–-]+$/.test(String(it.a))) ? 'Nummer' : 'Diverse');
 
 function krShow() {
-  $('#setup').classList.add('hidden'); $('#game').classList.add('hidden'); $('#kransen').classList.remove('hidden');
+  showScreen('#kransen');
   keepAwake(); krRender();
   if (KR.phase !== 'play') krShowEnd();
 }
@@ -309,7 +314,7 @@ function krShowEnd() {
     const lk = document.getElementById('krLook'); if (lk) lk.onclick = closeModal;
   }, 350);
 }
-function krHome() { closeModal(); document.body.classList.remove('krflip'); $('#kransen').classList.add('hidden'); $('#setup').classList.remove('hidden'); renderSetup(); }
+function krHome() { goHome(); }
 function krRules() {
   openModal(`<div class="qbody rules"><div class="mtitle">Regler for Quizisk Roulette</div>
     <ul>
@@ -335,11 +340,6 @@ function krMenu() {
   $('#krM3').onclick = () => { krSnap(); KR.players.forEach(p => { p.round = 0; }); closeModal(); krNextCard(); krRender(); };
 }
 function krInit() {
-  $('#krStartBtn').onclick = () => {
-    const saved = store.get(K_KR, null);
-    if (saved && saved.phase !== 'over' && confirm('Fortsæt det gemte spil Quizisk Roulette? (Annuller = start nyt)')) { KR = saved; KR.free = KR.free || {}; krUndo = []; krShow(); return; }
-    krSetup();
-  };
   $('#krPass').onclick = krPass;
   $('#krUndo').onclick = () => { if (!krUndo.length) return; KR = JSON.parse(krUndo.pop()); krSave(); closeModal(); krRender(); };
   $('#krMenu').onclick = krMenu;

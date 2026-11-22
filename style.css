@@ -261,3 +261,34 @@ body.tlflip:has(#tidslinje:not(.hidden)) #mbox{transform:rotate(180deg)}
 #tlPlayers .pcard{margin:0;padding:8px 10px;gap:6px}
 #tlPlayers .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #tlPlayers .kstat{font-size:13px;white-space:nowrap}
+
+/* ---------- Forside (Quiz app) og opsætningssider ---------- */
+#home,#krSetup,#tlSetup{height:100%;overflow-y:auto;padding:24px 16px 40px}
+.brand-logo.qlogo{font-family:Georgia,serif;font-weight:800;font-size:46px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tile{position:relative;border-radius:22px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:10px;min-height:250px;
+  color:#fff;box-shadow:0 10px 26px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);overflow:hidden}
+.tile::after{content:"";position:absolute;inset:auto -30% -45% auto;width:70%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.t-sj{background:linear-gradient(150deg,#d9a84a,#8a5f1c)}
+.t-kr{background:linear-gradient(150deg,#1fa597,#0d5a63)}
+.t-tl{background:linear-gradient(150deg,#8a5cd6,#45247f)}
+.tile .ticon{font-size:46px;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+.tile h2{color:#fff;font-size:24px;margin:0;font-family:Georgia,"Times New Roman",serif}
+.tile p{font-size:15.5px;line-height:1.4;color:rgba(255,255,255,.92);flex:1}
+.tile .tbtns{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;position:relative;z-index:1}
+.tile .btn.primary{background:#fff;color:#1b1405;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.tile .btn.tres{background:rgba(0,0,0,.25);color:#fff;border:1px solid rgba(255,255,255,.5)}
+.homefoot .btn{min-height:44px}
+@media (max-width:720px){.tiles{grid-template-columns:1fr}.tile{min-height:0}}
+.pagehead{display:flex;align-items:center;gap:12px;margin-top:4px}
+.pagehead h1{font-size:32px}
+.pagehead .ph-ico{font-family:system-ui,sans-serif}
+.btn.back{min-width:48px;min-height:48px;font-size:22px;padding:0 12px}
+.card .intro{color:var(--txt);font-size:16px}
+.card .hint{margin-top:8px}
+details.adv summary{cursor:pointer;font-weight:700;color:var(--gold);font-size:18px}
+details.adv[open] summary{margin-bottom:12px}
+#krSetupBody,#tlSetupBody{display:flex;flex-direction:column;gap:18px}
+.screen .krset{color:#1d1d1d}
+.screen .krside{color:#1d1d1d}
+.qlogo-img{width:72px;height:72px;border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,.4);flex:none}

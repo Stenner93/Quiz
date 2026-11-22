@@ -106,24 +106,46 @@ function undo() {
 /* =========================================================
    OPSÆTNING
    ========================================================= */
-function renderSetup() {
-  const pl = $('#plist'); pl.innerHTML = '';
+// fælles spillerliste – vises på alle tre spils opsætningssider (onChange: tegn siden igen)
+function renderPlayers(pl, onChange, onType) {
+  pl.innerHTML = '';
   settings.names.forEach((n, i) => {
     const row = document.createElement('div'); row.className = 'prow';
     row.innerHTML = `<span class="dot" style="background:${PCOL[i]}"></span>
       <input value="${esc(n)}" maxlength="24" placeholder="Navn på spiller/hold ${i + 1}">
       <button class="x" title="Fjern" ${settings.names.length <= 2 ? 'disabled' : ''}>✕</button>`;
-    row.querySelector('input').addEventListener('input', e => { settings.names[i] = e.target.value; store.set(K_SET, settings); });
-    row.querySelector('.x').addEventListener('click', () => { settings.names.splice(i, 1); store.set(K_SET, settings); renderSetup(); });
+    row.querySelector('input').addEventListener('input', e => { settings.names[i] = e.target.value; store.set(K_SET, settings); if (onType) onType(); });
+    row.querySelector('.x').addEventListener('click', () => { settings.names.splice(i, 1); store.set(K_SET, settings); onChange(); });
     pl.appendChild(row);
   });
-  $('#addP').disabled = settings.names.length >= MAXP;
+  const bar = document.createElement('div'); bar.className = 'row';
+  bar.innerHTML = `<button class="btn" data-add ${settings.names.length >= MAXP ? 'disabled' : ''}>+ Tilføj spiller</button><button class="btn" data-shuffle>Bland rækkefølge</button>`;
+  bar.querySelector('[data-add]').onclick = () => { if (settings.names.length < MAXP) { settings.names.push(`Spiller ${settings.names.length + 1}`); store.set(K_SET, settings); onChange(); } };
+  bar.querySelector('[data-shuffle]').onclick = () => { const a = settings.names; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } store.set(K_SET, settings); onChange(); };
+  pl.appendChild(bar);
+  const h = document.createElement('p'); h.className = 'hint'; h.textContent = 'Den øverste spiller starter. Spillerne er de samme i alle tre spil.'; pl.appendChild(h);
+}
+// skift skærm: skjul alle andre
+function showScreen(sel) {
+  document.querySelectorAll('.screen').forEach(x => x.classList.add('hidden'));
+  $(sel).classList.remove('hidden'); $(sel).scrollTop = 0;
+  if (!['#kransen', '#tidslinje'].includes(sel)) document.body.classList.remove('krflip', 'tlflip');
+}
+function renderHome() {
+  const has = k => { const g = store.get(k, null); return !!(g && g.phase !== 'over'); };
+  $('#sjResume').classList.toggle('hidden', !has(K_GAME));
+  $('#krResume').classList.toggle('hidden', !has('kr_game'));
+  $('#tlResume').classList.toggle('hidden', !has('tl_game'));
+}
+function goHome() { closeModal(); showScreen('#home'); renderHome(); }
+function renderSetup() {
+  renderPlayers($('#plist'), renderSetup);
   applyTheme(settings.theme);
   $('#themeList').innerHTML = themeList().map(t => `<button class="theme ${t.id === THEME ? 'on' : ''}" data-theme="${t.id}">
       <b>${esc(t.name)}</b><span>${esc(t.desc)}</span>
       <span class="tcats">${t.cats.map((c, i) => `<span class="tc"><i style="background:${PALETTE[i].color}"></i>${esc(c)}</span>`).join(' ')}</span></button>`).join('');
   document.querySelectorAll('#themeList .theme').forEach(b => b.onclick = () => { settings.theme = b.dataset.theme; store.set(K_SET, settings); renderSetup(); });
-  $('#srcCard').classList.toggle('hidden', THEME !== 'alm');
+  $('#srcSeg').classList.toggle('hidden', THEME !== 'alm'); $('#srcHint').classList.toggle('hidden', THEME !== 'alm');
   document.querySelectorAll('#srcSeg button').forEach(b => b.classList.toggle('on', b.dataset.src === settings.source));
   $('#srcHint').textContent = settings.source === 'app'
     ? 'Appen viser spørgsmål og svar. Du kan altid skifte til et fysisk kort undervejs.'
@@ -153,13 +175,13 @@ function startGame() {
 
 function showGame() {
   applyTheme(S.theme || 'alm');
-  $('#setup').classList.add('hidden'); $('#game').classList.remove('hidden');
+  showScreen('#game');
   buildBoard(); render(); keepAwake();
   if (S.phase === 'question' || S.phase === 'pick' || S.phase === 'over') showPhaseModal();
   if (S.phase === 'moving') { S.phase = 'roll'; render(); }
 }
 function showSetup() {
-  closeModal(); $('#game').classList.add('hidden'); $('#setup').classList.remove('hidden'); renderSetup();
+  closeModal(); showScreen('#setup'); renderSetup();
 }
 
 /* =========================================================
@@ -711,8 +733,14 @@ async function keepAwake() {
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S && !$('#game').classList.contains('hidden')) keepAwake(); });
 
 function init() {
-  $('#addP').onclick = () => { if (settings.names.length < MAXP) { settings.names.push(`Spiller ${settings.names.length + 1}`); store.set(K_SET, settings); renderSetup(); } };
-  $('#shuffleP').onclick = () => { const a = settings.names; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } store.set(K_SET, settings); renderSetup(); };
+  // forside
+  $('#sjGo').onclick = () => { showScreen('#setup'); renderSetup(); };
+  $('#sjResume').onclick = () => $('#resumeBtn').click();
+  $('#krGoBtn').onclick = () => krSetup();
+  $('#krResume').onclick = () => { const g = store.get('kr_game', null); if (g) { KR = g; KR.free = KR.free || {}; krUndo = []; krShow(); } };
+  $('#tlGoBtn').onclick = () => tlSetup();
+  $('#tlResume').onclick = () => { const g = store.get('tl_game', null); if (g) { TLG = g; tlUndo = []; tlShow(); } };
+  document.querySelectorAll('[data-home]').forEach(b => b.onclick = goHome);
   document.querySelectorAll('#srcSeg button').forEach(b => b.onclick = () => { settings.source = b.dataset.src; store.set(K_SET, settings); renderSetup(); });
   $('#startBtn').onclick = () => {
     const saved = store.get(K_GAME, null);
@@ -727,7 +755,7 @@ function init() {
   };
   $('#rulesBtn').onclick = showRules; $('#rules2Btn').onclick = showRules;
   $('#fsBtn').onclick = goFullscreen;
-  $('#repBtn').onclick = () => showReports(() => { closeModal(); renderSetup(); });
+  $('#repBtn').onclick = () => showReports(() => { closeModal(); renderHome(); });
   $('#menuBtn').onclick = showMenu;
   $('#undoBtn').onclick = undo;
   $('#importBtn').onclick = () => $('#importFile').click();
@@ -741,7 +769,7 @@ function init() {
   $('#resetSeen').onclick = () => { store.del(K_SEEN); alert('Alle spørgsmål kan nu komme igen.'); };
   $('#manualBtns').innerHTML = [1, 2, 3, 4, 5, 6].map(n => `<button data-n="${n}">${n}</button>`).join('');
   document.querySelectorAll('#manualBtns button').forEach(b => b.onclick = () => roll(+b.dataset.n));
-  renderSetup();
+  renderSetup(); renderHome();
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 init();

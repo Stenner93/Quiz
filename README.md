@@ -1,6 +1,11 @@
-# Stjernejagt
+# Quiz app
 
-Et quiz-brætspil på dansk til 2–6 spillere eller hold, lavet til Android-tablets (virker også på telefon og computer).
+Tre quizspil på dansk til 2–6 spillere eller hold, lavet til Android-tablets (virker også på telefon og computer):
+**Stjernejagt** (quiz-brætspil), **Quizisk Roulette** (10 svar i en krans) og **Tidslinje** (læg begivenheder i rækkefølge).
+Forsiden viser de tre spil; hvert spil har sin egen side med spillere (fælles for alle spil), emner og indstillinger.
+
+## Stjernejagt
+Et quiz-brætspil på dansk til 2–6 spillere eller hold.
 Alle spiller på den samme tablet og sender den rundt.
 
 **Kategorierne og farverne er de seks klassiske**, så I kan bruge jeres egne fysiske spørgsmålskort:
