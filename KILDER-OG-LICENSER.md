@@ -14,7 +14,7 @@ Quiz app (Stjernejagt, Quizisk Roulette og Tidslinje) bygger på følgende kilde
 
 Fakta i sig selv er ikke beskyttet af ophavsret; teksterne på lex.dk og Trap Danmark er ikke kopieret, men brugt som kilde til at efterprøve spørgsmålene.
 
-## Fotos (75)
+## Fotos (105)
 
 Fotos fra Flickr, fundet via [Openverse](https://openverse.org). Fotograf og licens vises også i appen ved hvert billede.
 
@@ -95,6 +95,36 @@ Fotos fra Flickr, fundet via [Openverse](https://openverse.org). Fotograf og lic
 | typewriter.jpg | vintage typewriter | philhearing | CC BY 2.0 | [link](https://www.flickr.com/photos/36766427@N05/5520806412) |
 | uluru.jpg | Uluru (Ayers Rock) | Terrazzo | CC BY-SA 2.0 | [link](https://www.flickr.com/photos/8249050@N02/6286736020) |
 | victoriafalls.jpg | Victoria Falls | andryn2006 | CC BY-SA 2.0 | [link](https://www.flickr.com/photos/84985982@N00/10042089184) |
+| por_antonio_vivaldi.jpg | Portræt: Antonio Vivaldi | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Onbekend_-_Antonio_Vivaldi_-_Bologna_Museo_Internationale_e_biblioteca_della_musica_di_bologna_28-04-2012_9-21-050.jpg) |
+| por_johann_sebastian_bach.jpg | Portræt: J.S. Bach | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Johann_Sebastian_Bach.png) |
+| por_wolfgang_amadeus_mozart.jpg | Portræt: W.A. Mozart | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Wolfgang-amadeus-mozart_1.jpg) |
+| por_ludwig_van_beethoven.jpg | Portræt: Ludwig van Beethoven | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Beethoven.jpg) |
+| por_frédéric_chopin.jpg | Portræt: Frédéric Chopin | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Frederic_Chopin_photo.jpeg) |
+| por_richard_wagner.jpg | Portræt: Richard Wagner | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:RichardWagner.jpg) |
+| por_pyotr_ilyich_tchaikovsky.jpg | Portræt: Pjotr Tjajkovskij | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Portr%C3%A4t_des_Komponisten_Pjotr_I._Tschaikowski_%281840-1893%29.jpg) |
+| por_edvard_grieg.jpg | Portræt: Edvard Grieg | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:%28Edvard_Grieg_portrait%29_%283470673354%29.jpg) |
+| por_giacomo_puccini.jpg | Portræt: Giacomo Puccini | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:GiacomoPuccini.jpg) |
+| por_carl_nielsen.jpg | Portræt: Carl Nielsen | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Carl_Nielsen_c._1908_-_Restoration.jpg) |
+| por_leonardo_da_vinci.jpg | Portræt: Leonardo da Vinci | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Francesco_Melzi_-_Portrait_of_Leonardo.png) |
+| por_martin_luther.jpg | Portræt: Martin Luther | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Lucas_Cranach_d.%C3%84._-_Martin_Luther%2C_1528_%28Veste_Coburg%29.jpg) |
+| por_nicolaus_copernicus.jpg | Portræt: Nikolaus Kopernikus | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Nikolaus_Kopernikus_MOT.jpg) |
+| por_isaac_newton.jpg | Portræt: Isaac Newton | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:GodfreyKneller-IsaacNewton-1689.jpg) |
+| por_napoleon.jpg | Portræt: Napoleon | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg) |
+| por_abraham_lincoln.jpg | Portræt: Abraham Lincoln | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Abraham_Lincoln_O-77_matte_collodion_print.jpg) |
+| por_charles_darwin.jpg | Portræt: Charles Darwin | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Charles_Darwin_portrait.jpg) |
+| por_ada_lovelace.jpg | Portræt: Ada Lovelace | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Ada_Byron_daguerreotype_by_Antoine_Claudet_1843_or_1850_-_cropped.png) |
+| por_albert_einstein.jpg | Portræt: Albert Einstein | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Albert_Einstein_Head_cleaned.jpg) |
+| por_mahatma_gandhi.jpg | Portræt: Mahatma Gandhi | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Mahatma-Gandhi%2C_studio%2C_1931.jpg) |
+| por_christian_iv_of_denmark.jpg | Portræt: Christian 4. | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Kristian_IV_av_Danmark%2C_malning_av_Pieter_Isaacsz_1611-1616.jpg) |
+| por_ludvig_holberg.jpg | Portræt: Ludvig Holberg | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Ludvig_Holberg.jpg) |
+| por_bertel_thorvaldsen.jpg | Portræt: Bertel Thorvaldsen | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Bertel_Thorvaldsen_portrait.jpg) |
+| por_søren_kierkegaard.jpg | Portræt: Søren Kierkegaard | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:S%C3%B8ren_Kierkegaard_%281813-1855%29_-_%28cropped%29.jpg) |
+| por_hans_christian_andersen.jpg | Portræt: H.C. Andersen | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Hans_Christian_Andersen_by_Thora_Hallager_1869.jpg) |
+| por_christian_x_of_denmark.jpg | Portræt: Christian 10. | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Christian_X_of_Denmark_circa_1915.jpg) |
+| por_niels_bohr.jpg | Portræt: Niels Bohr | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Niels_Bohr.jpg) |
+| por_johannes_v_jensen.jpg | Portræt: Johannes V. Jensen | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Johannes_Vilhelm_Jensen_1944.jpg) |
+| por_thorvald_stauning.jpg | Portræt: Thorvald Stauning | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Stauning_i1920-erne.jpg) |
+| por_kaj_munk.jpg | Portræt: Kaj Munk | Historisk portræt | Public domain | [link](https://commons.wikimedia.org/wiki/File:Kaj_Munk.jpg) |
 
 ## Malerier (37)
 

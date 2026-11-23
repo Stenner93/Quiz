@@ -1,15 +1,18 @@
 // Finder næsten-dubletter i og på tværs af temaer og de almene spørgsmål.
 // Brug: node tools/dupcheck.js [tema-id ...]   (uden argumenter: alle)
+//       node tools/dupcheck.js --fil udkast.js   (tjek en fil med nye udkast mod alt eksisterende)
 const fs = require('fs'), path = require('path');
 global.window = {};
 const root = path.join(__dirname, '..');
 for (const f of fs.readdirSync(path.join(root, 'themes'))) require(path.join(root, 'themes', f));
+const fi = process.argv.indexOf('--fil'); let extra = null;
+if (fi > 0) { const n0 = window.THEMES.length; require(path.resolve(process.argv[fi + 1])); extra = window.THEMES.slice(n0).map(t => t.id); process.argv.splice(fi, 2); }
 const STOP = new Set('hvad hvilken hvilket hvilke hvem hvor hvornår hvordan hvorfor er var blev har den det de en et i på af til med som om og for fra ved der at kaldes hed hedder står ca mest første år dansk danske danmarks'.split(' '));
 const norm = s => s.toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N} ]/gu, ' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
 const items = [];
 for (const t of window.THEMES) t.questions.forEach(q => items.push({ th: t.id, q: q[1], a: q[2], tok: new Set(norm(q[1] + ' ' + q[2])), qt: new Set(norm(q[1])) }));
 try { require(path.join(root, 'questions.js')); } catch (e) {}
-const only = process.argv.slice(2);
+const only = extra || process.argv.slice(2);
 const jac = (a, b) => { let i = 0; for (const x of a) if (b.has(x)) i++; return i / (a.size + b.size - i || 1); };
 const out = [];
 for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
