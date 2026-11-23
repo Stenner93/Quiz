@@ -25,7 +25,8 @@ const tlById = id => { tlCards(); return TL_MAP.get(id); };
 const tlKeyText = c => c.t.toLowerCase().replace(/[^a-zæøå0-9]/g, '');
 const TL_SETS = () => {
   const all = tlCards();
-  const base = [{ id: 'alm', name: 'Almen viden' }].concat((window.THEMES || []).map(t => ({ id: t.id, name: t.name })));
+  const base = [{ id: 'alm', name: 'Almen viden' }].concat((window.THEMES || []).map(t => ({ id: t.id, name: t.name })))
+    .concat([{ id: 'kunst', name: 'Billeder: kunst og bygværker' }]);
   return base.map(s => ({ ...s, n: all.filter(c => c.set === s.id).length })).filter(s => s.n > 0);
 };
 // tidspunkt -> [år, måned, dag]  (måned/dag = 0, når kun året kendes)
@@ -90,7 +91,8 @@ function tlShuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.
 function tlStart(st, names) {
   const hidden = store.get(K_HIDE, {});
   const seenEv = new Set();
-  const deck = tlShuffle(tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id])
+  // billedudgaven af en begivenhed foretrækkes, hvis den findes i flere emner
+  const deck = tlShuffle(tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id]).sort((a, b) => !!b.img - !!a.img)
     .filter(c => { const k = tlKeyText(c); if (seenEv.has(k)) return false; seenEv.add(k); return true; }).map(c => c.id));
   TLG = {
     players: names.map((name, i) => ({ name, color: PCOL[i], hand: [], side: sideOf(i), pts: 0, ok: 0 })),

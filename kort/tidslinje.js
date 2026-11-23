@@ -3,7 +3,7 @@
    og Quizisk Roulettes rækkefølge- og årti-kort. Format: T(sæt, begivenhed, tidspunkt) */
 window.TL = window.TL || [];
 (() => {
-const T = (s, t, w) => window.TL.push([s, t, w]);
+const T = (s, t, w, img) => window.TL.push(img ? [s, t, w, img] : [s, t, w]);
 
 // ---------- ALMEN VIDEN ----------
 T('alm', 'Rom grundlægges ifølge sagnet', -753);
@@ -575,4 +575,71 @@ T('alm', 'One World Trade Center åbner', 2014);
 T('alm', 'Gotthard-basistunnelen i Schweiz åbner', 2016);
 T('alm', 'Notre-Dame i Paris brænder', 2019);
 T('alm', 'Notre-Dame genåbner efter branden', 2024);
+
+// ---------- BILLEDKORT: kunst og bygværker (sæt 'kunst') ----------
+// Malerier: årstal = hvornår maleriet blev malet (færdigt). Bygværker: hvornår det stod færdigt/blev indviet.
+const P = (t, w, img) => T('kunst', t, w, 'billeder/' + img + '.jpg');
+P("Leonardo da Vinci maler »Mona Lisa«", 1503, 'mal_monalisa');
+P("Edvard Munch maler »Skriget«", 1893, 'mal_skriget');
+P("Vincent van Gogh maler »Stjernenatten«", 1889, 'mal_stjernenat');
+P("Johannes Vermeer maler »Pigen med perleøreringen«", 1665, 'mal_perle');
+P("Rembrandt maler »Nattevagten«", 1642, 'mal_nattevagt');
+P("Sandro Botticelli maler »Venus’ fødsel«", 1485, 'mal_venus');
+P("Leonardo da Vinci maler »Nadveren«", 1498, 'mal_nadver');
+P("Katsushika Hokusai maler »Den store bølge ved Kanagawa«", 1831, 'mal_boelge');
+P("Gustav Klimt maler »Kysset«", 1908, 'mal_kysset');
+P("Vincent van Gogh maler »Solsikker«", 1888, 'mal_solsikker');
+P("Claude Monet maler »Åkander«", 1903, 'mal_aakander');
+P("Claude Monet maler »Impression, solopgang«", 1872, 'mal_impression');
+P("Michelangelo maler »Adams skabelse«", 1512, 'mal_adam');
+P("Diego Velázquez maler »Las Meninas«", 1656, 'mal_meninas');
+P("Eugène Delacroix maler »Friheden fører folket«", 1830, 'mal_friheden');
+P("Georges Seurat maler »En søndag eftermiddag på La Grande Jatte«", 1886, 'mal_jatte');
+P("Francisco de Goya maler »Den 3. maj 1808«", 1814, 'mal_tredjemaj');
+P("Johannes Vermeer maler »Mælkepigen«", 1658, 'mal_maelkepige');
+P("Jan van Eyck maler »Arnolfini-portrættet«", 1434, 'mal_arnolfini');
+P("Hieronymus Bosch maler »De jordiske lysters have«", 1500, 'mal_lysterhave');
+P("Pieter Bruegel d.æ. maler »Bondebryllup«", 1567, 'mal_bondebryllup');
+P("William Turner maler »Den kæmpende Téméraire«", 1839, 'mal_temeraire');
+P("James McNeill Whistler maler »Whistlers mor«", 1871, 'mal_whistler');
+P("Grant Wood maler »American Gothic«", 1930, 'mal_gothic');
+P("Théodore Géricault maler »Medusas flåde«", 1819, 'mal_medusa');
+P("Rafael maler »Skolen i Athen«", 1511, 'mal_athen');
+P("Vincent van Gogh maler »Selvportræt med forbundet øre«", 1889, 'mal_oere');
+P("Pierre-Auguste Renoir maler »Dansen i Moulin de la Galette«", 1876, 'mal_moulin');
+P("P.S. Krøyer maler »Hip, hip, hurra!«", 1888, 'mal_hiphip');
+P("P.S. Krøyer maler »Sommeraften ved Skagen Sønderstrand«", 1893, 'mal_sommeraften');
+P("Michael Ancher maler »Vil han klare pynten?«", 1885, 'mal_pynten');
+P("C.W. Eckersberg maler »Udsigt gennem tre buer i Colosseums tredje stokværk«", 1815, 'mal_colosseum');
+P("Christen Købke maler »Udsigt fra Dosseringen ved Sortedamssøen«", 1838, 'mal_dosseringen');
+P("L.A. Ring maler »I havedøren. Kunstnerens hustru«", 1897, 'mal_havedoeren');
+P("Vilhelm Hammershøi maler »Stue i Strandgade med kunstnerens hustru«", 1902, 'mal_hammershoei');
+P("Kristian Zahrtmann maler »Leonora Christina i fængslet«", 1870, 'mal_leonora');
+P("Constantin Hansen maler »Et selskab af danske kunstnere i Rom«", 1837, 'mal_kunstnererom');
+P("Pyramiderne i Giza står færdige", -2560, 'giza');
+P("Parthenon på Akropolis står færdigt", -432, 'acropolis');
+P("Colosseum i Rom indvies", 80, 'colosseum');
+P("Hagia Sofia i Konstantinopel indvies", 537, 'hagiasophia');
+P("Jellingstenene rejses", 965, 'jelling');
+P("Det skæve tårn i Pisa står færdigt", 1372, 'pisa');
+P("Karlsbroen i Prag står færdig", 1402, 'charlesbridge');
+P("Den Forbudte By i Beijing står færdig", 1420, 'forbiddencity');
+P("Egeskov Slot bygges færdigt", 1554, 'egeskov');
+P("Vasilij-katedralen i Moskva står færdig", 1561, 'stbasil');
+P("Peterskirken i Rom indvies", 1626, 'stpeters');
+P("Taj Mahal står færdigt", 1653, 'tajmahal');
+P("Nyhavn graves", 1673, 'nyhavn');
+P("Amalienborg står færdigt", 1760, 'amalienborg');
+P("Trevi-fontænen i Rom står færdig", 1762, 'trevi');
+P("Brandenburger Tor står færdig", 1791, 'brandenburg');
+P("Big Ben (klokketårnet) står færdigt", 1859, 'bigben');
+P("Frihedsgudinden indvies", 1886, 'liberty');
+P("Eiffeltårnet står færdigt", 1889, 'eiffel');
+P("Tower Bridge i London åbner", 1894, 'towerbridge');
+P("Hollywood-skiltet sættes op", 1923, 'hollywood');
+P("Kristus-statuen i Rio indvies", 1931, 'cristo');
+P("Mount Rushmore står færdigt", 1941, 'rushmore');
+P("Atomium i Bruxelles bygges til verdensudstillingen", 1958, 'atomium');
+P("Operahuset i Sydney indvies", 1973, 'sydneyopera');
+P("Petronas Towers står færdige", 1999, 'petronas');
 })();

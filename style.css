@@ -252,7 +252,7 @@ body.tlflip:has(#tidslinje:not(.hidden)) #mbox,body.tlflip:has(#tidslinje:not(.h
 #tlHand .tlcard .tly{color:#9aa6b8}
 #tlHand .tlcard.sel{border-color:var(--gold);transform:translateY(-6px)}
 #tlPanel{display:flex;flex-direction:column;gap:8px;margin-top:auto}
-#tlPlayers{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+#tlPlayers{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
 #tlPlayers .pcard{margin:0;padding:8px 10px;gap:6px}
 #tlPlayers .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #tlPlayers .kscore{color:var(--gold);font-size:22px;min-width:2ch;text-align:right}
@@ -325,3 +325,4 @@ body.g-tl #mbox,body.g-tl #dbox{border-top:6px solid #8a5cd6}
 }
 .tile .tstatus{flex:none;font-size:14px;font-weight:600;background:rgba(0,0,0,.22);border-radius:10px;padding:6px 10px;color:#fff}
 #mbox .hint,#dbox .hint{color:#6b6250}
+@media (max-width:560px){#tlPlayers .pcard{flex-wrap:wrap;row-gap:2px}#tlPlayers .nm{flex-basis:calc(100% - 32px)}#tlPlayers .kstat{flex:1;padding-left:26px}}
