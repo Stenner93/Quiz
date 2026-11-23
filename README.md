@@ -92,3 +92,11 @@ kan skærmen automatisk vende sig mod den, der har tur (vælges ved opsætningen
 - `kort/lande.js` + `kort/lande-former.js` – landesilhuetter genereret fra [Natural Earth](https://www.naturalearthdata.com/) (public domain)
 - `kort/billeder.js` – fotos af monumenter og genstande (Creative Commons, med kreditering)
 - `kort/malerier.js` – 37 berømte malerier (public domain) fra Wikimedia Commons og Statens Museum for Kunst (CC0); maler og år vises først sammen med svaret
+
+## Vedligehold
+- `node tools/tjek.js` – kontrollerer alle data (temaer, roulettekort med 10 svar og 4–9 sande, tidslinjekort, billeder og
+  kreditering, tidsmærkater) og genbygger `sw.js` (offline-cache med automatisk version) og `KILDER-OG-LICENSER.md`.
+  Kør den efter hver ændring – så får tablets altid den nye version.
+- `node tests/spil.js` – browsertest (Playwright) af alle tre spil på telefon- og tabletstørrelse.
+- `node tools/dupcheck.js [tema]` – finder mulige dubletter i spørgsmålene.
+- `tidsmaerker.js` – spørgsmål, hvis svar kan ændre sig (vises med "pr. 2026"). Gennemgå listen én gang om året.

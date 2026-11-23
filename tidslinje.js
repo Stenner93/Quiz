@@ -60,29 +60,20 @@ function tlSetup() {
         Rigtigt: kortet bliver liggende. Forkert: kortet smides væk, og du trækker et nyt. Den, der først tømmer hånden, vinder runden.
         Efter hver runde tyndes tidslinjen ud – hvert andet kort fjernes, til der kun er 4 tilbage – og alle får ${st.hand} nye kort.</p></div>
       <div class="card"><h2>Spillere / hold</h2><div id="tlPl"></div></div>
-      <div class="card"><h2>Hvilke kort skal med?</h2>
-        <div class="krsets">${sets.map(s => `<button class="krset ${st.sets.includes(s.id) ? 'on' : ''}" data-id="${s.id}">${esc(s.name)} <small>${s.n}</small></button>`).join('')}</div>
-        <div class="row"><button class="btn" id="tlAll">Vælg alle</button><button class="btn" id="tlNone">Fravælg alle</button></div>
+      ${setupSets(sets, st)}
         <p class="hint">${total} kort valgt${total < need ? ` – vælg flere emner (mindst ${need} kort til ${pn().length} spillere)` : ''}</p></div>
       <div class="card"><h2>Antal runder</h2>
         <div class="seg" id="tlRoundSeg">${[1, 2, 3, 4, 5].map(n => `<button data-n="${n}" class="${st.rounds === n ? 'on' : ''}">${n}</button>`).join('')}</div>
         <p class="hint">Vinderen af hver runde får 1 point. Flest point efter sidste runde vinder.</p></div>
       <div class="card"><h2>Kort på hånden</h2>
         <div class="seg" id="tlHandSeg">${[3, 4, 5, 6].map(n => `<button data-n="${n}" class="${st.hand === n ? 'on' : ''}">${n}</button>`).join('')}</div></div>
-      <div class="card"><h2>Vend skærmen mod den, der har tur</h2>
-        <div class="seg" id="tlFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
-        <p class="hint">Hvor hver spiller sidder (⬇ her / ⬆ overfor), vælges i spillerlisten. Kan også slås til og fra undervejs.</p></div>
+      ${setupFlip(st)}
       <div class="row center"><button class="btn primary big" id="tlGo" ${total >= need ? '' : 'disabled'}>Start Tidslinje</button>
         <button class="btn big" id="tlRules0">Regler</button></div>`;
     renderPlayers($('#tlPl'), draw);
-    document.querySelectorAll('#tlSetupBody .krset').forEach(b => b.onclick = () => {
-      const id = b.dataset.id; st.sets = st.sets.includes(id) ? st.sets.filter(x => x !== id) : st.sets.concat(id); draw();
-    });
+    bindSetup($('#tlSetupBody'), sets, st, draw);
     document.querySelectorAll('#tlHandSeg button').forEach(b => b.onclick = () => { st.hand = +b.dataset.n; draw(); });
     document.querySelectorAll('#tlRoundSeg button').forEach(b => b.onclick = () => { st.rounds = +b.dataset.n; draw(); });
-    document.querySelectorAll('#tlFlipSeg button').forEach(b => b.onclick = () => { st.flip = b.dataset.f === '1'; draw(); });
-    $('#tlAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
-    $('#tlNone').onclick = () => { st.sets = []; draw(); };
     $('#tlRules0').onclick = tlRules;
     $('#tlGo').onclick = async () => {
       const saved = store.get(K_TL, null);

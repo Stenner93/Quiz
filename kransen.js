@@ -37,26 +37,17 @@ function krSetup() {
       <div class="card"><p class="intro">Hvert kort har ét spørgsmål og 10 svarmuligheder i en krans. På skift vælger I et svar – eller siger pas.
         Rigtigt = 1 point. Forkert = I mister kortets point og er ude af kortet. Siger I <b>pas</b>, beholder I kortets point.</p></div>
       <div class="card"><h2>Spillere / hold</h2><div id="krPl"></div></div>
-      <div class="card"><h2>Hvilke kort skal med?</h2>
-        <div class="krsets">${sets.map(s => `<button class="krset ${st.sets.includes(s.id) ? 'on' : ''}" data-id="${s.id}">${esc(s.name)} <small>${s.n}</small></button>`).join('')}</div>
-        <div class="row"><button class="btn" id="krAll">Vælg alle</button><button class="btn" id="krNone">Fravælg alle</button></div>
+      ${setupSets(sets, st)}
         <p class="hint">${total} kort valgt</p></div>
       <div class="card"><h2>Spil til</h2>
         <div class="seg krtarget" id="krTarget">${[15, 20, 30, 40, 50, 60].map(n => `<button data-n="${n}" class="${st.target === n ? 'on' : ''}">${n}</button>`).join('')}</div>
         <p class="hint">Point – standard er 30. 15–20 giver et kort spil, 50–60 et langt.</p></div>
-      <div class="card"><h2>Vend skærmen mod den, der har tur</h2>
-        <div class="seg" id="krFlipSeg"><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
-        <p class="hint">Hvor hver spiller sidder (⬇ her / ⬆ overfor), vælges i spillerlisten. Kan også slås til og fra undervejs.</p></div>
+      ${setupFlip(st)}
       <div class="row center"><button class="btn primary big" id="krGo" ${total ? '' : 'disabled'}>Start Quizisk Roulette</button>
         <button class="btn big" id="krRules0">Regler</button></div>`;
     renderPlayers($('#krPl'), draw);
-    document.querySelectorAll('#krSetupBody .krset').forEach(b => b.onclick = () => {
-      const id = b.dataset.id; st.sets = st.sets.includes(id) ? st.sets.filter(x => x !== id) : st.sets.concat(id); draw();
-    });
+    bindSetup($('#krSetupBody'), sets, st, draw);
     document.querySelectorAll('#krTarget button').forEach(b => b.onclick = () => { st.target = +b.dataset.n; draw(); });
-    document.querySelectorAll('#krFlipSeg button').forEach(b => b.onclick = () => { st.flip = b.dataset.f === '1'; draw(); });
-    $('#krAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
-    $('#krNone').onclick = () => { st.sets = []; draw(); };
     $('#krRules0').onclick = krRules;
     $('#krGo').onclick = async () => {
       const saved = store.get(K_KR, null);

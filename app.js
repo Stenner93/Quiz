@@ -143,6 +143,19 @@ function renderPlayers(pl, onChange, onType) {
   h.textContent = 'Den øverste spiller starter. Spillerne er de samme i alle tre spil. ⬇ her / ⬆ overfor: hvor spilleren sidder, så skærmen kan vende sig mod den, der har tur.';
   pl.appendChild(h);
 }
+// fælles byggeklodser til opsætningssiderne for Quizisk Roulette og Tidslinje
+const setupSets = (sets, st) => `<div class="card"><h2>Hvilke kort skal med?</h2>
+  <div class="krsets">${sets.map(x => `<button class="krset ${st.sets.includes(x.id) ? 'on' : ''}" data-id="${x.id}">${esc(x.name)} <small>${x.n}</small></button>`).join('')}</div>
+  <div class="row"><button class="btn" data-all>Vælg alle</button><button class="btn" data-none>Fravælg alle</button></div>`;
+const setupFlip = st => `<div class="card"><h2>Vend skærmen mod den, der har tur</h2>
+  <div class="seg" data-flip><button data-f="1" class="${st.flip ? 'on' : ''}">Til</button><button data-f="0" class="${st.flip ? '' : 'on'}">Fra</button></div>
+  <p class="hint">Hvor hver spiller sidder (⬇ her / ⬆ overfor), vælges i spillerlisten. Kan også slås til og fra undervejs.</p></div>`;
+function bindSetup(box, sets, st, draw) {
+  box.querySelectorAll('.krset').forEach(b => b.onclick = () => { const id = b.dataset.id; st.sets = st.sets.includes(id) ? st.sets.filter(x => x !== id) : st.sets.concat(id); draw(); });
+  box.querySelector('[data-all]').onclick = () => { st.sets = sets.map(x => x.id); draw(); };
+  box.querySelector('[data-none]').onclick = () => { st.sets = []; draw(); };
+  box.querySelectorAll('[data-flip] button').forEach(b => b.onclick = () => { st.flip = b.dataset.f === '1'; draw(); });
+}
 // vend-skærm-knap til spillenes panel: viser og skifter til/fra undervejs
 const flipLabel = on => `⟲ Vend skærm: ${on ? 'til' : 'fra'}`;
 // skift skærm: skjul alle andre
