@@ -58,9 +58,9 @@ function krSetup() {
     $('#krAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
     $('#krNone').onclick = () => { st.sets = []; draw(); };
     $('#krRules0').onclick = krRules;
-    $('#krGo').onclick = () => {
+    $('#krGo').onclick = async () => {
       const saved = store.get(K_KR, null);
-      if (saved && saved.phase !== 'over' && !confirm('Starte et nyt spil? Det gemte spil Quizisk Roulette overskrives.')) return;
+      if (saved && saved.phase !== 'over' && !(await uiConfirm('Starte et nyt spil Quizisk Roulette? Det gemte spil overskrives.', 'Start nyt'))) return;
       store.set(K_KRSET, st); krStart(st);
     };
   };
@@ -273,17 +273,10 @@ function krAsk(i) {
 
 function krFlag() {
   const c = KR.card;
-  const flags = store.get(K_FLAGS, []);
-  const note = prompt('Hvad er galt med kortet? (fx et forkert svar)');
-  if (note === null) return;
   const setName = (KR_SETS().find(s => s.id === c.set) || { name: c.set }).name;
-  flags.push({ id: c.id, theme: 'Quizisk Roulette', cat: setName, q: c.q, a: c.items.map(it => `${it.t || it.shape || it.img}=${krAnsText(c, it)}`).join('; '),
-    reason: 'wrong', note, ts: new Date().toISOString().slice(0, 16), sent: false });
-  store.set(K_FLAGS, flags);
-  const hidden = store.get(K_HIDE, {}); hidden[c.id] = 1; store.set(K_HIDE, hidden);
-  alert('Tak! Kortet er markeret og kommer ikke igen. Send rapporten under ⚑ Rapporter, når der er net.');
+  flagForm({ id: c.id, theme: 'Quizisk Roulette', cat: setName, q: c.q, noun: 'kortet',
+    a: c.items.map(it => `${it.t || it.shape || it.img}=${krAnsText(c, it)}`).join('; ') });
 }
-
 function krShowEnd() {
   krRender();
   if (KR.phase === 'over') {

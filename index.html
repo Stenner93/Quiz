@@ -28,18 +28,21 @@
         <div class="ticon">★</div>
         <h2>Stjernejagt</h2>
         <p>Quiz-brætspil: slå med terningen, svar rigtigt og saml en stjerne i hver af de seks kategorier.</p>
+        <p class="tstatus hidden" id="sjStatus"></p>
         <div class="tbtns"><button class="btn tres hidden" id="sjResume">Fortsæt</button><button class="btn primary" id="sjGo">Spil →</button></div>
       </div>
       <div class="tile t-kr">
         <div class="ticon">◎</div>
         <h2>Quizisk Roulette</h2>
         <p>Ti svar i en krans. Tag et svar mere – eller sig pas og gem dine point.</p>
+        <p class="tstatus hidden" id="krStatus"></p>
         <div class="tbtns"><button class="btn tres hidden" id="krResume">Fortsæt</button><button class="btn primary" id="krGoBtn">Spil →</button></div>
       </div>
       <div class="tile t-tl">
         <div class="ticon">⟷</div>
         <h2>Tidslinje</h2>
         <p>Læg begivenhederne i den rigtige rækkefølge. Først til at tømme hånden vinder.</p>
+        <p class="tstatus hidden" id="tlStatus"></p>
         <div class="tbtns"><button class="btn tres hidden" id="tlResume">Fortsæt</button><button class="btn primary" id="tlGoBtn">Spil →</button></div>
       </div>
     </div>
@@ -174,6 +177,7 @@
 </section>
 
 <div id="modal" class="hidden"><div id="mbox"></div></div>
+<div id="dialog" class="hidden"><div id="dbox"></div></div>
 
 <script src="questions.js"></script>
 <script src="questions_opentdb.js"></script>
@@ -194,6 +198,7 @@
 <script src="kort/lande-former.js"></script>
 <script src="kort/lande.js"></script>
 <script src="kort/billeder.js"></script>
+<script src="tidsmaerker.js"></script>
 <script src="app.js"></script>
 <script src="kransen.js"></script>
 <script src="kort/tidslinje.js"></script>

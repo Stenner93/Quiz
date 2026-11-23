@@ -8,11 +8,21 @@
    Først til at tømme hånden vinder (runden spilles færdig; står flere lige, går de videre i omspil).
    ========================================================= */
 const K_TL = 'tl_game', K_TLSET = 'tl_settings';
-let TLG = null, tlUndo = [];
+let TLG = null, tlUndo = [], tlGhost = null;   // tlGhost: forkert kort, der kort vises på sin rigtige plads
 const TL_MON = ['januar', 'februar', 'marts', 'april', 'maj', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'december'];
 
-const tlCards = () => (window.TL || []).map(([set, t, w]) => ({ id: 't' + hash(set + '|' + t + '|' + w), set, t, w }));
-const tlById = id => tlCards().find(c => c.id === id);
+// kortene bygges én gang; opslag sker via et register (hurtigt, også med mange kort)
+let TL_CACHE = null, TL_MAP = null;
+const tlCards = () => {
+  if (!TL_CACHE) {
+    TL_CACHE = (window.TL || []).map(([set, t, w, img]) => ({ id: 't' + hash(set + '|' + t + '|' + w), set, t, w, img }));
+    TL_MAP = new Map(TL_CACHE.map(c => [c.id, c]));
+  }
+  return TL_CACHE;
+};
+const tlById = id => { tlCards(); return TL_MAP.get(id); };
+// samme begivenhed kan ligge i flere emner – i et spil må den kun være med én gang
+const tlKeyText = c => c.t.toLowerCase().replace(/[^a-zæøå0-9]/g, '');
 const TL_SETS = () => {
   const all = tlCards();
   const base = [{ id: 'alm', name: 'Almen viden' }].concat((window.THEMES || []).map(t => ({ id: t.id, name: t.name })));
@@ -43,7 +53,7 @@ function tlSetup() {
   const draw = () => {
     const hidden = store.get(K_HIDE, {});
     const pn = () => settings.names.map((n, i) => n.trim() || `Spiller ${i + 1}`);
-    const total = tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id]).length;
+    const total = new Set(tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id]).map(tlKeyText)).size;
     const need = pn().length * st.hand + 16;
     $('#tlSetupBody').innerHTML = `
       <div class="card"><p class="intro">Hver spiller får ${st.hand} begivenheder. På skift lægger I en af dem ind i tidslinjen – før, efter eller mellem de kort, der ligger der.
@@ -74,9 +84,9 @@ function tlSetup() {
     $('#tlAll').onclick = () => { st.sets = sets.map(s => s.id); draw(); };
     $('#tlNone').onclick = () => { st.sets = []; draw(); };
     $('#tlRules0').onclick = tlRules;
-    $('#tlGo').onclick = () => {
+    $('#tlGo').onclick = async () => {
       const saved = store.get(K_TL, null);
-      if (saved && saved.phase !== 'over' && !confirm('Starte et nyt spil? Det gemte spil Tidslinje overskrives.')) return;
+      if (saved && saved.phase !== 'over' && !(await uiConfirm('Starte et nyt spil Tidslinje? Det gemte spil overskrives.', 'Start nyt'))) return;
       store.set(K_TLSET, st); tlStart(st, pn());
     };
   };
@@ -88,7 +98,9 @@ const TL_START = 4;   // kort i tidslinjen ved start og efter hver udtynding
 function tlShuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function tlStart(st, names) {
   const hidden = store.get(K_HIDE, {});
-  const deck = tlShuffle(tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id]).map(c => c.id));
+  const seenEv = new Set();
+  const deck = tlShuffle(tlCards().filter(c => st.sets.includes(c.set) && !hidden[c.id])
+    .filter(c => { const k = tlKeyText(c); if (seenEv.has(k)) return false; seenEv.add(k); return true; }).map(c => c.id));
   TLG = {
     players: names.map((name, i) => ({ name, color: PCOL[i], hand: [], side: sideOf(i), pts: 0, ok: 0 })),
     sets: st.sets, flip: !!st.flip, flipX: false, deck, discard: [], line: [], turn: 0, starter: 0, sel: null, phase: 'play',
@@ -126,6 +138,7 @@ function tlPlace(slot) {
   else { TLG.discard.push(id); drew = tlDraw(); if (drew) p.hand.push(drew); }
   TLG.last = { id, ok, slot: ok ? slot : tlCorrectSlot(card), by: TLG.turn };
   tlSave(); tlRender();
+  tlGhost = ok ? null : { id, slot: TLG.last.slot };   // vises, når dialogen er lukket
   const wrongTxt = (() => {
     if (ok) return '';
     const i = tlCorrectSlot(card), a = TLG.line[i - 1] && tlById(TLG.line[i - 1]), b = TLG.line[i] && tlById(TLG.line[i]);
@@ -170,11 +183,18 @@ function tlRoundEnd(winners) {
     tlSave(); tlRender(); return tlShowEnd(names);
   }
   const before = TLG.line.length;
+  // vis først hvilke kort der fjernes (de tones ud), og tynd så ud
+  const keep = TLG.line.slice(); const gone = [];
+  { let i = 1; const tmp = keep.slice(); while (tmp.length > TL_START) { if (i >= tmp.length) i = 1; gone.push(tmp.splice(i, 1)[0]); i++; } }
+  document.querySelectorAll('#tlLine .tlcard').forEach(el => { if (gone.includes(el.dataset.id)) el.classList.add('leaving'); });
   TLG.players.forEach(p => { TLG.discard.push(...p.hand); p.hand = []; });
   tlThin();
   TLG.round++; TLG.starter = (TLG.starter + 1) % TLG.players.length; TLG.turn = TLG.starter; TLG.sel = null; TLG.last = null;
   TLG.players.forEach(p => { for (let k = 0; k < TLG.hand; k++) { const c = tlDraw(); if (c) p.hand.push(c); } });
-  tlSave(); tlRender();
+  tlSave();
+  setTimeout(() => { tlRender(); tlRoundModal(winners, names, before); }, gone.length ? 1100 : 0);
+}
+function tlRoundModal(winners, names, before) {
   openModal(`<div class="qbody"><div class="mtitle">Runde ${TLG.round - 1} af ${TLG.rounds} er slut</div>
     <div class="mtext"><b>${names}</b> ${winners.length > 1 ? 'tømte hånden og får hver 1 point' : 'vandt runden og får 1 point'}.</div>
     <div class="mtext">Stillingen: ${TLG.players.slice().sort((a, b) => b.pts - a.pts).map(p => `<b>${esc(p.name)}</b> ${p.pts}`).join(' · ')}</div>
@@ -198,15 +218,18 @@ function tlRender() {
   const p = TLG.players[TLG.turn], play = TLG.phase === 'play', sel = TLG.sel !== null && play;
   const slot = i => `<button class="tlslot ${sel ? 'on' : ''}" data-s="${i}" ${sel ? '' : 'disabled'} aria-label="Placer her">${sel ? '＋' : ''}</button>`;
   const L = TLG.line.map(tlById);
-  $('#tlLine').innerHTML = slot(0) + L.map((c, i) => `<div class="tlcard ${TLG.last && TLG.last.ok && TLG.last.id === c.id ? 'new' : ''}">
-      <div class="tly">${esc(tlFmt(c.w))}</div><div class="tlt">${esc(c.t)}</div></div>${slot(i + 1)}`).join('');
+  const ghost = tlGhost && tlById(tlGhost.id);
+  const ghostHTML = ghost ? `<div class="tlcard ghost"><div class="tly">${esc(tlFmt(ghost.w))}</div><div class="tlt">${esc(ghost.t)}</div></div>` : '';
+  $('#tlLine').innerHTML = (ghost && tlGhost.slot === 0 ? ghostHTML : '') + slot(0) + L.map((c, i) => `<div class="tlcard ${TLG.last && TLG.last.ok && TLG.last.id === c.id ? 'new' : ''}" data-id="${c.id}">
+      ${c.img ? `<img class="tlimg" src="${esc(c.img)}" alt="">` : ''}<div class="tly">${esc(tlFmt(c.w))}</div><div class="tlt">${esc(c.t)}</div></div>${ghost && tlGhost.slot === i + 1 ? ghostHTML : ''}${slot(i + 1)}`).join('');
+  tlGhost = null;
   $('#tlInfo').innerHTML = play
     ? `<span class="tlround">Runde ${TLG.round}/${TLG.rounds}</span><span class="dot" style="background:${p.color}"></span><b>${esc(p.name)}s tur</b> · ${sel ? 'tryk på ＋ der, hvor kortet hører til' : 'vælg et af dine kort'}`
     : 'Spillet er slut';
-  $('#tlHand').innerHTML = play ? p.hand.map((id, i) => { const c = tlById(id); return `<button class="tlcard hand ${TLG.sel === i ? 'sel' : ''}" data-i="${i}"><div class="tly">?</div><div class="tlt">${esc(c.t)}</div></button>`; }).join('') : '';
-  $('#tlPlayers').innerHTML = TLG.players.map((pl, i) => `<div class="pcard ${i === TLG.turn && play ? 'cur' : ''}">
+  $('#tlHand').innerHTML = play ? p.hand.map((id, i) => { const c = tlById(id); return `<button class="tlcard hand ${TLG.sel === i ? 'sel' : ''}" data-i="${i}">${c.img ? `<img class="tlimg" src="${esc(c.img)}" alt="">` : ''}<div class="tly">?</div><div class="tlt">${esc(c.t)}</div></button>`; }).join('') : '';
+  $('#tlPlayers').innerHTML = TLG.players.map((pl, i) => `<div class="pcard ${i === TLG.turn && play ? 'cur' : ''} ${play && pl.hand.length === 1 ? 'close' : ''}">
       <span class="dot" style="background:${pl.color}"></span><span class="nm">${esc(pl.name)}</span>
-      <span class="kstat">${pl.hand.length === 1 ? '1 kort' : pl.hand.length + ' kort'}</span><b class="kscore">${pl.pts}</b></div>`).join('')
+      <span class="kstat">${pl.hand.length === 1 ? 'sidste kort!' : pl.hand.length + ' kort'}</span><b class="kscore">${pl.pts}</b></div>`).join('')
     + `<p class="hint">Tal = vundne runder · ${TLG.deck.length} kort i bunken</p>`;
   document.querySelectorAll('#tlHand .tlcard').forEach(b => b.onclick = () => { TLG.sel = TLG.sel === +b.dataset.i ? null : +b.dataset.i; tlSave(); tlRender(); });
   document.querySelectorAll('.tlslot').forEach(b => b.onclick = () => tlPlace(+b.dataset.s));
@@ -228,14 +251,8 @@ function tlShowEnd(lastNames) {
   $('#tlSee').onclick = closeModal;
 }
 function tlFlag(card) {
-  const note = prompt('Hvad er galt med kortet? (fx et forkert årstal)');
-  if (note === null) return;
-  const flags = store.get(K_FLAGS, []);
   const setName = (TL_SETS().find(s => s.id === card.set) || { name: card.set }).name;
-  flags.push({ id: card.id, theme: 'Tidslinje', cat: setName, q: card.t, a: tlFmt(card.w), reason: 'wrong', note, ts: new Date().toISOString().slice(0, 16), sent: false });
-  store.set(K_FLAGS, flags);
-  const hidden = store.get(K_HIDE, {}); hidden[card.id] = 1; store.set(K_HIDE, hidden);
-  alert('Tak! Kortet er markeret og kommer ikke med i nye spil. Send rapporten under ⚑ Rapporter, når der er net.');
+  flagForm({ id: card.id, theme: 'Tidslinje', cat: setName, q: card.t, a: tlFmt(card.w), noun: 'kortet' });
 }
 function tlHome() { goHome(); }
 function tlRules() {

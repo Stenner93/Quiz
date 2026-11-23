@@ -1,0 +1,786 @@
+[
+ {
+  "fil": "billeder/abacus.jpg",
+  "titel": "calculator",
+  "ophav": "ansik",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/92132559@N00/304526237"
+ },
+ {
+  "fil": "billeder/accordion.jpg",
+  "titel": "Accordion Busker",
+  "ophav": "DGriebeling",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/20075574@N00/3714786547"
+ },
+ {
+  "fil": "billeder/acropolis.jpg",
+  "titel": "The Parthenon, Acropolis, Athens",
+  "ophav": "simon_music",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/28878339@N00/1372547275"
+ },
+ {
+  "fil": "billeder/alhambra.jpg",
+  "titel": "Alhambra",
+  "ophav": "Me in ME",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/12357841@N02/51868211295"
+ },
+ {
+  "fil": "billeder/amalienborg.jpg",
+  "titel": "Denmark_0104 - Amalienborg Palace",
+  "ophav": "archer10 (Dennis)",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/22490717@N02/3990546376"
+ },
+ {
+  "fil": "billeder/angkor.jpg",
+  "titel": "Angkor Wat",
+  "ophav": "cornstaruk",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/23508331@N00/456945151"
+ },
+ {
+  "fil": "billeder/astrolabe.jpg",
+  "titel": "paris musee monde arabe astrolab",
+  "ophav": "Mark B. Schlemmer",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/28066281@N03/3122956224"
+ },
+ {
+  "fil": "billeder/atomium.jpg",
+  "titel": "19990918 39 Atomium, Brussels",
+  "ophav": "davidwilson1949",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/32693718@N07/6799238678"
+ },
+ {
+  "fil": "billeder/bagpipes.jpg",
+  "titel": "Scottish Piper",
+  "ophav": "SteveWagner",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/7946263@N07/471661327"
+ },
+ {
+  "fil": "billeder/barometer.jpg",
+  "titel": "The Fighting Cocks - pub in Moseley - Temperature Gauge / Barometer",
+  "ophav": "ell brown",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/39415781@N06/4178017589"
+ },
+ {
+  "fil": "billeder/bigben.jpg",
+  "titel": "Lego Big Ben London",
+  "ophav": "jeffdjevdet",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/126917537@N03/33448812360"
+ },
+ {
+  "fil": "billeder/borobudur.jpg",
+  "titel": "~ Borobudur Temple ~",
+  "ophav": "Nico Time",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/80845204@N07/9505636923"
+ },
+ {
+  "fil": "billeder/brandenburg.jpg",
+  "titel": "Brandenburg Gate - Berlin, Germany - Travel photography",
+  "ophav": "Giuseppe Milo (www.pixael.com)",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/87690240@N03/47958239417"
+ },
+ {
+  "fil": "billeder/cassette.jpg",
+  "titel": "Audio Cassette Tape Stencil Graffiti - Bethnal Green, London E2",
+  "ophav": "bobaliciouslondon",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/44217191@N05/4576065884"
+ },
+ {
+  "fil": "billeder/charlesbridge.jpg",
+  "titel": "Prague Castle From The Charles Bridge.",
+  "ophav": "Jim Linwood",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/54238124@N00/2703589291"
+ },
+ {
+  "fil": "billeder/chichenitza.jpg",
+  "titel": "can8602_19, El Castillo, Chichen Itza, Maya Ruins, Yucatan Peninsula, Mexico",
+  "ophav": "jimg944",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/21203533@N00/112244028"
+ },
+ {
+  "fil": "billeder/colosseum.jpg",
+  "titel": "Colosseum, Rome",
+  "ophav": "kBandara",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/28792061@N05/15126580060"
+ },
+ {
+  "fil": "billeder/cristo.jpg",
+  "titel": "Christ the Redeemer - Rio de Janeiro, Brazil",
+  "ophav": "David Berkowitz",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/25897810@N00/5269512796"
+ },
+ {
+  "fil": "billeder/didgeridoo.jpg",
+  "titel": "Aboriginal Man Playing Didgeridoo",
+  "ophav": "Corey Leopold",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/97708873@N00/2552761429"
+ },
+ {
+  "fil": "billeder/divinghelmet.jpg",
+  "titel": "Copper and Brass Diving Helmet keychain",
+  "ophav": "Judy Gallagher",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/52450054@N04/47841548272"
+ },
+ {
+  "fil": "billeder/egeskov.jpg",
+  "titel": "Egeskov Castle - Funen, Denmark",
+  "ophav": "Trodel",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/31290768@N06/3598412071"
+ },
+ {
+  "fil": "billeder/eiffel.jpg",
+  "titel": "Tour Eiffel - HDR - Eiffel Tower Paris",
+  "ophav": "www.alfieianni.com",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/90325628@N00/869942883"
+ },
+ {
+  "fil": "billeder/enigma.jpg",
+  "titel": "German / Deutsch Enigma Machine: World War II Museum, New Orleans, Lousiana, USA",
+  "ophav": "Bogdan Migulski",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/20172348@N00/2334027222"
+ },
+ {
+  "fil": "billeder/forbiddencity.jpg",
+  "titel": "Forbidden City from Jingshan hill, Beijing",
+  "ophav": "Dimitry B",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/61533954@N00/11478710913"
+ },
+ {
+  "fil": "billeder/frederiksborg.jpg",
+  "titel": "Frederiksborg Slot as seen from Batzkes Bakke",
+  "ophav": "caspermoller",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/66788712@N00/2528721957"
+ },
+ {
+  "fil": "billeder/fuji.jpg",
+  "titel": "Momiji and Mount Fuji",
+  "ophav": "skyseeker",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/40422902@N00/11061383915"
+ },
+ {
+  "fil": "billeder/giza.jpg",
+  "titel": "Great Pyramid of Giza",
+  "ophav": "girolame",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/91241612@N00/2427530661"
+ },
+ {
+  "fil": "billeder/gramophone.jpg",
+  "titel": "gramophone n9 wood horn- 22",
+  "ophav": "phonogalerie.com",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/39468302@N00/358124737"
+ },
+ {
+  "fil": "billeder/grandcanyon.jpg",
+  "titel": "D7454 S.Kaibab Trail Grand Canyon - Panorama Point",
+  "ophav": "Grand Canyon NPS",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/50693818@N08/4666624583"
+ },
+ {
+  "fil": "billeder/greatwall.jpg",
+  "titel": "Great wall of china",
+  "ophav": "Grumpy.Editor",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/22028781@N06/2286623670"
+ },
+ {
+  "fil": "billeder/hagiasophia.jpg",
+  "titel": "Hagia Sophia, Istanbul",
+  "ophav": "David Spender",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/8313664@N03/3904811506"
+ },
+ {
+  "fil": "billeder/hammershus.jpg",
+  "titel": "Hammershus ruin, Bornholm, Denmark",
+  "ophav": "Bochum1805",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/63457884@N04/29987468454"
+ },
+ {
+  "fil": "billeder/harp.jpg",
+  "titel": "Concert - Harp player",
+  "ophav": "Bouddi Photos Past and Present",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/148100404@N05/32701654684"
+ },
+ {
+  "fil": "billeder/hollywood.jpg",
+  "titel": "Hollywood Sign",
+  "ophav": "Xurble",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/60456299@N00/1352224655"
+ },
+ {
+  "fil": "billeder/hourglass.jpg",
+  "titel": "Time",
+  "ophav": "John-Morgan",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/24742305@N00/2331754875"
+ },
+ {
+  "fil": "billeder/jelling.jpg",
+  "titel": "Kopie Runenstein Harald Blauzahn",
+  "ophav": "stanzebla",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/92823399@N07/12180041003"
+ },
+ {
+  "fil": "billeder/kinkakuji.jpg",
+  "titel": "Kinkaku-ji Golden Pavilion Kyoto Japan-11",
+  "ophav": "Tips For Travellers",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/8327374@N02/25706780403"
+ },
+ {
+  "fil": "billeder/liberty.jpg",
+  "titel": "Estatua de la Libertad / Statue of Liberty",
+  "ophav": "Esparta",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/66208256@N00/293497830"
+ },
+ {
+  "fil": "billeder/machupicchu.jpg",
+  "titel": "Peru-238 - Machu Picchu - Just walk in front of me...",
+  "ophav": "archer10 (Dennis)",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/22490717@N02/2218705428"
+ },
+ {
+  "fil": "billeder/magiclantern.jpg",
+  "titel": "Mirroscope",
+  "ophav": "John Kratz",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/32214524@N00/1542418972"
+ },
+ {
+  "fil": "billeder/mal_aakander.jpg",
+  "titel": "Åkander",
+  "ophav": "Claude Monet (1903)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Nymph%C3%A9as_%281903%29_Claude_Monet_-_Mus%C3%A9e_Marmottan_Monet_%28W_1661%29.jpg"
+ },
+ {
+  "fil": "billeder/mal_adam.jpg",
+  "titel": "Adams skabelse",
+  "ophav": "Michelangelo (ca. 1512)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:The_Creation_of_Adam_perspective_fix.jpg"
+ },
+ {
+  "fil": "billeder/mal_arnolfini.jpg",
+  "titel": "Arnolfini-portrættet",
+  "ophav": "Jan van Eyck (1434)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Van_Eyck_-_Arnolfini_Portrait.jpg"
+ },
+ {
+  "fil": "billeder/mal_athen.jpg",
+  "titel": "Skolen i Athen",
+  "ophav": "Rafael (1509–11)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg"
+ },
+ {
+  "fil": "billeder/mal_boelge.jpg",
+  "titel": "Den store bølge ved Kanagawa",
+  "ophav": "Katsushika Hokusai (ca. 1831)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Katsushika_Hokusai_-_The_Great_Wave_off_the_Coast_of_Kanagawa_LCCN2008660568.jpg"
+ },
+ {
+  "fil": "billeder/mal_bondebryllup.jpg",
+  "titel": "Bondebryllup",
+  "ophav": "Pieter Bruegel d.æ. (ca. 1567)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Pieter_Bruegel_the_Elder_-_Peasant_Wedding_-_Google_Art_Project.jpg"
+ },
+ {
+  "fil": "billeder/mal_colosseum.jpg",
+  "titel": "Udsigt gennem tre buer i Colosseums tredje stokværk",
+  "ophav": "C.W. Eckersberg (1815)",
+  "licens": "Public domain (SMK Open, CC0)",
+  "kilde": "https://open.smk.dk/artwork/image/KMS3123"
+ },
+ {
+  "fil": "billeder/mal_dosseringen.jpg",
+  "titel": "Udsigt fra Dosseringen ved Sortedamssøen",
+  "ophav": "Christen Købke (1838)",
+  "licens": "Public domain (SMK Open, CC0)",
+  "kilde": "https://open.smk.dk/artwork/image/KMS359"
+ },
+ {
+  "fil": "billeder/mal_friheden.jpg",
+  "titel": "Friheden fører folket",
+  "ophav": "Eugène Delacroix (1830)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:La_Libert%C3%A9_guidant_le_peuple_-_Eug%C3%A8ne_Delacroix_-_Mus%C3%A9e_du_Louvre_Peintures_RF_129_-_apr%C3%A8s_restauration_2024.jpg"
+ },
+ {
+  "fil": "billeder/mal_gothic.jpg",
+  "titel": "American Gothic",
+  "ophav": "Grant Wood (1930)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Grant_Wood_-_American_Gothic_%281930%29.jpg"
+ },
+ {
+  "fil": "billeder/mal_hammershoei.jpg",
+  "titel": "Stue i Strandgade med kunstnerens hustru",
+  "ophav": "Vilhelm Hammershøi (1902)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Vilhelm_Hammersh%C3%B8i_-_A_Room_in_the_Artist%27s_Home_in_Strandgade%2C_Copenhagen%2C_with_the_Artist%27s_Wife_-_Google_Art_Project.jpg"
+ },
+ {
+  "fil": "billeder/mal_havedoeren.jpg",
+  "titel": "I havedøren. Kunstnerens hustru",
+  "ophav": "L.A. Ring (1897)",
+  "licens": "Public domain (SMK Open, CC0)",
+  "kilde": "https://open.smk.dk/artwork/image/KMS3716"
+ },
+ {
+  "fil": "billeder/mal_hiphip.jpg",
+  "titel": "Hip, hip, hurra!",
+  "ophav": "P.S. Krøyer (1888)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Hip%2C_Hip%2C_Hurrah%21_Artists%E2%80%99_Party%2C_Skagen_%28Peder_Severin_Kr%C3%B8yer%29_-_Gothenburg_Museum_of_Art_-_F_62.tif"
+ },
+ {
+  "fil": "billeder/mal_impression.jpg",
+  "titel": "Impression, solopgang",
+  "ophav": "Claude Monet (1872)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Monet_-_Impression%2C_Sunrise.jpg"
+ },
+ {
+  "fil": "billeder/mal_jatte.jpg",
+  "titel": "En søndag eftermiddag på La Grande Jatte",
+  "ophav": "Georges Seurat (1884–86)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg"
+ },
+ {
+  "fil": "billeder/mal_kunstnererom.jpg",
+  "titel": "Et selskab af danske kunstnere i Rom",
+  "ophav": "Constantin Hansen (1837)",
+  "licens": "Public domain (SMK Open, CC0)",
+  "kilde": "https://open.smk.dk/artwork/image/KMS3236"
+ },
+ {
+  "fil": "billeder/mal_kysset.jpg",
+  "titel": "Kysset",
+  "ophav": "Gustav Klimt (1907–08)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg"
+ },
+ {
+  "fil": "billeder/mal_leonora.jpg",
+  "titel": "Leonora Christina i fængslet",
+  "ophav": "Kristian Zahrtmann (1870)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Kristian_Zahrtmann%2C_Leonora_Christina_i_f%C3%A6ngslet%2C_1870%2C_KMS4313%2C_Statens_Museum_for_Kunst.jpg"
+ },
+ {
+  "fil": "billeder/mal_lysterhave.jpg",
+  "titel": "De jordiske lysters have",
+  "ophav": "Hieronymus Bosch (ca. 1490–1510)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:The_Garden_of_Earthly_Delights_by_Bosch_High_Resolution_2.jpg"
+ },
+ {
+  "fil": "billeder/mal_maelkepige.jpg",
+  "titel": "Mælkepigen",
+  "ophav": "Johannes Vermeer (ca. 1658)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg"
+ },
+ {
+  "fil": "billeder/mal_medusa.jpg",
+  "titel": "Medusas flåde",
+  "ophav": "Théodore Géricault (1818–19)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:JEAN_LOUIS_TH%C3%89ODORE_G%C3%89RICAULT_-_La_Balsa_de_la_Medusa_%28Museo_del_Louvre%2C_1818-19%29.jpg"
+ },
+ {
+  "fil": "billeder/mal_meninas.jpg",
+  "titel": "Las Meninas",
+  "ophav": "Diego Velázquez (1656)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg"
+ },
+ {
+  "fil": "billeder/mal_monalisa.jpg",
+  "titel": "Mona Lisa",
+  "ophav": "Leonardo da Vinci (1503–19)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
+ },
+ {
+  "fil": "billeder/mal_moulin.jpg",
+  "titel": "Dansen i Moulin de la Galette",
+  "ophav": "Pierre-Auguste Renoir (1876)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Renoir%2C_Pierre-Auguste_-_Dance_at_Le_Moulin_de_la_Galette%2C_1876.jpg"
+ },
+ {
+  "fil": "billeder/mal_nadver.jpg",
+  "titel": "Nadveren",
+  "ophav": "Leonardo da Vinci (1495–98)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci_%281452-1519%29_-_The_Last_Supper_%281495-1498%29.jpg"
+ },
+ {
+  "fil": "billeder/mal_nattevagt.jpg",
+  "titel": "Nattevagten",
+  "ophav": "Rembrandt (1642)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:La_ronda_de_noche%2C_por_Rembrandt_van_Rijn.jpg"
+ },
+ {
+  "fil": "billeder/mal_oere.jpg",
+  "titel": "Selvportræt med forbundet øre",
+  "ophav": "Vincent van Gogh (1889)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Self-Portrait_with_a_Bandaged_Ear_-_Vincent_van_Gogh.jpg"
+ },
+ {
+  "fil": "billeder/mal_perle.jpg",
+  "titel": "Pigen med perleøreringen",
+  "ophav": "Johannes Vermeer (ca. 1665)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:1665_Girl_with_a_Pearl_Earring.jpg"
+ },
+ {
+  "fil": "billeder/mal_pynten.jpg",
+  "titel": "Vil han klare pynten?",
+  "ophav": "Michael Ancher (1885)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Vil_han_klare_pynten.jpg"
+ },
+ {
+  "fil": "billeder/mal_skriget.jpg",
+  "titel": "Skriget",
+  "ophav": "Edvard Munch (1893)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg"
+ },
+ {
+  "fil": "billeder/mal_solsikker.jpg",
+  "titel": "Solsikker",
+  "ophav": "Vincent van Gogh (1888)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Vincent_Willem_van_Gogh_127.jpg"
+ },
+ {
+  "fil": "billeder/mal_sommeraften.jpg",
+  "titel": "Sommeraften ved Skagen Sønderstrand",
+  "ophav": "P.S. Krøyer (1893)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:P.S._Kr%C3%B8yer_-_Summer_evening_on_Skagen%27s_Beach._Anna_Ancher_and_Marie_Kr%C3%B8yer_walking_together._-_Google_Art_Project.jpg"
+ },
+ {
+  "fil": "billeder/mal_stjernenat.jpg",
+  "titel": "Stjernenatten",
+  "ophav": "Vincent van Gogh (1889)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
+ },
+ {
+  "fil": "billeder/mal_temeraire.jpg",
+  "titel": "Den kæmpende Téméraire",
+  "ophav": "William Turner (1839)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Turner%2C_J._M._W._-_The_Fighting_T%C3%A9m%C3%A9raire_tugged_to_her_last_Berth_to_be_broken.jpg"
+ },
+ {
+  "fil": "billeder/mal_tredjemaj.jpg",
+  "titel": "Den 3. maj 1808",
+  "ophav": "Francisco de Goya (1814)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Francisco_de_Goya_y_Lucientes_-_Los_fusilamientos_del_tres_de_mayo_-_1814.jpg"
+ },
+ {
+  "fil": "billeder/mal_venus.jpg",
+  "titel": "Venus’ fødsel",
+  "ophav": "Sandro Botticelli (ca. 1485)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg"
+ },
+ {
+  "fil": "billeder/mal_whistler.jpg",
+  "titel": "Whistlers mor",
+  "ophav": "James McNeill Whistler (1871)",
+  "licens": "Public domain",
+  "kilde": "https://commons.wikimedia.org/wiki/File:Whistlers_Mother_high_res.jpg"
+ },
+ {
+  "fil": "billeder/matterhorn.jpg",
+  "titel": "Matterhorn / Mont Cervin",
+  "ophav": "kuhnmi",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/31176607@N05/39299174242"
+ },
+ {
+  "fil": "billeder/metronome.jpg",
+  "titel": "Object to be Destroyed",
+  "ophav": "byzantiumbooks",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/10688882@N00/33197345971"
+ },
+ {
+  "fil": "billeder/moai.jpg",
+  "titel": "Anakena beach and moai -Easter Island - Rapa Nui - Isla de Pascua",
+  "ophav": "David Berkowitz",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/25897810@N00/8597289129"
+ },
+ {
+  "fil": "billeder/monsklint.jpg",
+  "titel": "Denmark | Møns Klint",
+  "ophav": "josef.stuefer",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/20375052@N00/14973884"
+ },
+ {
+  "fil": "billeder/montstmichel.jpg",
+  "titel": "Hot Air Balloons of Mont Saint-Michel",
+  "ophav": "Bold Frontiers",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/82955120@N05/12024271573"
+ },
+ {
+  "fil": "billeder/neuschwanstein.jpg",
+  "titel": "Neuschwanstein Castle",
+  "ophav": "Nite Dan - Enjoypixel",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/30667750@N03/6354084371"
+ },
+ {
+  "fil": "billeder/niagara.jpg",
+  "titel": "Horseshoe Falls, Niagara Falls, Canada",
+  "ophav": "Mustang Joe",
+  "licens": "CC0",
+  "kilde": "https://www.flickr.com/photos/63234672@N04/6212508198"
+ },
+ {
+  "fil": "billeder/notredame.jpg",
+  "titel": "Notre Dame de Paris",
+  "ophav": "levork",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/86805026@N00/5026702993"
+ },
+ {
+  "fil": "billeder/nyhavn.jpg",
+  "titel": "Nyhavn, Copenhagen",
+  "ophav": "Mustang Joe",
+  "licens": "CC0",
+  "kilde": "https://www.flickr.com/photos/63234672@N04/7541745348"
+ },
+ {
+  "fil": "billeder/pennyfarthing.jpg",
+  "titel": "Penny-Farthing bicycle, 1881",
+  "ophav": "State Library of South Australia",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/32600408@N06/14139234642"
+ },
+ {
+  "fil": "billeder/petra.jpg",
+  "titel": "The Treasury at Petra",
+  "ophav": "D-Stanley",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/79721788@N00/34920138613"
+ },
+ {
+  "fil": "billeder/petronas.jpg",
+  "titel": "Petronas Towers Kuala Lumpur #IPhone 6S",
+  "ophav": "Leshaines123",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/46018453@N06/23652156079"
+ },
+ {
+  "fil": "billeder/pisa.jpg",
+  "titel": "Pisa, Leaning Tower",
+  "ophav": "Arian Zwegers",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/67769030@N07/40552703732"
+ },
+ {
+  "fil": "billeder/potala.jpg",
+  "titel": "Potala Palace, Lhasa, Tibet",
+  "ophav": "Mondo79",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/50417570@N06/30923267621"
+ },
+ {
+  "fil": "billeder/quill.jpg",
+  "titel": "Quill",
+  "ophav": "sure2talk",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/19862723@N00/213926774"
+ },
+ {
+  "fil": "billeder/rockinghorse.jpg",
+  "titel": "rocking horse 03.27.09 [86]",
+  "ophav": "timlewisnm",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/10343926@N02/3393718817"
+ },
+ {
+  "fil": "billeder/rotaryphone.jpg",
+  "titel": "Vintage Western Electric Rotary Dial Telephone, Model 302, Made In USA, Produced From 1937 - 1958",
+  "ophav": "France1978",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/51764518@N02/15139630245"
+ },
+ {
+  "fil": "billeder/rushmore.jpg",
+  "titel": "06.04.03 Mount Rushmore Monument",
+  "ophav": "dean.franklin",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/82297923@N00/52622356"
+ },
+ {
+  "fil": "billeder/sextant.jpg",
+  "titel": "Brass Sextant",
+  "ophav": "Timitrius",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/34689432@N00/4129394476"
+ },
+ {
+  "fil": "billeder/sitar.jpg",
+  "titel": "Yaman Kalyan",
+  "ophav": "souravdas",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/23531860@N00/2440369754"
+ },
+ {
+  "fil": "billeder/sphinx.jpg",
+  "titel": "Pyramid of Khafre and the Great Sphinx, Giza",
+  "ophav": "twiga_swala",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/21013862@N08/2274810233"
+ },
+ {
+  "fil": "billeder/spinningwheel.jpg",
+  "titel": "final full.jpg",
+  "ophav": "Nostepinne",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/50303569@N00/365830035"
+ },
+ {
+  "fil": "billeder/stbasil.jpg",
+  "titel": "Saint Basil's Cathedral, Moscow",
+  "ophav": "John Pannell",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/57989987@N00/29615521"
+ },
+ {
+  "fil": "billeder/stethoscope.jpg",
+  "titel": "Stethoscope and piggy Bank",
+  "ophav": "401(K) 2013",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/68751915@N05/6793819699"
+ },
+ {
+  "fil": "billeder/stonehenge.jpg",
+  "titel": "Stonehenge",
+  "ophav": "thegarethwiscombe",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/10173199@N03/1071477228"
+ },
+ {
+  "fil": "billeder/stpeters.jpg",
+  "titel": "St Peter's Basilica / Vatican City",
+  "ophav": "Images George Rex",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/36692623@N06/11890063654"
+ },
+ {
+  "fil": "billeder/sydneyopera.jpg",
+  "titel": "Sydney opera house",
+  "ophav": "jimmyharris",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/50216172@N00/114537716"
+ },
+ {
+  "fil": "billeder/tajmahal.jpg",
+  "titel": "Taj Mahal - Agra - reflecting pool",
+  "ophav": "string_bass_dave",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/16069488@N00/1062813706"
+ },
+ {
+  "fil": "billeder/telegraphkey.jpg",
+  "titel": "CW Practice Key",
+  "ophav": "svofski",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/68931440@N00/3508468040"
+ },
+ {
+  "fil": "billeder/theodolite.jpg",
+  "titel": "Surveyors",
+  "ophav": "mikecogh",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/89165847@N00/5634646508"
+ },
+ {
+  "fil": "billeder/towerbridge.jpg",
+  "titel": "Tower Bridge London",
+  "ophav": "Håkan Dahlström",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/93755244@N00/230046338"
+ },
+ {
+  "fil": "billeder/trevi.jpg",
+  "titel": "Trevi Fountain, Rome",
+  "ophav": "Grace.Donaghue",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/30774016@N00/6809920326"
+ },
+ {
+  "fil": "billeder/typewriter.jpg",
+  "titel": "vintage typewriter",
+  "ophav": "philhearing",
+  "licens": "CC BY 2.0",
+  "kilde": "https://www.flickr.com/photos/36766427@N05/5520806412"
+ },
+ {
+  "fil": "billeder/uluru.jpg",
+  "titel": "Uluru (Ayers Rock)",
+  "ophav": "Terrazzo",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/8249050@N02/6286736020"
+ },
+ {
+  "fil": "billeder/victoriafalls.jpg",
+  "titel": "Victoria Falls",
+  "ophav": "andryn2006",
+  "licens": "CC BY-SA 2.0",
+  "kilde": "https://www.flickr.com/photos/84985982@N00/10042089184"
+ }
+]

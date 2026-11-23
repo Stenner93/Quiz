@@ -61,13 +61,20 @@ let undoStack = [];
 let busy = false;
 
 /* ---------- Spørgsmål ---------- */
+// tidsmærkater (tidsmaerker.js): spørgsmålstekst -> årstal
+let ASOF_MAP = null;
+const asofOf = q => {
+  if (!ASOF_MAP) { ASOF_MAP = new Map(); Object.entries(window.ASOF || {}).forEach(([y, list]) => list.forEach(t => ASOF_MAP.set(t, +y))); }
+  return ASOF_MAP.get(q) || 0;
+};
 function allQuestions() {
   if (THEME !== 'alm') {
     const t = window.THEMES.find(x => x.id === THEME);
-    return t.questions.map(q => ({ id: THEME + ':' + hash(q[1]), c: q[0], q: q[1], a: q[2], d: q[3] }));
+    return t.questions.map(q => ({ id: THEME + ':' + hash(q[1]), c: q[0], q: q[1], a: q[2], asof: asofOf(q[1]) }));
   }
-  const b = (window.BUILTIN_QUESTIONS || []).map((q, i) => ({ id: 'b' + i, c: q[0], q: q[1], a: q[2] }))
-    .concat((window.OPENTDB_QUESTIONS || []).map((q, i) => ({ id: 'o' + q[3], c: q[0], q: q[1], a: q[2] })));
+  // egne spørgsmål får id ud fra teksten (ikke placeringen i filen), så "set" og "skjult" holder, når filen ændres
+  const b = (window.BUILTIN_QUESTIONS || []).map(q => ({ id: 'b' + hash(q[1]), c: q[0], q: q[1], a: q[2], asof: asofOf(q[1]) }))
+    .concat((window.OPENTDB_QUESTIONS || []).map(q => ({ id: 'o' + q[3], c: q[0], q: q[1], a: q[2], asof: asofOf(q[1]) })));
   const imp = store.get(K_IMP, []).map((q, i) => ({ id: 'i' + i + '_' + hash(q.q), c: q.c, q: q.q, a: q.a }));
   return b.concat(imp);
 }
@@ -139,18 +146,30 @@ function renderPlayers(pl, onChange, onType) {
 // vend-skærm-knap til spillenes panel: viser og skifter til/fra undervejs
 const flipLabel = on => `⟲ Vend skærm: ${on ? 'til' : 'fra'}`;
 // skift skærm: skjul alle andre
+const SCREEN_GAME = { '#setup': 'sj', '#game': 'sj', '#krSetup': 'kr', '#kransen': 'kr', '#tlSetup': 'tl', '#tidslinje': 'tl' };
 function showScreen(sel) {
   document.querySelectorAll('.screen').forEach(x => x.classList.add('hidden'));
+  document.body.classList.remove('g-sj', 'g-kr', 'g-tl'); if (SCREEN_GAME[sel]) document.body.classList.add('g-' + SCREEN_GAME[sel]);
   $(sel).classList.remove('hidden'); $(sel).scrollTop = 0;
   if (sel !== '#kransen') document.body.classList.remove('krflip');
   if (sel !== '#tidslinje') document.body.classList.remove('tlflip');
   if (sel !== '#game') document.body.classList.remove('sjflip');
 }
+// forsiden: "Fortsæt" og en kort status for hvert gemt spil
 function renderHome() {
-  const has = k => { const g = store.get(k, null); return !!(g && g.phase !== 'over'); };
-  $('#sjResume').classList.toggle('hidden', !has(K_GAME));
-  $('#krResume').classList.toggle('hidden', !has('kr_game'));
-  $('#tlResume').classList.toggle('hidden', !has('tl_game'));
+  const get = k => { const g = store.get(k, null); return g && g.phase !== 'over' ? g : null; };
+  const lead = (pl, val) => pl.slice().sort((a, b) => val(b) - val(a)).map(p => `${p.name} ${val(p)}`).join(' · ');
+  const sj = get(K_GAME), kr = get('kr_game'), tl = get('tl_game');
+  const status = {
+    sj: sj && `Gemt spil: ${lead(sj.players, p => p.stars.filter(Boolean).length)} ★ · ${sj.players[sj.current].name}s tur`,
+    kr: kr && `Gemt spil: ${lead(kr.players, p => p.score)} (til ${kr.target}) · kort ${kr.n}`,
+    tl: tl && `Gemt spil: runde ${tl.round || 1}/${tl.rounds || 1} · ${lead(tl.players, p => p.pts || 0)} · ${tl.players[tl.turn].name}s tur`,
+  };
+  ['sj', 'kr', 'tl'].forEach(g => {
+    $('#' + g + 'Resume').classList.toggle('hidden', !status[g]);
+    $('#' + g + 'Status').classList.toggle('hidden', !status[g]);
+    $('#' + g + 'Status').textContent = status[g] || '';
+  });
 }
 function goHome() { closeModal(); showScreen('#home'); renderHome(); }
 function renderSetup() {
@@ -376,7 +395,7 @@ function ask(cat, kind) {
 }
 function loadAppQuestion() {
   const q = pickQuestion(S.q.cat);
-  if (q) { S.q.source = 'app'; S.q.item = { id: q.id, q: q.q, a: q.a, d: q.d }; S.q.revealed = false; S.q.note = ''; }
+  if (q) { S.q.source = 'app'; S.q.item = { id: q.id, q: q.q, a: q.a, asof: q.asof }; S.q.revealed = false; S.q.note = ''; }
   else { S.q.source = 'card'; S.q.note = 'Der er ingen app-spørgsmål i denne kategori – brug et kort.'; }
 }
 function answer(correct) {
@@ -471,6 +490,49 @@ function declareWinner(i) {
 /* =========================================================
    MODALER
    ========================================================= */
+/* ---------- Fælles dialog-lag (ligger over spillets pop-ups) ----------
+   Erstatter browserens alert/confirm/prompt, så alt har samme udseende og vender med skærmen. */
+function dlgOpen(html) { $('#dbox').innerHTML = html; $('#dialog').classList.remove('hidden'); }
+function dlgClose() { $('#dialog').classList.add('hidden'); $('#dbox').innerHTML = ''; }
+function uiAlert(text, ok = 'OK') {
+  return new Promise(res => {
+    dlgOpen(`<div class="qbody"><div class="mtext">${esc(text)}</div><div class="row center"><button class="btn primary big" id="dOk">${esc(ok)}</button></div></div>`);
+    $('#dOk').onclick = () => { dlgClose(); res(); };
+  });
+}
+function uiConfirm(text, yes = 'Ja', no = 'Annullér') {
+  return new Promise(res => {
+    dlgOpen(`<div class="qbody"><div class="mtext">${esc(text)}</div>
+      <div class="row center"><button class="btn primary big" id="dYes">${esc(yes)}</button><button class="btn big" id="dNo">${esc(no)}</button></div></div>`);
+    $('#dYes').onclick = () => { dlgClose(); res(true); };
+    $('#dNo').onclick = () => { dlgClose(); res(false); };
+  });
+}
+/* Fælles markering af spørgsmål og kort i alle tre spil.
+   item: { id, theme, cat, q, a, noun }  ·  onDone(hides) kaldes efter gem */
+function flagForm(item, onDone) {
+  const noun = item.noun || 'spørgsmålet';
+  dlgOpen(`<div class="qbody">
+    <div class="mtitle">⚑ Markér ${esc(noun)}</div>
+    <div class="qans"><b>${noun === 'kortet' ? 'Kort' : 'Spørgsmål'}</b>${esc(item.q)}<br><b style="margin-top:8px">Svar</b>${esc(item.a)}</div>
+    <div class="flagopts">${FLAG_REASONS.map(([k, t], i) => `<label><input type="radio" name="fr" value="${k}" ${i === 0 ? 'checked' : ''}> ${t}</label>`).join('')}</div>
+    <input id="flagNote" class="flagnote" placeholder="Kommentar – fx det rigtige svar (valgfrit)">
+    <p class="hint">"Forkert", "uklart" og "forældet" skjuler ${esc(noun)} fremover. Markeringen gemmes på enheden og kan sendes, når der er net (⚑ Rapporter på forsiden).</p>
+    <div class="row center"><button class="btn primary" id="flagSave">Gem markering</button><button class="btn" id="flagCancel">Annullér</button></div>
+  </div>`);
+  $('#flagCancel').onclick = dlgClose;
+  $('#flagSave').onclick = () => {
+    const reason = document.querySelector('#dbox input[name="fr"]:checked').value;
+    const note = $('#flagNote').value.trim();
+    const flags = store.get(K_FLAGS, []);
+    flags.push({ id: item.id, theme: item.theme, cat: item.cat, q: item.q, a: item.a, reason, note, ts: new Date().toISOString().slice(0, 16), sent: false });
+    store.set(K_FLAGS, flags);
+    const hides = FLAG_REASONS.find(r => r[0] === reason)[2];
+    if (hides) { const h = store.get(K_HIDE, {}); h[item.id] = 1; store.set(K_HIDE, h); }
+    dlgClose();
+    if (onDone) onDone(hides);
+  };
+}
 function openModal(html) { $('#mbox').innerHTML = html; $('#modal').classList.remove('hidden'); $('#mbox').scrollTop = 0; }
 function closeModal() { $('#modal').classList.add('hidden'); $('#mbox').innerHTML = ''; }
 
@@ -504,8 +566,8 @@ function showQuestion() {
   }
   let body;
   if (q.source === 'app') {
-    const dl = q.item.d ? `<div class="diff d${q.item.d}">${['', 'Let', 'Middel', 'Svær'][q.item.d]}</div>` : '';
-    body = `${dl}<div class="qtext">${esc(q.item.q)}</div>
+    const asof = q.item.asof ? `<div class="asof" title="Svaret kan have ændret sig siden">pr. ${q.item.asof}</div>` : '';
+    body = `${asof}<div class="qtext">${esc(q.item.q)}</div>
       ${q.revealed
         ? `<div class="qans"><b>Svar</b>${esc(q.item.a)}</div>
            <div class="qbtns"><button class="btn bad" id="noBtn">✗ Forkert</button><button class="btn ok" id="yesBtn">✓ Rigtigt</button></div>`
@@ -548,27 +610,11 @@ const FLAG_REASONS = [
 const themeName = id => (themeList().find(t => t.id === id) || { name: id }).name;
 function showFlagForm() {
   const it = S.q.item;
-  openModal(`<div class="qbody">
-    <div class="mtitle">⚑ Markér spørgsmål</div>
-    <div class="qans"><b>Spørgsmål</b>${esc(it.q)}<br><b style="margin-top:8px">Svar</b>${esc(it.a)}</div>
-    <div class="flagopts">${FLAG_REASONS.map(([k, t], i) => `<label><input type="radio" name="fr" value="${k}" ${i === 0 ? 'checked' : ''}> ${t}</label>`).join('')}</div>
-    <input id="flagNote" class="flagnote" placeholder="Kommentar – fx det rigtige svar (valgfrit)">
-    <p class="hint" style="color:#6b6250">"Forkert", "uklart" og "forældet" skjuler spørgsmålet fremover. Rapporten gemmes på tabletten og kan sendes, når der er net (Menu → Rapporter).</p>
-    <div class="row"><button class="btn primary" id="flagSave">Gem markering</button><button class="btn" id="flagCancel">Annullér</button></div>
-  </div>`);
-  $('#flagCancel').onclick = showQuestion;
-  $('#flagSave').onclick = () => {
-    const reason = document.querySelector('input[name="fr"]:checked').value;
-    const note = $('#flagNote').value.trim();
-    const flags = store.get(K_FLAGS, []);
-    flags.push({ id: it.id, theme: THEME, cat: CATS[S.q.cat].name, q: it.q, a: it.a, reason, note, ts: new Date().toISOString().slice(0, 16), sent: false });
-    store.set(K_FLAGS, flags);
-    const hides = FLAG_REASONS.find(r => r[0] === reason)[2];
-    if (hides) { const h = store.get(K_HIDE, {}); h[it.id] = 1; store.set(K_HIDE, h); }
+  flagForm({ id: it.id, theme: THEME, cat: CATS[S.q.cat].name, q: it.q, a: it.a }, hides => {
     // er spørgsmålet ikke besvaret endnu og skal skjules, får man et nyt i stedet
     if (hides && !S.q.revealed) loadAppQuestion();
     save(); showQuestion();
-  };
+  });
 }
 function reportText(list) {
   const r = Object.fromEntries(FLAG_REASONS.map(([k, t]) => [k, t]));
@@ -604,8 +650,8 @@ function showReports(back) {
     markSent(batch); showReports(back);
   });
   on('repCopy', async () => {
-    try { await navigator.clipboard.writeText(reportText(unsent)); markSent(unsent); alert('Kopieret – indsæt teksten, hvor du vil sende den.'); }
-    catch { alert('Kunne ikke kopiere automatisk.'); }
+    try { await navigator.clipboard.writeText(reportText(unsent)); markSent(unsent); uiAlert('Kopieret – indsæt teksten, hvor du vil sende den.'); }
+    catch { uiAlert('Kunne ikke kopiere automatisk.'); }
     showReports(back);
   });
   on('repShare', async () => {
@@ -738,7 +784,7 @@ function importText(text, filename) {
   const ok = items.filter(x => x.c >= 0 && x.q && x.a && String(x.q).trim()).map(x => ({ c: x.c, q: String(x.q).trim(), a: String(x.a).trim() }));
   const skipped = items.length - ok.length;
   store.set(K_IMP, store.get(K_IMP, []).concat(ok));
-  alert(`${ok.length} spørgsmål importeret.` + (skipped ? ` ${skipped} linjer blev sprunget over (fx overskrift eller ukendt kategori).` : ''));
+  uiAlert(`${ok.length} spørgsmål importeret.` + (skipped ? ` ${skipped} linjer blev sprunget over (fx overskrift eller ukendt kategori).` : ''));
   renderSetup();
 }
 
@@ -765,9 +811,9 @@ function init() {
   $('#tlResume').onclick = () => { const g = store.get('tl_game', null); if (g) { if (!g.rounds) Object.assign(g, { rounds: 1, round: 1, starter: 0, hand: 4, winners: [] }); g.players.forEach(p => p.pts = p.pts || 0); TLG = g; tlUndo = []; tlShow(); } };
   document.querySelectorAll('[data-home]').forEach(b => b.onclick = goHome);
   document.querySelectorAll('#srcSeg button').forEach(b => b.onclick = () => { settings.source = b.dataset.src; store.set(K_SET, settings); renderSetup(); });
-  $('#startBtn').onclick = () => {
+  $('#startBtn').onclick = async () => {
     const saved = store.get(K_GAME, null);
-    if (saved && saved.phase !== 'over' && !confirm('Starte et nyt spil? Det gemte spil overskrives.')) return;
+    if (saved && saved.phase !== 'over' && !(await uiConfirm('Starte et nyt spil Stjernejagt? Det gemte spil overskrives.', 'Start nyt'))) return;
     startGame();
   };
   $('#resumeBtn').onclick = () => {
@@ -786,11 +832,11 @@ function init() {
   $('#importFile').onchange = e => {
     const file = e.target.files[0]; if (!file) return;
     const r = new FileReader();
-    r.onload = () => { try { importText(r.result, file.name); } catch (err) { alert('Kunne ikke læse filen: ' + err.message); } e.target.value = ''; };
+    r.onload = () => { try { importText(r.result, file.name); } catch (err) { uiAlert('Kunne ikke læse filen: ' + err.message); } e.target.value = ''; };
     r.readAsText(file, 'utf-8');
   };
-  $('#clearImp').onclick = () => { if (confirm('Slet alle importerede spørgsmål?')) { store.del(K_IMP); renderSetup(); } };
-  $('#resetSeen').onclick = () => { store.del(K_SEEN); alert('Alle spørgsmål kan nu komme igen.'); };
+  $('#clearImp').onclick = async () => { if (await uiConfirm('Slet alle importerede spørgsmål?', 'Slet')) { store.del(K_IMP); renderSetup(); } };
+  $('#resetSeen').onclick = () => { store.del(K_SEEN); uiAlert('Alle spørgsmål kan nu komme igen.'); };
   $('#manualBtns').innerHTML = [1, 2, 3, 4, 5, 6].map(n => `<button data-n="${n}">${n}</button>`).join('');
   document.querySelectorAll('#manualBtns button').forEach(b => b.onclick = () => roll(+b.dataset.n));
   renderSetup(); renderHome();

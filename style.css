@@ -99,8 +99,8 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 .manual-btns button:disabled{opacity:.35}
 
 /* ---------- modal ---------- */
-#modal{position:fixed;inset:0;background:rgba(5,10,25,.72);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
-#mbox{background:#fbf8ef;color:#1d1d1d;border-radius:22px;width:min(760px,100%);max-height:100%;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#modal,#dialog{position:fixed;inset:0;background:rgba(5,10,25,.72);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+#mbox,#dbox{background:#fbf8ef;color:#1d1d1d;border-radius:22px;width:min(760px,100%);max-height:100%;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6)}
 .qhead{padding:18px 22px;color:#fff;font-weight:800;font-size:24px;display:flex;align-items:center;gap:12px;border-radius:22px 22px 0 0;text-shadow:0 1px 2px rgba(0,0,0,.4)}
 .qhead .tag{margin-left:auto;font-size:15px;background:rgba(0,0,0,.25);padding:4px 10px;border-radius:999px}
 .qbody{padding:24px 26px;display:flex;flex-direction:column;gap:18px}
@@ -111,8 +111,8 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 .qcard .sw{display:inline-block;width:1em;height:1em;border-radius:4px;vertical-align:-.12em;margin-right:.2em;border:1px solid rgba(0,0,0,.3)}
 .qbtns{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .qbtns .btn{min-height:72px;font-size:24px}
-#mbox .btn:not(.ok):not(.bad):not(.primary):not(.link){background:#e9e2cd;border-color:#d4cbb1}
-#mbox .btn.link{color:#6b6250}
+#mbox .btn:not(.ok):not(.bad):not(.primary):not(.link),#dbox .btn:not(.ok):not(.bad):not(.primary):not(.link){background:#e9e2cd;border-color:#d4cbb1}
+#mbox .btn.link,#dbox .btn.link{color:#6b6250}
 .catgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .catgrid button{min-height:96px;border:none;border-radius:16px;color:#fff;font-weight:800;font-size:20px;text-shadow:0 1px 3px rgba(0,0,0,.5);padding:8px}
 .mtitle{font-size:26px;font-weight:800}
@@ -139,8 +139,7 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 .tcats{display:flex;flex-wrap:wrap;gap:2px 10px;margin-top:4px}
 .tcats .tc{white-space:nowrap;font-size:13px}
 .tcats i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
-.diff{align-self:flex-start;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;background:#e9e2cd;color:#5b533f}
-.diff.d1{background:#d8efd9;color:#1f5b27}.diff.d3{background:#f6d6d3;color:#7a231c}
+.asof{align-self:flex-start;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;background:#e9e2cd;color:#5b533f}
 
 /* spillerliste + farveforklaring side om side */
 .side-top{display:flex;gap:10px;align-items:flex-start}
@@ -203,8 +202,8 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 .krset{border:2px solid #d4cbb1;background:#efe8d4;border-radius:999px;padding:8px 14px;font-weight:600}
 .krset.on{background:linear-gradient(var(--gold),var(--gold2));border-color:var(--gold2)}
 .krset small{opacity:.7}
-#mbox .seg{border-color:#d4cbb1}#mbox .seg button{background:#efe8d4;color:#1d1d1d}
-#mbox .seg button.on{background:linear-gradient(var(--gold),var(--gold2))}
+#mbox .seg,#dbox .seg{border-color:#d4cbb1}#mbox .seg button,#dbox .seg button{background:#efe8d4;color:#1d1d1d}
+#mbox .seg button.on,#dbox .seg button.on{background:linear-gradient(var(--gold),var(--gold2))}
 @media (orientation:portrait){
   #kransen{flex-direction:column;justify-content:flex-start}
   #krPanel{width:100%;height:auto;flex:1}
@@ -219,10 +218,10 @@ h2{font-size:19px;margin-bottom:12px;color:var(--gold)}
 .kitem .kt.brk{overflow-wrap:anywhere;word-break:normal;hyphens:auto;-webkit-hyphens:auto}
 
 /* Kransen: vend skærmen mod spilleren, der har tur */
-#kransen,#mbox{transition:transform .45s ease}
+#kransen,#mbox,#dbox{transition:transform .45s ease}
 body.krflip #kransen{transform:rotate(180deg)}
-body.krflip:has(#kransen:not(.hidden)) #mbox{transform:rotate(180deg)}
-@media (prefers-reduced-motion:reduce){#kransen,#mbox{transition:none}}
+body.krflip:has(#kransen:not(.hidden)) #mbox,body.krflip:has(#kransen:not(.hidden)) #dbox{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){#kransen,#mbox,#dbox{transition:none}}
 .krsides{display:flex;flex-wrap:wrap;gap:8px}
 .krside{display:flex;align-items:center;gap:8px;border:2px solid #d4cbb1;background:#efe8d4;border-radius:999px;padding:8px 14px;font-weight:600;min-height:44px}
 .krside .dot{width:16px;height:16px;border-radius:50%;border:2px solid #000}
@@ -235,7 +234,7 @@ body.krflip:has(#kransen:not(.hidden)) #mbox{transform:rotate(180deg)}
 /* ---------- Tidslinje ---------- */
 #tidslinje{height:100%;display:flex;flex-direction:column;gap:10px;padding:12px;transition:transform .45s ease}
 body.tlflip #tidslinje{transform:rotate(180deg)}
-body.tlflip:has(#tidslinje:not(.hidden)) #mbox{transform:rotate(180deg)}
+body.tlflip:has(#tidslinje:not(.hidden)) #mbox,body.tlflip:has(#tidslinje:not(.hidden)) #dbox{transform:rotate(180deg)}
 @media (prefers-reduced-motion:reduce){#tidslinje{transition:none}}
 #tlInfo{display:flex;gap:8px;align-items:center;font-size:18px;flex-wrap:wrap}
 #tlInfo .dot,#tlPlayers .dot{width:20px;height:20px;border-radius:50%;border:2px solid #000;flex:none}
@@ -295,8 +294,37 @@ details.adv[open] summary{margin-bottom:12px}
 /* Stjernejagt: vend skærmen + fælles flip-knapper */
 #game{transition:transform .45s ease}
 body.sjflip #game{transform:rotate(180deg)}
-body.sjflip:has(#game:not(.hidden)) #mbox{transform:rotate(180deg)}
+body.sjflip:has(#game:not(.hidden)) #mbox,body.sjflip:has(#game:not(.hidden)) #dbox{transform:rotate(180deg)}
 @media (prefers-reduced-motion:reduce){#game{transition:none}}
 .prow .side{flex:none;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:#0d1730;color:var(--txt);font-size:14px;white-space:nowrap}
 .flipbtn{width:100%;margin-top:8px}
 .tlround{background:var(--gold);color:#1b1405;font-weight:800;border-radius:999px;padding:2px 10px;font-size:14px}
+
+/* Fælles dialog-lag over spillets pop-ups */
+#dialog{z-index:60}
+/* Hvert spils farve som en tynd kant øverst på pop-ups – fælles layout, eget udtryk */
+body.g-sj #mbox,body.g-sj #dbox{border-top:6px solid #d9a84a}
+body.g-kr #mbox,body.g-kr #dbox{border-top:6px solid #1fa597}
+body.g-tl #mbox,body.g-tl #dbox{border-top:6px solid #8a5cd6}
+
+/* Tidslinje: animationer, "sidste kort" og større kort på tablet */
+@keyframes tlPop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+@keyframes tlGhost{0%{opacity:0;transform:translateY(-10px)}15%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(12px) scale(.9)}}
+@keyframes tlLeave{to{opacity:0;transform:translateY(30px) scale(.85)}}
+@keyframes tlPulse{50%{box-shadow:0 0 0 4px rgba(232,192,106,.55)}}
+.tlcard.new{animation:tlPop .5s ease-out}
+.tlcard.ghost{border-color:var(--bad);background:#f6d6d3;animation:tlGhost 2.4s ease forwards;pointer-events:none}
+.tlcard.leaving{animation:tlLeave 1s ease forwards}
+#tlPlayers .pcard.close{animation:tlPulse 1.4s ease-in-out infinite}
+#tlPlayers .pcard.close .kstat{color:var(--gold);font-weight:800}
+.tlcard .tlimg{width:100%;height:84px;object-fit:cover;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.tlcard.new,.tlcard.ghost,.tlcard.leaving,#tlPlayers .pcard.close{animation:none}.tlcard.ghost{opacity:0}}
+@media (min-width:900px) and (min-height:650px){
+  #tlLine{min-height:240px;padding:12px 6px}
+  .tlcard{width:190px;min-height:180px;padding:12px}
+  .tlcard .tly{font-size:24px}.tlcard .tlt{font-size:17px}
+  .tlcard .tlimg{height:110px}
+  .tlslot.on{width:54px}
+}
+.tile .tstatus{flex:none;font-size:14px;font-weight:600;background:rgba(0,0,0,.22);border-radius:10px;padding:6px 10px;color:#fff}
+#mbox .hint,#dbox .hint{color:#6b6250}

@@ -2,6 +2,7 @@
 
 Tre quizspil på dansk til 2–6 spillere eller hold, lavet til Android-tablets (virker også på telefon og computer):
 **Stjernejagt** (quiz-brætspil), **Quizisk Roulette** (10 svar i en krans) og **Tidslinje** (læg begivenheder i rækkefølge).
+Kilder og licenser for spørgsmål, fotos og malerier står i [KILDER-OG-LICENSER.md](KILDER-OG-LICENSER.md).
 Forsiden viser de tre spil; hvert spil har sin egen side med spillere (fælles for alle spil), emner og indstillinger.
 
 ## Stjernejagt
