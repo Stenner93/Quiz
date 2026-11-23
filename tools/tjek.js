@@ -54,10 +54,11 @@ const exists = f => fs.existsSync(path.join(root, f));
 const tlText = new Map();
 (W.TL || []).forEach(([set, t, w, img], i) => {
   if (!t) err(`tidslinje #${i}: tom tekst`);
-  if (typeof w === 'string') { if (!/^-?\d{1,4}-\d{2}-\d{2}$/.test(w) || isNaN(Date.parse(w.replace(/^-/, '')))) err(`tidslinje "${t}": ugyldig dato ${w}`); }
+  if (typeof w === 'string' && /^ca\. -?\d{1,4}$/.test(w)) { /* omtrentligt årstal */ }
+  else if (typeof w === 'string') { if (!/^-?\d{1,4}-\d{2}-\d{2}$/.test(w) || isNaN(Date.parse(w.replace(/^-/, '')))) err(`tidslinje "${t}": ugyldig dato ${w}`); }
   else if (!Number.isInteger(w)) err(`tidslinje "${t}": ugyldigt årstal ${w}`);
   if (img && !exists(img)) err(`tidslinje "${t}": billedet ${img} findes ikke`);
-  const k = String(t).toLowerCase().replace(/[^a-zæøå0-9]/g, ''), y = typeof w === 'string' ? w.replace(/^(-?\d+).*/, '$1') : String(w);
+  const k = String(t).toLowerCase().replace(/[^a-zæøå0-9]/g, ''), y = typeof w === 'string' ? w.replace(/^(?:ca\. )?(-?\d+).*/, '$1') : String(w);
   if (tlText.has(k) && tlText.get(k) !== y) err(`tidslinje "${t}": samme begivenhed med forskellige årstal (${tlText.get(k)} / ${y})`);
   tlText.set(k, y);
 });

@@ -30,7 +30,7 @@ const TL_SETS = () => {
   return base.map(s => ({ ...s, n: all.filter(c => c.set === s.id).length })).filter(s => s.n > 0);
 };
 // tidspunkt -> [år, måned, dag]  (måned/dag = 0, når kun året kendes)
-const tlKey = w => typeof w === 'string' ? w.split('-').map(Number) : [w, 0, 0];
+const tlKey = w => typeof w === 'string' ? (w.startsWith('ca.') ? [parseInt(w.slice(3)), 0, 0] : w.split('-').map(Number)) : [w, 0, 0];
 function tlCmp(a, b) {
   const x = tlKey(a.w), y = tlKey(b.w);
   if (x[0] !== y[0]) return x[0] - y[0];
@@ -38,6 +38,7 @@ function tlCmp(a, b) {
   return x[1] !== y[1] ? x[1] - y[1] : x[2] - y[2];
 }
 function tlFmt(w) {
+  if (typeof w === 'string' && w.startsWith('ca.')) return 'ca. ' + tlKey(w)[0];
   if (typeof w === 'string') { const [y, m, d] = tlKey(w); return `${d}. ${TL_MON[m - 1]} ${y}`; }
   return w < 0 ? `${-w} f.Kr.` : String(w);
 }

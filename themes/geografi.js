@@ -822,5 +822,9 @@ window.THEMES.push({
   [1, 'Hvad hedder Holbæks gamle hovedgade på en morænekam?', 'Ahlgade', 3],
   [1, 'Hvilket gods ved Kalundborg er kendt for sin barokhave og musikdage?', 'Lerchenborg', 3],
   [1, 'Hvad hedder Vordingborgs gamle havne- og industrikvarter ved Storstrømmen?', 'Masnedsund', 3],
+  // Fra danmarkshistorien.lex.dk (Aarhus Universitets Danmarkshistorien)
+  [4, 'Hvor lang er Storebæltsforbindelsen i alt?', 'Ca. 18 km', 2],
+  [4, 'Hvad kaldes det motorvejsnet, som blev fuldendt med Storebæltsbroen i 1998?', '"Det store H"', 3],
+  [4, 'Hvilken del af Storebæltsforbindelsen bærer både vej og jernbane?', 'Vestbroen', 3],
 ],
 });

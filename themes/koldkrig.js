@@ -634,5 +634,15 @@ window.THEMES.push({
   [4, 'Hvad kaldes terrorbølgen i Vesttyskland i efteråret 1977?', 'Det tyske efterår', 3],
   [4, 'I hvilket fængsel døde RAF-lederne Baader, Ensslin og Raspe i 1977?', 'Stammheim ved Stuttgart', 3],
   [4, 'Hvilken østtysk tjeneste viste sig efter murens fald at have støttet RAF?', 'Stasi', 2],
+  // Fra danmarkshistorien.lex.dk (Aarhus Universitets Danmarkshistorien)
+  [2, 'Hvornår blev det danske Civilforsvar oprettet ved lov?', '1949', 2],
+  [4, 'Hvor ofte blev sirenerne i de større byer afprøvet i Civilforsvarets tid?', 'Én gang om ugen', 3],
+  [4, 'Hvordan skulle folk på landet varsles om et angreb under den kolde krig?', 'Med højtalervogne og kirkeklokker', 3],
+  [2, 'Hvor stor en del af befolkningen var der plads til i beskyttelsesrum i 1960?', 'Ca. en fjerdedel (25 %)', 3],
+  [2, 'Hvilken lov afløste Civilforsvarsloven i 1993?', 'Beredskabsloven', 2],
+  [4, 'Hvad hed udstillingen på Charlottenborg i 1949 om atombomben?', '"Atomalderen"', 3],
+  [2, 'Hvad gjorde hospitalsskibet Jutlandia særlig blandt sanitetsenhederne i Koreakrigen?', 'Det behandlede også civile koreanere', 3],
+  [2, 'Hvornår underskrev Danmark FN-pagten?', '26. juni 1945', 3],
+  [2, 'Hvor mange oprindelige medlemslande havde FN?', '51', 2],
 ],
 });

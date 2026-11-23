@@ -22,7 +22,7 @@ window.THEMES.push({
   [0, 'Hvad hed trelleborgen (vikingeborgen), der lå ved Odense omkring år 980?', 'Nonnebakken', 3],
   [0, 'Hvilken dansk konge blev dræbt i Sankt Albani Kirke i Odense i 1086?', 'Knud 4. den Hellige', 1],
   [0, 'Hvilket år blev Knud den Hellige dræbt i Odense?', '1086', 2],
-  [0, 'Hvilket år blev Knud den Hellige helgenkåret?', '1100', 3],
+  [0, 'Hvornår blev Knud den Hellige helgenkåret?', 'Omkring 1100', 3],
   [0, 'Hvilken af Knud den Helliges brødre blev dræbt sammen med ham i Sankt Albani Kirke?', 'Benedikt', 3],
   [0, 'Hvor ligger Knud den Helliges knogler i dag?', 'I et helgenskrin i krypten i Sankt Knuds Kirke (Odense Domkirke)', 2],
   [0, 'Hvilken engelsk munk skrev kort efter år 1100 i Odense det, der regnes for Danmarks første litterære værk?', 'Ælnoth', 3],
@@ -594,5 +594,12 @@ window.THEMES.push({
   [1, 'Hvilken by døde Carl Nielsen i?', 'København', 2],
   [1, 'Hvor mange søskende havde Carl Nielsen ca. – han kom fra en stor fattig familie?', 'Han var den syvende af tolv børn', 3],
   [1, 'Hvad var Carl Nielsens fars erhverv?', 'Daglejer, maler og spillemand', 3],
-  ],
+    // Fra danmarkshistorien.lex.dk (Aarhus Universitets Danmarkshistorien)
+  [0, 'Hvornår var den øvre del af Odense Å blevet for svær at besejle, så byen fik en havn tættere på fjorden?', 'I 1288', 3],
+  [0, 'Hvilken nabobys havn brugte Odense som vinterhavn i middelalderen?', 'Kerteminde', 3],
+  [5, 'Hvilken produktion var særlig stor i Odense i 1800-tallet?', 'Handsker', 3],
+  [5, 'Hvordan udviklede Odenses indbyggertal sig i de sidste 20 år af 1800-tallet?', 'Det fordobledes – fra 20.000 til 40.000', 3],
+  [5, 'Hvor mange ansatte havde Thomas B. Thriges maskinfabrik omkring 1950?', 'Ca. 3.200', 3],
+  [5, 'Hvilken placering havde Odense som industriby i midten af 1900-tallet?', 'Danmarks næstvigtigste – kun overgået af København', 2],
+],
 });

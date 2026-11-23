@@ -596,5 +596,14 @@ window.THEMES.push({
   [0, 'Hvorfor var Aalborg Lufthavn så vigtig for tyskerne?', 'Den var springbræt for invasionen af Norge', 2],
   [0, 'Hvilken flyveplads ved Billund blev anlagt af tyskerne under krigen?', 'Flyvestation Vandel', 3],
   [3, 'Hvor blev de otte henrettede fra Hvidstengruppen genbegravet efter befrielsen?', 'I en mindelund i Hvidsten', 3],
+  // Fra danmarkshistorien.lex.dk (Aarhus Universitets Danmarkshistorien)
+  [0, 'Hvilken tysk diplomat overrakte de tyske krav til udenrigsminister P. Munch kl. 4.30 den 9. april 1940?', 'Gesandt Cecil von Renthe-Fink', 3],
+  [0, 'Hvor mødtes regering, konge og værnschefer kl. 5.30 den 9. april 1940 og besluttede at kapitulere?', 'På Amalienborg', 2],
+  [0, 'Hvad cirklede over København om morgenen 9. april 1940 for at presse regeringen?', 'Tyske bombefly – med ordre om at bombe, hvis Danmark ikke gav efter', 2],
+  [0, 'Hvor mange militære krav stod der i det tyske dokument, der blev overrakt 9. april 1940?', '13', 3],
+  [0, 'Hvorfor nåede ordren om at stoppe kampene først soldaterne i Sønderjylland ved 8-tiden 9. april 1940?', 'Kommunikationen var ødelagt', 3],
+  [0, 'Hvorfor støttede de fleste sønderjyder samarbejdspolitikken?', 'Tyskland lovede at respektere 1920-grænsen', 2],
+  [0, 'Hvor mange danske soldater faldt i kampene i Sønderjylland 9. april 1940?', '11', 3],
+  [0, 'Indtil hvornår fungerede det danske politi under besættelsen?', 'Til 19. september 1944', 2],
 ],
 });
